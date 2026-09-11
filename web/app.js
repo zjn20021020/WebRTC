@@ -81,6 +81,7 @@ connectButton.addEventListener('click', async () => {
     peerConnection.ontrack = (event) => {
       remoteAudio.srcObject = event.streams[0] || new MediaStream([event.track]);
       log('收到服务端下行音轨');
+      remoteAudio.play().then(() => log('远端音频播放中')).catch((error) => log(`远端音频播放失败: ${error.message}`));
     };
     const dataChannel = peerConnection.createDataChannel('control');
     dataChannel.onopen = () => log('DataChannel 已连接');
@@ -98,6 +99,7 @@ connectButton.addEventListener('click', async () => {
     });
     if (!response.ok) throw new Error(await response.text());
     await peerConnection.setRemoteDescription(await response.json());
+    await remoteAudio.play().catch((error) => log(`播放权限未开启，请点击音频控件: ${error.message}`));
     statusElement.textContent = '已连接';
     log('SDP offer/answer 完成');
   } catch (error) {

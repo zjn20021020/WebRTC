@@ -23,12 +23,13 @@ type Session struct {
 	PeerConnection *webrtc.PeerConnection
 	OutboundTrack  *webrtc.TrackLocalStaticRTP
 
-	closeOnce   sync.Once
-	stop        chan struct{}
-	controlMu   sync.RWMutex
-	control     *webrtc.DataChannel
-	vad         *interrupt.Detector
-	fixedFrames [][]byte
+	closeOnce       sync.Once
+	stop            chan struct{}
+	controlMu       sync.RWMutex
+	control         *webrtc.DataChannel
+	vad             *interrupt.Detector
+	fixedFrames     [][]byte
+	outboundStarted sync.Once
 }
 
 func NewSession(api *webrtc.API) (*Session, error) {
@@ -161,6 +162,9 @@ func (s *Session) writeSilence() {
 				// clock running so the first bound writer receives fresh packets.
 				continue
 			}
+			s.outboundStarted.Do(func() {
+				log.Printf("outbound audio started: codec=audio/PCMU/8000 payload_bytes=%d", len(packet.Payload))
+			})
 			if len(s.fixedFrames) > 0 {
 				s.fixedFrames = s.fixedFrames[1:]
 			}
