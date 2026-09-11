@@ -9,6 +9,7 @@ import (
 
 	"github.com/pion/webrtc/v4"
 	"webrtc-interrupt/internal/asr"
+	"webrtc-interrupt/internal/dialogue"
 	"webrtc-interrupt/internal/rtc"
 )
 
@@ -25,13 +26,15 @@ type answerResponse struct {
 type Handler struct {
 	api       *webrtc.API
 	asrConfig asr.Config
+	model     dialogue.LanguageModel
+	speech    dialogue.SpeechSynthesizer
 
 	mu      sync.Mutex
 	current *rtc.Session
 }
 
-func NewHandler(api *webrtc.API, asrConfig asr.Config) *Handler {
-	return &Handler{api: api, asrConfig: asrConfig}
+func NewHandler(api *webrtc.API, asrConfig asr.Config, model dialogue.LanguageModel, speech dialogue.SpeechSynthesizer) *Handler {
+	return &Handler{api: api, asrConfig: asrConfig, model: model, speech: speech}
 }
 
 func (h *Handler) Close() {
@@ -59,7 +62,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := rtc.NewSession(h.api, h.asrConfig)
+	session, err := rtc.NewSession(h.api, h.asrConfig, h.model, h.speech)
 	if err != nil {
 		http.Error(w, "create peer connection failed", http.StatusInternalServerError)
 		log.Printf("create session: %v", err)

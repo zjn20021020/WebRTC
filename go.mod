@@ -8,6 +8,8 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/pion/rtp v1.8.11
 	github.com/pion/webrtc/v4 v4.0.0
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.102
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tts v1.3.102
 )
 
 require (

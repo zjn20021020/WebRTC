@@ -10,7 +10,54 @@ const asrStatusElement = document.querySelector('#asrStatus');
 const partialTranscript = document.querySelector('#partialTranscript');
 const finalTranscript = document.querySelector('#finalTranscript');
 const finalized = new Map();
+const replyStatus = document.querySelector('#replyStatus');
+const replyText = document.querySelector('#replyText');
+const replyError = document.querySelector('#replyError');
+const stopResponseButton = document.querySelector('#stopResponse');
+let responseEpoch = -1;
+let responseFinished = false;
 let activeConnection = null;
+
+function setReplyStatus(status) {
+  const labels = {
+    disconnected: '未连接', waiting: '连接中', ready: '等待提问',
+    thinking: '生成回答中', synthesizing: '合成语音中', speaking: '播放中',
+    completed: '回答结束', interrupted: '已停止', failed: '回答失败',
+    llm_unconfigured: '未配置 DeepSeek', tts_unconfigured: '未配置腾讯语音',
+  };
+  replyStatus.textContent = labels[status] || status;
+  replyStatus.dataset.state = status;
+  stopResponseButton.disabled = !['thinking', 'synthesizing', 'speaking'].includes(status);
+}
+
+function handleResponse(message) {
+  const epoch = message.response_epoch;
+  if (!Number.isSafeInteger(epoch) || epoch < responseEpoch) return;
+  if (epoch > responseEpoch) {
+    responseEpoch = epoch;
+    responseFinished = false;
+    replyText.textContent = '';
+    replyError.hidden = true;
+    replyError.textContent = '';
+  }
+  if (responseFinished) return;
+  if (message.event === 'response_text' && typeof message.text === 'string') {
+    replyText.textContent = message.text;
+  } else if (message.event === 'response_status') {
+    setReplyStatus(message.status);
+    if (message.status === 'failed' && typeof message.detail === 'string') {
+      replyError.textContent = message.detail;
+      replyError.hidden = false;
+    }
+    responseFinished = ['completed', 'interrupted', 'failed'].includes(message.status);
+  }
+}
+
+stopResponseButton.addEventListener('click', () => {
+  if (activeConnection?.control?.readyState === 'open') {
+    activeConnection.control.send(JSON.stringify({ event: 'stop_response' }));
+  }
+});
 
 function setASRStatus(status) {
   const labels = {
@@ -25,6 +72,11 @@ function setASRStatus(status) {
 function handleControl(data) {
   let message;
   try { message = JSON.parse(data); } catch { log('收到无效服务端事件'); return; }
+  if (!message || typeof message !== 'object') return;
+  if (message.event === 'response_status' || message.event === 'response_text') {
+    handleResponse(message);
+    return;
+  }
   if (message.event === 'asr_status' || message.event === 'asr_error') {
     setASRStatus(message.status);
     if (message.event === 'asr_error') partialTranscript.textContent = '';
@@ -73,6 +125,8 @@ function disconnect() {
   meterElement.textContent = '麦克风未启用';
   partialTranscript.textContent = '';
   setASRStatus('disconnected');
+  setReplyStatus('disconnected');
+  responseFinished = true;
   connectButton.disabled = false;
   disconnectButton.disabled = true;
   statusElement.textContent = '未连接';
@@ -157,11 +211,17 @@ connectButton.addEventListener('click', async () => {
   finalized.clear();
   partialTranscript.textContent = '';
   setASRStatus('waiting');
+  responseEpoch = -1;
+  responseFinished = false;
+  replyText.textContent = '';
+  replyError.textContent = '';
+  replyError.hidden = true;
+  setReplyStatus('waiting');
   statusElement.textContent = '连接中';
   const connection = { abort: new AbortController() };
   activeConnection = connection;
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
     if (activeConnection !== connection) {
       stream.getTracks().forEach((track) => track.stop());
       return;

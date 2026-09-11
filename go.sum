@@ -50,6 +50,10 @@ github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
 github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.102 h1:3n7BpLOPnE9Rv3Y9Jxgl/XaQX3GzktO+dEaAbtVbjSk=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.3.102/go.mod h1:r5r4xbfxSaeR04b166HGsBa/R4U3SueirEUpXGuw+Q0=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tts v1.3.102 h1:V5ChUwoO5VmdBDfV986QVioSmPo8s3/x2EyO0g3LU0Y=
+github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tts v1.3.102/go.mod h1:8vFlKaL0pep/baLBPJ/HYLVJvgx3GoB4BI2Txg3B4FU=
 github.com/wlynxg/anet v0.0.3 h1:PvR53psxFXstc12jelG6f1Lv4MWqE0tI76/hHGjh9rg=
 github.com/wlynxg/anet v0.0.3/go.mod h1:eay5PRQr7fIVAMbTbchTnO9gG65Hg/uYGdc7mguHxoA=
 golang.org/x/crypto v0.28.0 h1:GBDwsMXVQi34v5CCYUm2jkJvu4cbtru2U4TN2PSyQnw=

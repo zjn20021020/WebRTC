@@ -14,7 +14,10 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/pion/webrtc/v4"
 	"webrtc-interrupt/internal/asr"
+	"webrtc-interrupt/internal/dialogue"
+	"webrtc-interrupt/internal/llm"
 	"webrtc-interrupt/internal/signaling"
+	"webrtc-interrupt/internal/tts"
 )
 
 func main() {
@@ -25,6 +28,26 @@ func main() {
 	}
 	asrConfig := asr.ConfigFromEnv()
 	log.Printf("ASR configured=%t model=%s sample_rate=%d", asrConfig.Enabled(), asrConfig.Model, asr.SampleRate)
+	llmConfig := llm.ConfigFromEnv()
+	ttsConfig, err := tts.ConfigFromEnv()
+	if err != nil {
+		log.Fatal(err)
+	}
+	var model dialogue.LanguageModel
+	var speech dialogue.SpeechSynthesizer
+	if llmConfig.Enabled() {
+		model, err = llm.NewClient(llmConfig)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	if ttsConfig.Enabled() {
+		speech, err = tts.NewClient(ttsConfig)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	log.Printf("LLM configured=%t model=%s; TTS configured=%t voice=%d sample_rate=%d", llmConfig.Enabled(), llmConfig.Model, ttsConfig.Enabled(), ttsConfig.VoiceType, tts.SampleRate)
 
 	mediaEngine := &webrtc.MediaEngine{}
 	if err := mediaEngine.RegisterCodec(webrtc.RTPCodecParameters{
@@ -40,7 +63,7 @@ func main() {
 	api := webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine))
 
 	mux := http.NewServeMux()
-	signalingHandler := signaling.NewHandler(api, asrConfig)
+	signalingHandler := signaling.NewHandler(api, asrConfig, model, speech)
 	mux.Handle("/api/offer", signalingHandler)
 	mux.Handle("/", http.FileServer(http.Dir("web")))
 

@@ -23,6 +23,15 @@
         <ol id="finalTranscript" aria-live="polite"></ol>
         <p id="partialTranscript" aria-live="off"></p>
       </section>
+      <section class="reply" aria-labelledby="replyHeading">
+        <div class="transcript-heading">
+          <h2 id="replyHeading">语音回答</h2>
+          <span id="replyStatus" role="status">未连接</span>
+        </div>
+        <p id="replyText" aria-live="polite"></p>
+        <p id="replyError" role="alert" hidden></p>
+        <button id="stopResponse" type="button" disabled>停止回答</button>
+      </section>
       <pre id="log" aria-live="polite"></pre>
     </main>
     <script src="/app.js" defer></script>

@@ -12,6 +12,7 @@ import (
 	"github.com/pion/webrtc/v4"
 	"webrtc-interrupt/internal/asr"
 	"webrtc-interrupt/internal/audio"
+	"webrtc-interrupt/internal/dialogue"
 	"webrtc-interrupt/internal/interrupt"
 )
 
@@ -21,7 +22,7 @@ const (
 )
 
 // Session owns the peer connection and the long-lived outbound audio track.
-// Later ASR, TTS and turn coordination code will attach to this boundary.
+// The dialogue manager feeds synthesized audio into the same RTP clock.
 type Session struct {
 	PeerConnection *webrtc.PeerConnection
 	OutboundTrack  *webrtc.TrackLocalStaticRTP
@@ -31,7 +32,7 @@ type Session struct {
 	controlMu       sync.RWMutex
 	control         *webrtc.DataChannel
 	vad             *interrupt.Detector
-	fixedFrames     [][]byte
+	response        *dialogue.Manager
 	outboundStarted sync.Once
 	inboundOnce     sync.Once
 	asrConfig       asr.Config
@@ -42,7 +43,7 @@ type Session struct {
 	asrStarted      sync.Once
 }
 
-func NewSession(api *webrtc.API, asrConfig asr.Config) (*Session, error) {
+func NewSession(api *webrtc.API, asrConfig asr.Config, model dialogue.LanguageModel, speech dialogue.SpeechSynthesizer) (*Session, error) {
 	peerConnection, err := api.NewPeerConnection(webrtc.Configuration{})
 	if err != nil {
 		return nil, err
@@ -72,13 +73,13 @@ func NewSession(api *webrtc.API, asrConfig asr.Config) (*Session, error) {
 		OutboundTrack:  outboundTrack,
 		stop:           make(chan struct{}),
 		vad:            interrupt.NewDetector(700, 200*time.Millisecond, 500*time.Millisecond, 20*time.Millisecond),
-		fixedFrames:    audio.GenerateTestToneFrames(pcmuSampleRate, pcmuFrameSamples),
 		asrConfig:      asrConfig,
 		asrContext:     asrContext,
 		asrCancel:      asrCancel,
 		asrInput:       make(chan []byte, 100),
 		asrDone:        make(chan struct{}),
 	}
+	session.response = dialogue.New(model, speech, func(event dialogue.Event) { session.sendEvent(event) })
 
 	peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
 		log.Printf("inbound track: kind=%s codec=%s/%d", track.Kind(), track.Codec().MimeType, track.Codec().ClockRate)
@@ -101,14 +102,20 @@ func NewSession(api *webrtc.API, asrConfig asr.Config) (*Session, error) {
 		log.Printf("data channel: label=%s", channel.Label())
 		channel.OnOpen(func() {
 			log.Printf("data channel open: label=%s", channel.Label())
+			session.response.Ready()
 			session.asrStarted.Do(func() { go session.runASR() })
 		})
 		channel.OnMessage(func(message webrtc.DataChannelMessage) {
 			var command struct {
 				Event string `json:"event"`
 			}
-			if json.Unmarshal(message.Data, &command) == nil && command.Event == "disconnect" {
-				go session.Close()
+			if json.Unmarshal(message.Data, &command) == nil {
+				switch command.Event {
+				case "disconnect":
+					go session.Close()
+				case "stop_response":
+					session.response.Stop()
+				}
 			}
 		})
 		channel.OnClose(func() {
@@ -119,10 +126,11 @@ func NewSession(api *webrtc.API, asrConfig asr.Config) (*Session, error) {
 			}
 			session.controlMu.Unlock()
 			session.asrCancel(context.Canceled)
+			session.response.Close()
 		})
 	})
 
-	go session.writeSilence()
+	go session.writeOutbound()
 	return session, nil
 }
 
@@ -186,6 +194,7 @@ func (s *Session) runASR() {
 	s.sendEvent(asr.Event{Event: "asr_status", Status: "connecting"})
 	err := asr.Run(s.asrContext, s.asrConfig, s.asrInput, func(event asr.Event) {
 		s.sendEvent(event)
+		s.response.Accept(event)
 	})
 	if cause := context.Cause(s.asrContext); cause != nil {
 		err = cause
@@ -220,7 +229,7 @@ func (s *Session) enqueueASR(data []byte) {
 	}
 }
 
-func (s *Session) writeSilence() {
+func (s *Session) writeOutbound() {
 	ticker := time.NewTicker(20 * time.Millisecond)
 	defer ticker.Stop()
 
@@ -229,29 +238,19 @@ func (s *Session) writeSilence() {
 	for {
 		select {
 		case <-ticker.C:
-			payload := make([]byte, pcmuFrameSamples)
-			if len(s.fixedFrames) > 0 {
-				copy(payload, s.fixedFrames[0])
-			} else {
-				for i := range payload {
-					payload[i] = 0xff // PCMU silence
-				}
-			}
-			packet := &rtp.Packet{
-				Header:  rtp.Header{Version: 2, PayloadType: 0, SequenceNumber: sequence, Timestamp: timestamp},
-				Payload: payload,
-			}
-			if err := s.OutboundTrack.WriteRTP(packet); err != nil {
+			if err := s.response.WriteFrame(func(payload []byte) error {
+				return s.OutboundTrack.WriteRTP(&rtp.Packet{
+					Header:  rtp.Header{Version: 2, PayloadType: 0, SequenceNumber: sequence, Timestamp: timestamp},
+					Payload: payload,
+				})
+			}); err != nil {
 				// The track is unbound until SDP negotiation finishes. Keep the
 				// clock running so the first bound writer receives fresh packets.
 				continue
 			}
 			s.outboundStarted.Do(func() {
-				log.Printf("outbound audio started: codec=audio/PCMU/8000 payload_bytes=%d", len(packet.Payload))
+				log.Printf("outbound audio started: codec=audio/PCMU/8000 payload_bytes=%d", pcmuFrameSamples)
 			})
-			if len(s.fixedFrames) > 0 {
-				s.fixedFrames = s.fixedFrames[1:]
-			}
 			sequence++
 			timestamp += 160
 		case <-s.stop:
@@ -264,6 +263,7 @@ func (s *Session) Close() {
 	s.closeOnce.Do(func() {
 		close(s.stop)
 		s.asrCancel(context.Canceled)
+		s.response.Close()
 		if err := s.PeerConnection.Close(); err != nil {
 			log.Printf("close peer connection: %v", err)
 		}
