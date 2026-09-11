@@ -9,6 +9,7 @@
 - 服务端长期存在的 PCMU 下行音轨；
 - 服务端接收上行 RTP 并输出帧日志；
 - 服务端 PCMU 解码和 RMS 音量日志；
+- 服务端基于 RMS 的 VAD 事件和 DataChannel 通知；
 - 前端连接状态、远端音频和基础日志。
 
 ## 运行
@@ -22,8 +23,8 @@ go run ./cmd/server
 
 打开 <http://localhost:8080>，点击“连接并启用麦克风”，允许浏览器访问麦克风。
 
-服务端每收到 50 个上行 RTP 包会输出 `pcmu_rms`。对着麦克风说话时，该数值应明显高于安静状态。
+服务端每收到 50 个上行 RTP 包会输出 `pcmu_rms`，连续语音约 200ms 后会输出 `vad event=speech_started`，并通过 DataChannel 通知浏览器。对着麦克风说话时，波形和 RMS 应明显高于安静状态。
 
 ## 下一步
 
-在当前会话边界上继续接入 PCMU 解码、VAD、流式 ASR、`ResponseEpoch` 轮次管理、两阶段打断、TTS 和下行音频队列。
+下一步是在 VAD 事件边界上接入流式 ASR、`ResponseEpoch` 轮次管理、两阶段打断、TTS 和下行音频队列。

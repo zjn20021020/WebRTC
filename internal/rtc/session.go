@@ -1,6 +1,7 @@
 package rtc
 
 import (
+	"encoding/json"
 	"log"
 	"sync"
 	"time"
@@ -8,6 +9,7 @@ import (
 	"github.com/pion/rtp"
 	"github.com/pion/webrtc/v4"
 	"webrtc-interrupt/internal/audio"
+	"webrtc-interrupt/internal/interrupt"
 )
 
 // Session owns the peer connection and the long-lived outbound audio track.
@@ -18,6 +20,9 @@ type Session struct {
 
 	closeOnce sync.Once
 	stop      chan struct{}
+	controlMu sync.RWMutex
+	control   *webrtc.DataChannel
+	vad       *interrupt.Detector
 }
 
 func NewSession(api *webrtc.API) (*Session, error) {
@@ -48,6 +53,7 @@ func NewSession(api *webrtc.API) (*Session, error) {
 		PeerConnection: peerConnection,
 		OutboundTrack:  outboundTrack,
 		stop:           make(chan struct{}),
+		vad:            interrupt.NewDetector(700, 200*time.Millisecond, 500*time.Millisecond, 20*time.Millisecond),
 	}
 
 	peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
@@ -61,9 +67,19 @@ func NewSession(api *webrtc.API) (*Session, error) {
 		}
 	})
 	peerConnection.OnDataChannel(func(channel *webrtc.DataChannel) {
+		session.controlMu.Lock()
+		session.control = channel
+		session.controlMu.Unlock()
 		log.Printf("data channel: label=%s", channel.Label())
 		channel.OnOpen(func() { log.Printf("data channel open: label=%s", channel.Label()) })
-		channel.OnClose(func() { log.Printf("data channel closed: label=%s", channel.Label()) })
+		channel.OnClose(func() {
+			log.Printf("data channel closed: label=%s", channel.Label())
+			session.controlMu.Lock()
+			if session.control == channel {
+				session.control = nil
+			}
+			session.controlMu.Unlock()
+		})
 	})
 
 	go session.writeSilence()
@@ -79,13 +95,35 @@ func (s *Session) readInbound(track *webrtc.TrackRemote) {
 			return
 		}
 		packets++
-		if packets%50 == 0 {
-			if track.Codec().MimeType == webrtc.MimeTypePCMU {
-				rms := audio.RMS(audio.DecodePCMU(packet.Payload))
-				log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d pcmu_rms=%.1f", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), rms)
-			} else {
-				log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d codec=%s (decoder unavailable)", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), track.Codec().MimeType)
+		if track.Codec().MimeType == webrtc.MimeTypePCMU {
+			rms := audio.RMS(audio.DecodePCMU(packet.Payload))
+			if event, ok := s.vad.Update(rms); ok {
+				log.Printf("vad event=%s packets=%d pcmu_rms=%.1f", event, packets, rms)
+				s.sendControl(string(event), rms)
 			}
+			if packets%50 == 0 {
+				log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d pcmu_rms=%.1f", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), rms)
+			}
+		} else if packets%50 == 0 {
+			log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d codec=%s (decoder unavailable)", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), track.Codec().MimeType)
+		}
+	}
+}
+
+func (s *Session) sendControl(event string, rms float64) {
+	message, err := json.Marshal(struct {
+		Event string  `json:"event"`
+		RMS   float64 `json:"rms"`
+	}{Event: event, RMS: rms})
+	if err != nil {
+		return
+	}
+	s.controlMu.RLock()
+	channel := s.control
+	s.controlMu.RUnlock()
+	if channel != nil {
+		if err := channel.SendText(string(message)); err != nil {
+			log.Printf("send control event: %v", err)
 		}
 	}
 }
