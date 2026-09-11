@@ -7,6 +7,7 @@ import (
 
 	"github.com/pion/rtp"
 	"github.com/pion/webrtc/v4"
+	"webrtc-interrupt/internal/audio"
 )
 
 // Session owns the peer connection and the long-lived outbound audio track.
@@ -79,7 +80,12 @@ func (s *Session) readInbound(track *webrtc.TrackRemote) {
 		}
 		packets++
 		if packets%50 == 0 {
-			log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload))
+			if track.Codec().MimeType == webrtc.MimeTypePCMU {
+				rms := audio.RMS(audio.DecodePCMU(packet.Payload))
+				log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d pcmu_rms=%.1f", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), rms)
+			} else {
+				log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d codec=%s (decoder unavailable)", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), track.Codec().MimeType)
+			}
 		}
 	}
 }

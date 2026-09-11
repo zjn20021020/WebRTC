@@ -14,7 +14,14 @@ func main() {
 	flag.Parse()
 
 	mediaEngine := &webrtc.MediaEngine{}
-	if err := mediaEngine.RegisterDefaultCodecs(); err != nil {
+	if err := mediaEngine.RegisterCodec(webrtc.RTPCodecParameters{
+		RTPCodecCapability: webrtc.RTPCodecCapability{
+			MimeType:  webrtc.MimeTypePCMU,
+			ClockRate: 8000,
+			Channels:  1,
+		},
+		PayloadType: 0,
+	}, webrtc.RTPCodecTypeAudio); err != nil {
 		log.Fatalf("register codecs: %v", err)
 	}
 	api := webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine))
