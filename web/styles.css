@@ -1,0 +1,8 @@
+:root { font-family: system-ui, sans-serif; color: #17202a; background: #f4f6f8; }
+body { margin: 0; }
+.container { max-width: 720px; margin: 48px auto; padding: 24px; background: #fff; border: 1px solid #d8dee4; border-radius: 8px; }
+.status { font-weight: 600; }
+button { padding: 10px 14px; border: 0; border-radius: 6px; background: #1769aa; color: #fff; cursor: pointer; }
+button:disabled { cursor: wait; opacity: .65; }
+audio { display: block; width: 100%; margin: 24px 0; }
+pre { min-height: 180px; padding: 12px; overflow: auto; background: #101820; color: #b9e6c3; border-radius: 6px; }
