@@ -11,9 +11,18 @@
       <h1>WebRTC 双向音频实验</h1>
       <p id="status" class="status">未连接</p>
       <button id="connect" type="button">连接并启用麦克风</button>
+      <button id="disconnect" type="button" disabled>断开</button>
       <p id="meter" class="meter">麦克风未启用</p>
       <canvas id="waveform" width="720" height="180" aria-label="麦克风实时波形"></canvas>
       <audio id="remoteAudio" autoplay controls></audio>
+      <section class="transcript" aria-labelledby="transcriptHeading">
+        <div class="transcript-heading">
+          <h2 id="transcriptHeading">实时字幕</h2>
+          <span id="asrStatus" role="status">未连接</span>
+        </div>
+        <ol id="finalTranscript" aria-live="polite"></ol>
+        <p id="partialTranscript" aria-live="off"></p>
+      </section>
       <pre id="log" aria-live="polite"></pre>
     </main>
     <script src="/app.js" defer></script>

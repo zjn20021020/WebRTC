@@ -8,3 +8,16 @@ audio { display: block; width: 100%; margin: 24px 0; }
 canvas { display: block; width: 100%; height: 180px; margin: 12px 0 24px; border-radius: 6px; }
 .meter { color: #52606d; font-variant-numeric: tabular-nums; }
 pre { min-height: 180px; padding: 12px; overflow: auto; background: #101820; color: #b9e6c3; border-radius: 6px; }
+.transcript { border-top: 1px solid #d8dee4; padding-top: 16px; margin: 20px 0; }
+.transcript-heading { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.transcript h2 { margin: 0; font-size: 18px; }
+#asrStatus { color: #52606d; font-size: 14px; }
+#asrStatus[data-state="failed"], #asrStatus[data-state="backlog"] { color: #b42318; }
+#finalTranscript { max-height: 240px; overflow-y: auto; padding-left: 24px; line-height: 1.6; overflow-wrap: anywhere; }
+#partialTranscript { min-height: 28px; color: #1769aa; line-height: 1.6; overflow-wrap: anywhere; }
+#disconnect { background: #52606d; }
+#log { max-height: 240px; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .container { margin: 0; padding: 16px; border: 0; border-radius: 0; }
+  h1 { font-size: 24px; }
+}

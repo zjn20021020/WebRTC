@@ -5,6 +5,81 @@ const remoteAudio = document.querySelector('#remoteAudio');
 const meterElement = document.querySelector('#meter');
 const waveform = document.querySelector('#waveform');
 const waveformContext = waveform.getContext('2d');
+const disconnectButton = document.querySelector('#disconnect');
+const asrStatusElement = document.querySelector('#asrStatus');
+const partialTranscript = document.querySelector('#partialTranscript');
+const finalTranscript = document.querySelector('#finalTranscript');
+const finalized = new Map();
+let activeConnection = null;
+
+function setASRStatus(status) {
+  const labels = {
+    disconnected: '未连接', waiting: '等待识别服务', unconfigured: '未配置凭证',
+    connecting: '连接识别服务中', listening: '识别中', stopped: '识别已结束',
+    failed: '识别连接失败', backlog: '识别网络拥堵',
+  };
+  asrStatusElement.textContent = labels[status] || status;
+  asrStatusElement.dataset.state = status;
+}
+
+function handleControl(data) {
+  let message;
+  try { message = JSON.parse(data); } catch { log('收到无效服务端事件'); return; }
+  if (message.event === 'asr_status' || message.event === 'asr_error') {
+    setASRStatus(message.status);
+    if (message.event === 'asr_error') partialTranscript.textContent = '';
+    return;
+  }
+  if (message.event === 'asr_partial' && typeof message.text === 'string') {
+    if (!finalized.has(message.utterance_id)) partialTranscript.textContent = message.text;
+    return;
+  }
+  if (message.event === 'asr_final' && typeof message.text === 'string') {
+    let line = finalized.get(message.utterance_id);
+    if (!line) {
+      line = document.createElement('li');
+      finalTranscript.appendChild(line);
+      finalized.set(message.utterance_id, line);
+    }
+    line.textContent = message.text;
+    partialTranscript.textContent = '';
+    if (finalized.size > 100) {
+      const oldest = finalized.keys().next().value;
+      finalized.get(oldest).remove();
+      finalized.delete(oldest);
+    }
+    finalTranscript.scrollTop = finalTranscript.scrollHeight;
+    return;
+  }
+  log(`服务端事件: ${data}`);
+}
+
+function disconnect() {
+  const connection = activeConnection;
+  activeConnection = null;
+  if (connection) {
+    if (connection.control?.readyState === 'open') {
+      connection.control.send(JSON.stringify({ event: 'disconnect' }));
+    }
+    connection.abort.abort();
+    connection.stream?.getTracks().forEach((track) => track.stop());
+    cancelAnimationFrame(connection.animationFrame);
+    connection.audioContext?.close().catch(() => {});
+    // Give SCTP a chance to deliver the cancellation before closing transport.
+    setTimeout(() => connection.peerConnection?.close(), 150);
+  }
+  remoteAudio.pause();
+  remoteAudio.srcObject = null;
+  meterElement.textContent = '麦克风未启用';
+  partialTranscript.textContent = '';
+  setASRStatus('disconnected');
+  connectButton.disabled = false;
+  disconnectButton.disabled = true;
+  statusElement.textContent = '未连接';
+}
+
+disconnectButton.addEventListener('click', disconnect);
+window.addEventListener('pagehide', disconnect);
 
 function resizeWaveform() {
   const ratio = window.devicePixelRatio || 1;
@@ -15,7 +90,8 @@ function resizeWaveform() {
   waveformContext.setTransform(ratio, 0, 0, ratio, 0, 0);
 }
 
-function drawWaveform(analyser, data) {
+function drawWaveform(analyser, data, connection) {
+  if (activeConnection !== connection) return;
   analyser.getByteTimeDomainData(data);
   const width = waveform.clientWidth || 720;
   const height = waveform.clientHeight || 180;
@@ -38,7 +114,7 @@ function drawWaveform(analyser, data) {
   waveformContext.stroke();
   const rms = Math.sqrt(sum / data.length);
   meterElement.textContent = `麦克风 RMS: ${(rms * 100).toFixed(1)}%`;
-  requestAnimationFrame(() => drawWaveform(analyser, data));
+  connection.animationFrame = requestAnimationFrame(() => drawWaveform(analyser, data, connection));
 }
 
 resizeWaveform();
@@ -47,62 +123,97 @@ window.addEventListener('resize', resizeWaveform);
 function log(message) {
   const line = `${new Date().toISOString()} ${message}`;
   logElement.textContent += `${line}\n`;
+  const lines = logElement.textContent.split('\n');
+  if (lines.length > 200) logElement.textContent = lines.slice(-200).join('\n');
   console.log(line);
 }
 
-function waitForIceGatheringComplete(peerConnection) {
+function waitForIceGatheringComplete(peerConnection, signal) {
   if (peerConnection.iceGatheringState === 'complete') return Promise.resolve();
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    const cleanup = () => {
+      clearTimeout(timer);
+      peerConnection.removeEventListener('icegatheringstatechange', check);
+      signal.removeEventListener('abort', abort);
+    };
+    const abort = () => { cleanup(); reject(new Error('连接已取消')); };
     const check = () => {
       if (peerConnection.iceGatheringState === 'complete') {
-        peerConnection.removeEventListener('icegatheringstatechange', check);
+        cleanup();
         resolve();
       }
     };
+    const timer = setTimeout(() => { cleanup(); reject(new Error('ICE 连接超时')); }, 15000);
     peerConnection.addEventListener('icegatheringstatechange', check);
+    signal.addEventListener('abort', abort, { once: true });
+    if (signal.aborted) abort();
   });
 }
 
 connectButton.addEventListener('click', async () => {
   connectButton.disabled = true;
+  disconnectButton.disabled = false;
+  finalTranscript.replaceChildren();
+  finalized.clear();
+  partialTranscript.textContent = '';
+  setASRStatus('waiting');
+  statusElement.textContent = '连接中';
+  const connection = { abort: new AbortController() };
+  activeConnection = connection;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    if (activeConnection !== connection) {
+      stream.getTracks().forEach((track) => track.stop());
+      return;
+    }
+    connection.stream = stream;
     const audioContext = new AudioContext();
+    connection.audioContext = audioContext;
+    await audioContext.resume();
+    if (activeConnection !== connection) return;
     const analyser = audioContext.createAnalyser();
     analyser.fftSize = 1024;
     const source = audioContext.createMediaStreamSource(stream);
     source.connect(analyser);
-    drawWaveform(analyser, new Uint8Array(analyser.fftSize));
+    drawWaveform(analyser, new Uint8Array(analyser.fftSize), connection);
     const peerConnection = new RTCPeerConnection();
+    connection.peerConnection = peerConnection;
     peerConnection.onconnectionstatechange = () => {
+      if (activeConnection !== connection) return;
       statusElement.textContent = peerConnection.connectionState;
       log(`peer connection: ${peerConnection.connectionState}`);
+      if (['failed', 'closed', 'disconnected'].includes(peerConnection.connectionState)) disconnect();
     };
     peerConnection.ontrack = (event) => {
+      if (activeConnection !== connection) return;
       remoteAudio.srcObject = event.streams[0] || new MediaStream([event.track]);
       log('收到服务端下行音轨');
       remoteAudio.play().then(() => log('远端音频播放中')).catch((error) => log(`远端音频播放失败: ${error.message}`));
     };
     const dataChannel = peerConnection.createDataChannel('control');
+    connection.control = dataChannel;
     dataChannel.onopen = () => log('DataChannel 已连接');
-    dataChannel.onmessage = (event) => log(`服务端事件: ${event.data}`);
+    dataChannel.onmessage = (event) => {
+      if (activeConnection === connection) handleControl(event.data);
+    };
     for (const track of stream.getAudioTracks()) peerConnection.addTrack(track, stream);
 
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
-    await waitForIceGatheringComplete(peerConnection);
+    await waitForIceGatheringComplete(peerConnection, connection.abort.signal);
 
     const response = await fetch('/api/offer', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(peerConnection.localDescription),
+      signal: connection.abort.signal,
     });
     if (!response.ok) throw new Error(await response.text());
     await peerConnection.setRemoteDescription(await response.json());
-    await remoteAudio.play().catch((error) => log(`播放权限未开启，请点击音频控件: ${error.message}`));
-    statusElement.textContent = '已连接';
     log('SDP offer/answer 完成');
   } catch (error) {
+    if (activeConnection !== connection) return;
+    disconnect();
     statusElement.textContent = '连接失败';
     log(`错误: ${error.message}`);
     connectButton.disabled = false;

@@ -1,13 +1,16 @@
 package rtc
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 	"log"
 	"sync"
 	"time"
 
 	"github.com/pion/rtp"
 	"github.com/pion/webrtc/v4"
+	"webrtc-interrupt/internal/asr"
 	"webrtc-interrupt/internal/audio"
 	"webrtc-interrupt/internal/interrupt"
 )
@@ -30,9 +33,16 @@ type Session struct {
 	vad             *interrupt.Detector
 	fixedFrames     [][]byte
 	outboundStarted sync.Once
+	inboundOnce     sync.Once
+	asrConfig       asr.Config
+	asrContext      context.Context
+	asrCancel       context.CancelCauseFunc
+	asrInput        chan []byte
+	asrDone         chan struct{}
+	asrStarted      sync.Once
 }
 
-func NewSession(api *webrtc.API) (*Session, error) {
+func NewSession(api *webrtc.API, asrConfig asr.Config) (*Session, error) {
 	peerConnection, err := api.NewPeerConnection(webrtc.Configuration{})
 	if err != nil {
 		return nil, err
@@ -56,17 +66,23 @@ func NewSession(api *webrtc.API) (*Session, error) {
 		return nil, err
 	}
 
+	asrContext, asrCancel := context.WithCancelCause(context.Background())
 	session := &Session{
 		PeerConnection: peerConnection,
 		OutboundTrack:  outboundTrack,
 		stop:           make(chan struct{}),
 		vad:            interrupt.NewDetector(700, 200*time.Millisecond, 500*time.Millisecond, 20*time.Millisecond),
 		fixedFrames:    audio.GenerateTestToneFrames(pcmuSampleRate, pcmuFrameSamples),
+		asrConfig:      asrConfig,
+		asrContext:     asrContext,
+		asrCancel:      asrCancel,
+		asrInput:       make(chan []byte, 100),
+		asrDone:        make(chan struct{}),
 	}
 
 	peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
 		log.Printf("inbound track: kind=%s codec=%s/%d", track.Kind(), track.Codec().MimeType, track.Codec().ClockRate)
-		session.readInbound(track)
+		session.inboundOnce.Do(func() { session.readInbound(track) })
 	})
 	peerConnection.OnConnectionStateChange(func(state webrtc.PeerConnectionState) {
 		log.Printf("peer connection state: %s", state)
@@ -75,11 +91,26 @@ func NewSession(api *webrtc.API) (*Session, error) {
 		}
 	})
 	peerConnection.OnDataChannel(func(channel *webrtc.DataChannel) {
+		if channel.Label() != "control" {
+			_ = channel.Close()
+			return
+		}
 		session.controlMu.Lock()
 		session.control = channel
 		session.controlMu.Unlock()
 		log.Printf("data channel: label=%s", channel.Label())
-		channel.OnOpen(func() { log.Printf("data channel open: label=%s", channel.Label()) })
+		channel.OnOpen(func() {
+			log.Printf("data channel open: label=%s", channel.Label())
+			session.asrStarted.Do(func() { go session.runASR() })
+		})
+		channel.OnMessage(func(message webrtc.DataChannelMessage) {
+			var command struct {
+				Event string `json:"event"`
+			}
+			if json.Unmarshal(message.Data, &command) == nil && command.Event == "disconnect" {
+				go session.Close()
+			}
+		})
 		channel.OnClose(func() {
 			log.Printf("data channel closed: label=%s", channel.Label())
 			session.controlMu.Lock()
@@ -87,6 +118,7 @@ func NewSession(api *webrtc.API) (*Session, error) {
 				session.control = nil
 			}
 			session.controlMu.Unlock()
+			session.asrCancel(context.Canceled)
 		})
 	})
 
@@ -95,6 +127,7 @@ func NewSession(api *webrtc.API) (*Session, error) {
 }
 
 func (s *Session) readInbound(track *webrtc.TrackRemote) {
+	defer close(s.asrInput)
 	var packets uint64
 	for {
 		packet, _, err := track.ReadRTP()
@@ -104,7 +137,11 @@ func (s *Session) readInbound(track *webrtc.TrackRemote) {
 		}
 		packets++
 		if track.Codec().MimeType == webrtc.MimeTypePCMU {
-			rms := audio.RMS(audio.DecodePCMU(packet.Payload))
+			samples := audio.DecodePCMU(packet.Payload)
+			rms := audio.RMS(samples)
+			if s.asrConfig.Enabled() && s.asrContext.Err() == nil {
+				s.enqueueASR(audio.PCM16LE(samples))
+			}
 			if event, ok := s.vad.Update(rms); ok {
 				log.Printf("vad event=%s packets=%d pcmu_rms=%.1f", event, packets, rms)
 				s.sendControl(string(event), rms)
@@ -119,20 +156,67 @@ func (s *Session) readInbound(track *webrtc.TrackRemote) {
 }
 
 func (s *Session) sendControl(event string, rms float64) {
-	message, err := json.Marshal(struct {
+	s.sendEvent(struct {
 		Event string  `json:"event"`
 		RMS   float64 `json:"rms"`
 	}{Event: event, RMS: rms})
+}
+
+func (s *Session) sendEvent(event any) {
+	message, err := json.Marshal(event)
 	if err != nil {
 		return
 	}
 	s.controlMu.RLock()
 	channel := s.control
 	s.controlMu.RUnlock()
-	if channel != nil {
+	if channel != nil && channel.ReadyState() == webrtc.DataChannelStateOpen {
 		if err := channel.SendText(string(message)); err != nil {
 			log.Printf("send control event: %v", err)
 		}
+	}
+}
+
+func (s *Session) runASR() {
+	defer close(s.asrDone)
+	if !s.asrConfig.Enabled() {
+		s.sendEvent(asr.Event{Event: "asr_status", Status: "unconfigured"})
+		return
+	}
+	s.sendEvent(asr.Event{Event: "asr_status", Status: "connecting"})
+	err := asr.Run(s.asrContext, s.asrConfig, s.asrInput, func(event asr.Event) {
+		s.sendEvent(event)
+	})
+	if cause := context.Cause(s.asrContext); cause != nil {
+		err = cause
+	}
+	if errors.Is(err, context.Canceled) {
+		return
+	}
+	if err != nil {
+		log.Printf("ASR stopped: %v", err)
+		status := "failed"
+		if errors.Is(err, asr.ErrAudioBacklog) {
+			status = "backlog"
+		}
+		s.sendEvent(asr.Event{Event: "asr_error", Status: status})
+		return
+	}
+	s.sendEvent(asr.Event{Event: "asr_status", Status: "stopped"})
+}
+
+// Cloud writes must never stall microphone RTP consumption or VAD processing.
+func (s *Session) enqueueASR(data []byte) {
+	select {
+	case <-s.asrDone:
+		return
+	default:
+	}
+	select {
+	case s.asrInput <- data:
+	case <-s.asrContext.Done():
+	default:
+		s.asrCancel(asr.ErrAudioBacklog)
 	}
 }
 
@@ -179,6 +263,7 @@ func (s *Session) writeSilence() {
 func (s *Session) Close() {
 	s.closeOnce.Do(func() {
 		close(s.stop)
+		s.asrCancel(context.Canceled)
 		if err := s.PeerConnection.Close(); err != nil {
 			log.Printf("close peer connection: %v", err)
 		}
