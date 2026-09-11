@@ -12,17 +12,23 @@ import (
 	"webrtc-interrupt/internal/interrupt"
 )
 
+const (
+	pcmuFrameSamples = 160
+	pcmuSampleRate   = 8000
+)
+
 // Session owns the peer connection and the long-lived outbound audio track.
 // Later ASR, TTS and turn coordination code will attach to this boundary.
 type Session struct {
 	PeerConnection *webrtc.PeerConnection
 	OutboundTrack  *webrtc.TrackLocalStaticRTP
 
-	closeOnce sync.Once
-	stop      chan struct{}
-	controlMu sync.RWMutex
-	control   *webrtc.DataChannel
-	vad       *interrupt.Detector
+	closeOnce   sync.Once
+	stop        chan struct{}
+	controlMu   sync.RWMutex
+	control     *webrtc.DataChannel
+	vad         *interrupt.Detector
+	fixedFrames [][]byte
 }
 
 func NewSession(api *webrtc.API) (*Session, error) {
@@ -54,6 +60,7 @@ func NewSession(api *webrtc.API) (*Session, error) {
 		OutboundTrack:  outboundTrack,
 		stop:           make(chan struct{}),
 		vad:            interrupt.NewDetector(700, 200*time.Millisecond, 500*time.Millisecond, 20*time.Millisecond),
+		fixedFrames:    audio.GenerateTestToneFrames(pcmuSampleRate, pcmuFrameSamples),
 	}
 
 	peerConnection.OnTrack(func(track *webrtc.TrackRemote, _ *webrtc.RTPReceiver) {
@@ -137,17 +144,25 @@ func (s *Session) writeSilence() {
 	for {
 		select {
 		case <-ticker.C:
+			payload := make([]byte, pcmuFrameSamples)
+			if len(s.fixedFrames) > 0 {
+				copy(payload, s.fixedFrames[0])
+			} else {
+				for i := range payload {
+					payload[i] = 0xff // PCMU silence
+				}
+			}
 			packet := &rtp.Packet{
 				Header:  rtp.Header{Version: 2, PayloadType: 0, SequenceNumber: sequence, Timestamp: timestamp},
-				Payload: make([]byte, 160),
-			}
-			for i := range packet.Payload {
-				packet.Payload[i] = 0xff // PCMU silence
+				Payload: payload,
 			}
 			if err := s.OutboundTrack.WriteRTP(packet); err != nil {
 				// The track is unbound until SDP negotiation finishes. Keep the
 				// clock running so the first bound writer receives fresh packets.
 				continue
+			}
+			if len(s.fixedFrames) > 0 {
+				s.fixedFrames = s.fixedFrames[1:]
 			}
 			sequence++
 			timestamp += 160
