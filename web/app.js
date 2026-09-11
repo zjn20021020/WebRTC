@@ -2,6 +2,47 @@ const connectButton = document.querySelector('#connect');
 const statusElement = document.querySelector('#status');
 const logElement = document.querySelector('#log');
 const remoteAudio = document.querySelector('#remoteAudio');
+const meterElement = document.querySelector('#meter');
+const waveform = document.querySelector('#waveform');
+const waveformContext = waveform.getContext('2d');
+
+function resizeWaveform() {
+  const ratio = window.devicePixelRatio || 1;
+  const width = waveform.clientWidth || 720;
+  const height = waveform.clientHeight || 180;
+  waveform.width = Math.floor(width * ratio);
+  waveform.height = Math.floor(height * ratio);
+  waveformContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+}
+
+function drawWaveform(analyser, data) {
+  analyser.getByteTimeDomainData(data);
+  const width = waveform.clientWidth || 720;
+  const height = waveform.clientHeight || 180;
+  waveformContext.clearRect(0, 0, width, height);
+  waveformContext.fillStyle = '#101820';
+  waveformContext.fillRect(0, 0, width, height);
+  waveformContext.strokeStyle = '#55c2a3';
+  waveformContext.lineWidth = 2;
+  waveformContext.beginPath();
+  const slice = width / data.length;
+  let sum = 0;
+  for (let i = 0; i < data.length; i += 1) {
+    const normalized = data[i] / 128 - 1;
+    sum += normalized * normalized;
+    const x = i * slice;
+    const y = height / 2 + normalized * height * 0.42;
+    if (i === 0) waveformContext.moveTo(x, y);
+    else waveformContext.lineTo(x, y);
+  }
+  waveformContext.stroke();
+  const rms = Math.sqrt(sum / data.length);
+  meterElement.textContent = `麦克风 RMS: ${(rms * 100).toFixed(1)}%`;
+  requestAnimationFrame(() => drawWaveform(analyser, data));
+}
+
+resizeWaveform();
+window.addEventListener('resize', resizeWaveform);
 
 function log(message) {
   const line = `${new Date().toISOString()} ${message}`;
@@ -26,6 +67,12 @@ connectButton.addEventListener('click', async () => {
   connectButton.disabled = true;
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const audioContext = new AudioContext();
+    const analyser = audioContext.createAnalyser();
+    analyser.fftSize = 1024;
+    const source = audioContext.createMediaStreamSource(stream);
+    source.connect(analyser);
+    drawWaveform(analyser, new Uint8Array(analyser.fftSize));
     const peerConnection = new RTCPeerConnection();
     peerConnection.onconnectionstatechange = () => {
       statusElement.textContent = peerConnection.connectionState;
