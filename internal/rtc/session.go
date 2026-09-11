@@ -94,7 +94,7 @@ func (s *Session) writeSilence() {
 		select {
 		case <-ticker.C:
 			packet := &rtp.Packet{
-				Header: rtp.Header{Version: 2, PayloadType: 0, SequenceNumber: sequence, Timestamp: timestamp},
+				Header:  rtp.Header{Version: 2, PayloadType: 0, SequenceNumber: sequence, Timestamp: timestamp},
 				Payload: make([]byte, 160),
 			}
 			for i := range packet.Payload {
