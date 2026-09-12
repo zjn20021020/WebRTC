@@ -16,10 +16,10 @@ import (
 
 // Real provider verification using public scenario text, never microphone data.
 func main() {
-	suite := flag.String("suite", "home", "Verification suite: home, wait, replacement or praise")
+	suite := flag.String("suite", "home", "Verification suite: home, wait, replacement, praise or switch")
 	output := flag.String("output", "", "Optional evidence file path")
 	flag.Parse()
-	if *suite != "home" && *suite != "wait" && *suite != "replacement" && *suite != "praise" {
+	if *suite != "home" && *suite != "wait" && *suite != "replacement" && *suite != "praise" && *suite != "switch" {
 		log.Fatal("unknown suite")
 	}
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
@@ -97,6 +97,16 @@ func main() {
 			}
 		}
 	}
+	if *suite == "switch" {
+		results = []result{
+			{Input: "去种菜", Expected: home.Plant},
+			{Input: "去施肥", Expected: home.Fertilize},
+			{Input: "去浇水", Expected: home.Water},
+			{Input: "去收菜", Expected: home.Harvest},
+			{Input: "一加一等于几", Expected: home.GeneralQA},
+			{Input: "先别种菜了，一加一等于几", Expected: home.GeneralQA},
+		}
+	}
 	passed := true
 	for i := range results {
 		r := &results[i]
@@ -114,12 +124,13 @@ func main() {
 		log.Printf("action expected=%s actual=%s latency_ms=%d error=%q", r.Expected, r.Call.Name, r.LatencyMS, r.Error)
 	}
 	type intentResult struct {
-		Text     string `json:"text"`
-		Tool     string `json:"tool"`
-		Expected bool   `json:"expected"`
-		Actual   bool   `json:"actual"`
-		IsFinal  bool   `json:"is_final"`
-		Error    string `json:"error,omitempty"`
+		Text      string `json:"text"`
+		Tool      string `json:"tool"`
+		Expected  bool   `json:"expected"`
+		Actual    bool   `json:"actual"`
+		IsFinal   bool   `json:"is_final"`
+		LatencyMS int64  `json:"latency_ms"`
+		Error     string `json:"error,omitempty"`
 	}
 	intents := []intentResult{{Text: "别浇水了去施肥", Tool: "water", Expected: true}, {Text: "迪莫你真棒", Tool: "fertilize"}, {Text: "浇完水再去施肥", Tool: "water"}, {Text: "不用停你继续施肥", Tool: "fertilize"}}
 	for i := range intents {
@@ -144,10 +155,40 @@ func main() {
 	if *suite == "praise" {
 		intents = []intentResult{{Text: "干的不错。", Tool: "plant", IsFinal: true}, {Text: "干得不错。", Tool: "plant", IsFinal: true}}
 	}
+	if *suite == "switch" {
+		intents = nil
+		commands := []struct{ tool, text string }{{"water", "去浇水"}, {"plant", "去种菜"}, {"harvest", "去收菜"}, {"fertilize", "去施肥"}}
+		for _, current := range commands {
+			for _, next := range commands {
+				intents = append(intents, intentResult{Text: next.text, Tool: current.tool, IsFinal: true, Expected: current.tool != next.tool})
+			}
+		}
+		intents = append(intents, []intentResult{
+			{Text: "去施肥", Tool: "plant", Expected: true},
+			{Text: "去施", Tool: "plant"},
+			{Text: "去种地", Tool: "plant", IsFinal: true},
+			{Text: "种完菜再去施肥", Tool: "plant", IsFinal: true},
+			{Text: "等一下再去施肥", Tool: "plant", IsFinal: true},
+			{Text: "去施肥，等种完再去", Tool: "plant", IsFinal: true},
+			{Text: "你先继续种菜，等会施肥", Tool: "plant", IsFinal: true},
+			{Text: "怎么施肥", Tool: "plant", IsFinal: true},
+			{Text: "一加一等于几", Tool: "plant", IsFinal: true},
+			{Text: "先别种菜了，一加一等于几", Tool: "plant", IsFinal: true, Expected: true},
+			{Text: "先回答我一加一等于几", Tool: "plant", IsFinal: true, Expected: true},
+			{Text: "你说的去施肥是什么意思", Tool: "plant", IsFinal: true},
+			{Text: "不要去施肥", Tool: "plant", IsFinal: true},
+			{Text: "干得不错", Tool: "plant", IsFinal: true},
+			{Text: "贴贴", Tool: "plant", IsFinal: true},
+			{Text: "去种菜", Tool: "general_qa", IsFinal: true, Expected: true},
+			{Text: "去施肥", Tool: "affection", IsFinal: true, Expected: true},
+		}...)
+	}
 	for i := range intents {
 		r := &intents[i]
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		started := time.Now()
 		r.Actual, err = client.ClassifyInterruption(ctx, llm.InterruptionInput{UserText: r.Text, CurrentTool: r.Tool, IsFinal: r.IsFinal})
+		r.LatencyMS = time.Since(started).Milliseconds()
 		cancel()
 		if err != nil {
 			r.Error = err.Error()
@@ -155,6 +196,7 @@ func main() {
 		if err != nil || r.Actual != r.Expected {
 			passed = false
 		}
+		log.Printf("intent current=%s text=%q final=%t expected=%t actual=%t latency_ms=%d error=%q", r.Tool, r.Text, r.IsFinal, r.Expected, r.Actual, r.LatencyMS, r.Error)
 	}
 	evidence := map[string]any{"recorded_at": time.Now().UTC().Format(time.RFC3339), "model": config.Model, "passed": passed, "actions": results, "interruptions": intents}
 	data, _ := json.MarshalIndent(evidence, "", "  ")
@@ -170,6 +212,9 @@ func main() {
 	}
 	if *suite == "praise" {
 		path = "docs/evidence/home-praise-classifier.json"
+	}
+	if *suite == "switch" {
+		path = "docs/evidence/home-switch-classifier.json"
 	}
 	if *output != "" {
 		path = *output

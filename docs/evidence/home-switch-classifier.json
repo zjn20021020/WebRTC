@@ -1,0 +1,327 @@
+{
+  "actions": [
+    {
+      "input": "去种菜",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_Cpud9jVxc7W8o7JyqPzy0104",
+        "name": "plant"
+      },
+      "latency_ms": 1041
+    },
+    {
+      "input": "去施肥",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_ETxjqhbkPMMYtq7rYyae3286",
+        "name": "fertilize"
+      },
+      "latency_ms": 956
+    },
+    {
+      "input": "去浇水",
+      "expected": "water",
+      "tool_call": {
+        "id": "call_00_v6dq6PA2g9V9oY3UcZmU6927",
+        "name": "water"
+      },
+      "latency_ms": 1006
+    },
+    {
+      "input": "去收菜",
+      "expected": "harvest",
+      "tool_call": {
+        "id": "call_00_qEy2lNuA2OOl1xlIsQhd6105",
+        "name": "harvest"
+      },
+      "latency_ms": 1086
+    },
+    {
+      "input": "一加一等于几",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_CjgAoKo3IpSotDkIkTfW9841",
+        "name": "general_qa"
+      },
+      "latency_ms": 1020
+    },
+    {
+      "input": "先别种菜了，一加一等于几",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_4RmtTWpEy5DwcANVYCSU8897",
+        "name": "general_qa"
+      },
+      "latency_ms": 1149
+    }
+  ],
+  "interruptions": [
+    {
+      "text": "去浇水",
+      "tool": "water",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 630
+    },
+    {
+      "text": "去种菜",
+      "tool": "water",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 506
+    },
+    {
+      "text": "去收菜",
+      "tool": "water",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 811
+    },
+    {
+      "text": "去施肥",
+      "tool": "water",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 640
+    },
+    {
+      "text": "去浇水",
+      "tool": "plant",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 953
+    },
+    {
+      "text": "去种菜",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 614
+    },
+    {
+      "text": "去收菜",
+      "tool": "plant",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 492
+    },
+    {
+      "text": "去施肥",
+      "tool": "plant",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 459
+    },
+    {
+      "text": "去浇水",
+      "tool": "harvest",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 898
+    },
+    {
+      "text": "去种菜",
+      "tool": "harvest",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 877
+    },
+    {
+      "text": "去收菜",
+      "tool": "harvest",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 837
+    },
+    {
+      "text": "去施肥",
+      "tool": "harvest",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 747
+    },
+    {
+      "text": "去浇水",
+      "tool": "fertilize",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 539
+    },
+    {
+      "text": "去种菜",
+      "tool": "fertilize",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 660
+    },
+    {
+      "text": "去收菜",
+      "tool": "fertilize",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 880
+    },
+    {
+      "text": "去施肥",
+      "tool": "fertilize",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 926
+    },
+    {
+      "text": "去施肥",
+      "tool": "plant",
+      "expected": true,
+      "actual": true,
+      "is_final": false,
+      "latency_ms": 475
+    },
+    {
+      "text": "去施",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": false,
+      "latency_ms": 944
+    },
+    {
+      "text": "去种地",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 889
+    },
+    {
+      "text": "种完菜再去施肥",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 845
+    },
+    {
+      "text": "等一下再去施肥",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 907
+    },
+    {
+      "text": "去施肥，等种完再去",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 439
+    },
+    {
+      "text": "你先继续种菜，等会施肥",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 889
+    },
+    {
+      "text": "怎么施肥",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 868
+    },
+    {
+      "text": "一加一等于几",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 843
+    },
+    {
+      "text": "先别种菜了，一加一等于几",
+      "tool": "plant",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 892
+    },
+    {
+      "text": "先回答我一加一等于几",
+      "tool": "plant",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 934
+    },
+    {
+      "text": "你说的去施肥是什么意思",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 646
+    },
+    {
+      "text": "不要去施肥",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 478
+    },
+    {
+      "text": "干得不错",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 882
+    },
+    {
+      "text": "贴贴",
+      "tool": "plant",
+      "expected": false,
+      "actual": false,
+      "is_final": true,
+      "latency_ms": 1093
+    },
+    {
+      "text": "去种菜",
+      "tool": "general_qa",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 443
+    },
+    {
+      "text": "去施肥",
+      "tool": "affection",
+      "expected": true,
+      "actual": true,
+      "is_final": true,
+      "latency_ms": 1172
+    }
+  ],
+  "model": "deepseek-v4-pro",
+  "passed": true,
+  "recorded_at": "2026-09-12T07:56:43Z"
+}

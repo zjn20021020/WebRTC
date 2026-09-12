@@ -31,103 +31,114 @@ func (f executorFunc) Execute(ctx context.Context, r home.Request, speak func(st
 }
 
 func TestHomeToolCancellationThenDeferredAffection(t *testing.T) {
-	var mu sync.Mutex
-	var events []Event
-	waterStarted, waterStopped := make(chan struct{}), make(chan struct{})
-	model := actionModel{intentModel: intentModel{
-		modelFunc: func(context.Context, []llm.Message, func(string) error) error {
-			t.Error("action called general answer LLM")
-			return nil
-		},
-		decide: func(_ context.Context, input llm.InterruptionInput) (bool, error) {
-			if input.CurrentTool == "" {
-				t.Error("active tool missing from interruption context")
+	for _, tc := range []struct {
+		name                         string
+		initial                      home.Action
+		request, speech, replacement string
+	}{
+		{"explicit_stop", home.Water, "迪莫去浇水", "我正在浇水。", "别浇水了去施肥"},
+		{"direct_switch", home.Plant, "去种菜", "我正在种菜。", "去施肥"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var mu sync.Mutex
+			var events []Event
+			waterStarted, waterStopped := make(chan struct{}), make(chan struct{})
+			model := actionModel{intentModel: intentModel{
+				modelFunc: func(context.Context, []llm.Message, func(string) error) error {
+					t.Error("action called general answer LLM")
+					return nil
+				},
+				decide: func(_ context.Context, input llm.InterruptionInput) (bool, error) {
+					if input.UserText == tc.replacement && input.CurrentTool != string(tc.initial) {
+						t.Error("interruption context lost the current action")
+					}
+					return input.UserText == tc.replacement, nil
+				},
+			}, classify: func(_ context.Context, input llm.ActionInput) (home.Call, error) {
+				action := tc.initial
+				if strings.Contains(input.UserText, "施肥") {
+					action = home.Fertilize
+				}
+				if strings.Contains(input.UserText, "真棒") {
+					action = home.Affection
+				}
+				return home.Call{ID: input.UserText, Name: action}, nil
+			}}
+			executor := executorFunc(func(ctx context.Context, r home.Request, speak func(string) error) error {
+				if r.Call.Name != tc.initial {
+					return (home.VoiceExecutor{}).Execute(ctx, r, speak)
+				}
+				if err := speak(tc.speech); err != nil {
+					return err
+				}
+				close(waterStarted)
+				<-ctx.Done()
+				defer close(waterStopped)
+				if err := speak("不应播放。"); !errors.Is(err, context.Canceled) {
+					t.Error("late tool output accepted")
+				}
+				return ctx.Err()
+			})
+			m := NewWithExecutor(model, speechFunc(func(context.Context, string) ([]byte, error) { return bytes.Repeat([]byte{0x33}, 320), nil }), executor, func(e Event) { mu.Lock(); events = append(events, e); mu.Unlock() })
+			defer m.Close()
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "water", Text: tc.request})
+			<-waterStarted
+			waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return len(m.current.frames) > 0 })
+			frameFrom(t, m)
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "fertilize", Text: tc.replacement})
+			waitConfirmed(t, m)
+			time.Sleep(minimumDuck)
+			frameFrom(t, m)
+			select {
+			case <-waterStopped:
+			case <-time.After(time.Second):
+				t.Fatal("tool context not cancelled")
 			}
-			return strings.Contains(input.UserText, "施肥"), nil
-		},
-	}, classify: func(_ context.Context, input llm.ActionInput) (home.Call, error) {
-		action := home.Water
-		if strings.Contains(input.UserText, "施肥") {
-			action = home.Fertilize
-		}
-		if strings.Contains(input.UserText, "真棒") {
-			action = home.Affection
-		}
-		return home.Call{ID: input.UserText, Name: action}, nil
-	}}
-	executor := executorFunc(func(ctx context.Context, r home.Request, speak func(string) error) error {
-		if r.Call.Name != home.Water {
-			return (home.VoiceExecutor{}).Execute(ctx, r, speak)
-		}
-		if err := speak("我正在浇水。"); err != nil {
-			return err
-		}
-		close(waterStarted)
-		<-ctx.Done()
-		defer close(waterStopped)
-		if err := speak("不应播放。"); !errors.Is(err, context.Canceled) {
-			t.Error("late tool output accepted")
-		}
-		return ctx.Err()
-	})
-	m := NewWithExecutor(model, speechFunc(func(context.Context, string) ([]byte, error) { return bytes.Repeat([]byte{0x33}, 320), nil }), executor, func(e Event) { mu.Lock(); events = append(events, e); mu.Unlock() })
-	defer m.Close()
-	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "water", Text: "迪莫去浇水"})
-	<-waterStarted
-	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return len(m.current.frames) > 0 })
-	frameFrom(t, m)
-	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "fertilize", Text: "别浇水了去施肥"})
-	waitConfirmed(t, m)
-	time.Sleep(minimumDuck)
-	frameFrom(t, m)
-	select {
-	case <-waterStopped:
-	case <-time.After(time.Second):
-		t.Fatal("tool context not cancelled")
-	}
-	waitFor(t, func() bool {
-		m.mu.Lock()
-		defer m.mu.Unlock()
-		return m.current != nil && m.current.epoch == 2 && m.current.generated
-	})
-	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "praise", Text: "迪莫你真棒"})
-	waitFor(t, func() bool { return bufferedCount(m) == 1 })
-	m.mu.Lock()
-	if m.current.epoch != 2 || strings.Count(m.current.text, "我正在施肥。") != 10 {
-		t.Error("fertilizing was not preserved for ten repetitions")
-	}
-	m.mu.Unlock()
-	finishEpoch(t, m, 2)
-	waitFor(t, func() bool {
-		m.mu.Lock()
-		defer m.mu.Unlock()
-		return m.current != nil && m.current.epoch == 3 && m.current.generated
-	})
-	m.mu.Lock()
-	if strings.Count(m.current.text, "贴贴。") != 10 {
-		t.Error("affection must repeat ten times")
-	}
-	m.mu.Unlock()
-	finishEpoch(t, m, 3)
-	mu.Lock()
-	defer mu.Unlock()
-	completed, affection := -1, -1
-	for i, e := range events {
-		if e.Event != "tool_status" {
-			continue
-		}
-		if e.Epoch == 1 && e.Status == "completed" {
-			t.Error("cancelled watering completed")
-		}
-		if e.Epoch == 2 && e.Status == "completed" {
-			completed = i
-		}
-		if e.Epoch == 3 && e.Status == "running" {
-			affection = i
-		}
-	}
-	if completed < 0 || affection <= completed {
-		t.Fatal("affection started before fertilizing playback completed")
+			waitFor(t, func() bool {
+				m.mu.Lock()
+				defer m.mu.Unlock()
+				return m.current != nil && m.current.epoch == 2 && m.current.generated
+			})
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "praise", Text: "迪莫你真棒"})
+			waitFor(t, func() bool { return bufferedCount(m) == 1 })
+			m.mu.Lock()
+			if m.current.epoch != 2 || strings.Count(m.current.text, "我正在施肥。") != 10 {
+				t.Error("fertilizing was not preserved for ten repetitions")
+			}
+			m.mu.Unlock()
+			finishEpoch(t, m, 2)
+			waitFor(t, func() bool {
+				m.mu.Lock()
+				defer m.mu.Unlock()
+				return m.current != nil && m.current.epoch == 3 && m.current.generated
+			})
+			m.mu.Lock()
+			if strings.Count(m.current.text, "贴贴。") != 10 {
+				t.Error("affection must repeat ten times")
+			}
+			m.mu.Unlock()
+			finishEpoch(t, m, 3)
+			mu.Lock()
+			defer mu.Unlock()
+			completed, affection := -1, -1
+			for i, e := range events {
+				if e.Event != "tool_status" {
+					continue
+				}
+				if e.Epoch == 1 && e.Status == "completed" {
+					t.Error("cancelled watering completed")
+				}
+				if e.Epoch == 2 && e.Status == "completed" {
+					completed = i
+				}
+				if e.Epoch == 3 && e.Status == "running" {
+					affection = i
+				}
+			}
+			if completed < 0 || affection <= completed {
+				t.Fatal("affection started before fertilizing playback completed")
+			}
+		})
 	}
 }
 

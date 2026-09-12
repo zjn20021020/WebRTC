@@ -4,7 +4,7 @@
 
 当前场景固定为《洛克王国：世界》的家园精灵迪莫，默认已经唤起。支持六类原生 function calling：浇水、种菜、收菜、施肥、亲密动作、通用问答。五类动作均以固定台词重复十次模拟，通用问答带迪莫角色回复；尚未连接真实游戏。
 
-可直接说“迪莫你去浇下水”，播报时说“别浇水了去施肥”，施肥时说“迪莫你真棒”。先降音至 50%，合法打断判断 true 才取消旧任务；false 的夸赞在施肥音频发送完成后才执行十次“贴贴”。
+可直接说“去种菜”，播报时说“去施肥”即可切换农务，不需要先说“别种菜了”。先降音至 50%，合法打断判断 true 才取消旧任务；“等种完再施肥”、普通问题和夸赞判 false，在当前任务音频发送完成后处理。要立即转入问答，可以说“先别种菜了，回答我一加一等于几”。
 
 角色规则见 [迪莫 SKILL.md](internal/home/skills/dimo/SKILL.md)，游戏资料、分类协议及未来工具接口见 [场景调研与设计](docs/场景调研与设计.md)。角色 skill 内嵌进程序，修改后需重新编译并重启。
 
@@ -125,7 +125,9 @@ node scripts/verify_home.cjs
 
 ### 意图 Prompt 与缓存
 
-[interruption.md](internal/llm/prompts/interruption.md) 随 Go 二进制嵌入，由现有 DeepSeek V4 Pro 独立调用，修改 prompt 后需重新构建或重启 `go run`。输入是结构化的上一问题、当前生成的回答、最新 ASR 文本及 final 标志。明确要求立刻停止、纠正或换题倾向 true；继续播报、可等待的后续问题、附和、普通评论、引用停止词等倾向 false。它是文本语义分类，不含声纹和声学回声判断，仍可能误判。
+[interruption.md](internal/llm/prompts/interruption.md) 随 Go 二进制嵌入，由现有 DeepSeek V4 Pro 独立调用，修改 prompt 后需重新构建或重启 `go run`。输入是结构化的上一问题、当前生成的回答、`current_tool`、最新 ASR 文本及 final 标志。直接要求与当前不同的农务动作默认 true，无需停止措辞；从问答或贴贴转向农务也适用。明确说稍后或做完再做则 false；同一动作及其同义表达、普通问题、夸赞和引用指令也 false。转入通用问答必须明确要求停止、暂停或优先回答，例如“先别种菜了，回答我...”或“先回答我的问题”，不要求固定口令。它是文本语义分类，不含声纹和声学回声判断，仍可能误判。
+
+“立即切换”指确认后不等旧动作结束：稳定且完整的 partial 可以提前判定，final 负责补齐新任务，仍经过模型校验和最小 duck 窗口。专项回归命令为 `go run ./cmd/verify-home -suite switch`、`go run ./cmd/demo-fixtures -scene home-switch`、`node scripts/verify_home.cjs --switch`。
 
 判定采用非思考模式、`temperature=0`、最多 32 个输出 token 和 JSON mode。服务端只接受唯一 `interrupt` 字段且值为 JSON 布尔量：`{"interrupt":true}` 或 `{"interrupt":false}`；大写 `True`、字符串、null、额外字段、重复键、解释文字、截断输出全部拒绝。判断输出不会送入 TTS。
 
