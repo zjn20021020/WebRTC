@@ -19,6 +19,10 @@ func (f modelFunc) Stream(ctx context.Context, m []llm.Message, e func(string) e
 	return f(ctx, m, e)
 }
 
+func (f modelFunc) ClassifyInterruption(context.Context, llm.InterruptionInput) (bool, error) {
+	return true, nil
+}
+
 type speechFunc func(context.Context, string) ([]byte, error)
 
 type streamSpeechFunc func(context.Context, string, func([]byte) error) error
@@ -86,6 +90,7 @@ func TestInterruptDropsQueuedAndLateAudio(t *testing.T) {
 	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "first"})
 	<-started
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "b", Text: "\u505c\u4e00\u4e0b"})
+	waitEpoch(t, m, 2)
 	close(release)
 	<-finished
 	for i := 0; i < 3; i++ {
@@ -199,6 +204,7 @@ func TestQueuedAudioDiscardedOnNewFinal(t *testing.T) {
 	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "first"})
 	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current.generated })
 	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "b", Text: "second"})
+	waitEpoch(t, m, 2)
 	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current.generated })
 	for i := 0; i < 2; i++ {
 		_ = m.WriteFrame(func(b []byte) error {
@@ -262,6 +268,7 @@ func TestConfirmedInterruptionCancelsActiveLLMAndStreamingTTS(t *testing.T) {
 	})
 	frameFrom(t, m)
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "b", Text: "\u505c\u4e00\u4e0b"})
+	waitConfirmed(t, m)
 	frameFrom(t, m)
 	clock.advance(minimumDuck)
 	frameFrom(t, m)

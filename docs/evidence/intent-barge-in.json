@@ -1,0 +1,1914 @@
+{
+  "recordedAt": "2026-09-12T06:15:28.001Z",
+  "providers": [
+    "Tencent ASR 8k_zh",
+    "deepseek-v4-pro",
+    "Tencent TextToStreamAudioWS"
+  ],
+  "input": "Pre-generated Tencent speech through a WebAudio virtual microphone; physical output muted",
+  "duckGain": 0.5,
+  "scenarios": [
+    {
+      "mode": "deferred",
+      "events": [
+        {
+          "at": "2026-09-12T06:14:37.064Z",
+          "event": "response_status",
+          "response_epoch": 0,
+          "status": "ready"
+        },
+        {
+          "at": "2026-09-12T06:14:37.065Z",
+          "event": "asr_status",
+          "status": "connecting"
+        },
+        {
+          "at": "2026-09-12T06:14:37.304Z",
+          "event": "asr_status",
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:14:38.013Z",
+          "event": "speech_started",
+          "rms": 2753.087267051301
+        },
+        {
+          "at": "2026-09-12T06:14:38.184Z",
+          "event": "asr_partial",
+          "text": "请给我",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:0",
+          "begin_time": 380,
+          "end_time": 980
+        },
+        {
+          "at": "2026-09-12T06:14:38.368Z",
+          "event": "asr_partial",
+          "text": "请给我",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:0",
+          "begin_time": 380,
+          "end_time": 1180
+        },
+        {
+          "at": "2026-09-12T06:14:38.593Z",
+          "event": "asr_partial",
+          "text": "请给我讲一",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:0",
+          "begin_time": 380,
+          "end_time": 1380
+        },
+        {
+          "at": "2026-09-12T06:14:39.379Z",
+          "event": "asr_partial",
+          "text": "请给我讲一个小故",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:0",
+          "begin_time": 380,
+          "end_time": 2180
+        },
+        {
+          "at": "2026-09-12T06:14:39.733Z",
+          "event": "speech_ended",
+          "rms": 0
+        },
+        {
+          "at": "2026-09-12T06:14:39.786Z",
+          "event": "asr_final",
+          "text": "请给我讲一个小故事。",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:0",
+          "begin_time": 380,
+          "end_time": 2560
+        },
+        {
+          "at": "2026-09-12T06:14:39.787Z",
+          "event": "input_queue",
+          "response_epoch": 0,
+          "queue_size": 0
+        },
+        {
+          "at": "2026-09-12T06:14:39.787Z",
+          "event": "input_dispatched",
+          "response_epoch": 0,
+          "text": "请给我讲一个小故事。",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:0"
+        },
+        {
+          "at": "2026-09-12T06:14:39.787Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:14:39.787Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "thinking"
+        },
+        {
+          "at": "2026-09-12T06:14:40.094Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 479,
+            "asr_final_to_first_text_ms": 307
+          }
+        },
+        {
+          "at": "2026-09-12T06:14:40.094Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只"
+        },
+        {
+          "at": "2026-09-12T06:14:40.187Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小"
+        },
+        {
+          "at": "2026-09-12T06:14:40.236Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸"
+        },
+        {
+          "at": "2026-09-12T06:14:40.274Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总"
+        },
+        {
+          "at": "2026-09-12T06:14:40.348Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己"
+        },
+        {
+          "at": "2026-09-12T06:14:40.349Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴"
+        },
+        {
+          "at": "2026-09-12T06:14:40.387Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好"
+        },
+        {
+          "at": "2026-09-12T06:14:40.432Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看"
+        },
+        {
+          "at": "2026-09-12T06:14:40.432Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。"
+        },
+        {
+          "at": "2026-09-12T06:14:40.432Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它"
+        },
+        {
+          "at": "2026-09-12T06:14:40.432Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "synthesizing"
+        },
+        {
+          "at": "2026-09-12T06:14:40.470Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去"
+        },
+        {
+          "at": "2026-09-12T06:14:40.510Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问"
+        },
+        {
+          "at": "2026-09-12T06:14:40.565Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠"
+        },
+        {
+          "at": "2026-09-12T06:14:40.594Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，"
+        },
+        {
+          "at": "2026-09-12T06:14:40.594Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠"
+        },
+        {
+          "at": "2026-09-12T06:14:40.637Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说"
+        },
+        {
+          "at": "2026-09-12T06:14:40.637Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“"
+        },
+        {
+          "at": "2026-09-12T06:14:40.676Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的"
+        },
+        {
+          "at": "2026-09-12T06:14:40.676Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴"
+        },
+        {
+          "at": "2026-09-12T06:14:40.717Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能"
+        },
+        {
+          "at": "2026-09-12T06:14:40.761Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当"
+        },
+        {
+          "at": "2026-09-12T06:14:40.761Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子"
+        },
+        {
+          "at": "2026-09-12T06:14:40.804Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀"
+        },
+        {
+          "at": "2026-09-12T06:14:40.826Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "speaking"
+        },
+        {
+          "at": "2026-09-12T06:14:40.845Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”"
+        },
+        {
+          "at": "2026-09-12T06:14:40.884Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天"
+        },
+        {
+          "at": "2026-09-12T06:14:40.885Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了"
+        },
+        {
+          "at": "2026-09-12T06:14:40.927Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，"
+        },
+        {
+          "at": "2026-09-12T06:14:40.927Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小"
+        },
+        {
+          "at": "2026-09-12T06:14:40.983Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸"
+        },
+        {
+          "at": "2026-09-12T06:14:40.983Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷"
+        },
+        {
+          "at": "2026-09-12T06:14:41.022Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起"
+        },
+        {
+          "at": "2026-09-12T06:14:41.022Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大"
+        },
+        {
+          "at": "2026-09-12T06:14:41.068Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 479,
+            "speech_end_to_first_audio_ms": 1452,
+            "asr_final_to_first_text_ms": 307,
+            "asr_final_to_first_audio_ms": 1280
+          }
+        },
+        {
+          "at": "2026-09-12T06:14:41.068Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴"
+        },
+        {
+          "at": "2026-09-12T06:14:41.068Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉"
+        },
+        {
+          "at": "2026-09-12T06:14:41.095Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，"
+        },
+        {
+          "at": "2026-09-12T06:14:41.095Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又"
+        },
+        {
+          "at": "2026-09-12T06:14:41.129Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和"
+        },
+        {
+          "at": "2026-09-12T06:14:41.129Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又"
+        },
+        {
+          "at": "2026-09-12T06:14:41.129Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服"
+        },
+        {
+          "at": "2026-09-12T06:14:41.173Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。"
+        },
+        {
+          "at": "2026-09-12T06:14:41.212Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它"
+        },
+        {
+          "at": "2026-09-12T06:14:41.212Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于"
+        },
+        {
+          "at": "2026-09-12T06:14:41.254Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白"
+        },
+        {
+          "at": "2026-09-12T06:14:41.254Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白，"
+        },
+        {
+          "at": "2026-09-12T06:14:41.297Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白，原来"
+        },
+        {
+          "at": "2026-09-12T06:14:41.297Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白，原来自己的"
+        },
+        {
+          "at": "2026-09-12T06:14:41.348Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白，原来自己的尾巴"
+        },
+        {
+          "at": "2026-09-12T06:14:41.348Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白，原来自己的尾巴最"
+        },
+        {
+          "at": "2026-09-12T06:14:41.386Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白，原来自己的尾巴最特别"
+        },
+        {
+          "at": "2026-09-12T06:14:41.484Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "有一只小狐狸总觉得自己尾巴不好看。它跑去问松鼠，松鼠说：“你的尾巴能当被子呀。”冬天到了，小狐狸卷起大尾巴睡觉，又暖和又舒服。它终于明白，原来自己的尾巴最特别。"
+        },
+        {
+          "at": "2026-09-12T06:14:41.984Z",
+          "event": "asr_partial",
+          "text": "你先",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1",
+          "begin_time": 4100,
+          "end_time": 4780
+        },
+        {
+          "at": "2026-09-12T06:14:41.986Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "ducking"
+        },
+        {
+          "at": "2026-09-12T06:14:41.988Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 479,
+            "speech_end_to_first_audio_ms": 1452,
+            "asr_final_to_first_text_ms": 307,
+            "asr_final_to_first_audio_ms": 1280,
+            "speech_to_duck_ms": 2
+          }
+        },
+        {
+          "at": "2026-09-12T06:14:42.168Z",
+          "event": "asr_partial",
+          "text": "你先",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1",
+          "begin_time": 4100,
+          "end_time": 4980
+        },
+        {
+          "at": "2026-09-12T06:14:42.413Z",
+          "event": "asr_partial",
+          "text": "你先继续加",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1",
+          "begin_time": 4100,
+          "end_time": 5180
+        },
+        {
+          "at": "2026-09-12T06:14:42.413Z",
+          "event": "intent_status",
+          "response_epoch": 1,
+          "status": "checking",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1"
+        },
+        {
+          "at": "2026-09-12T06:14:42.788Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "speaking",
+          "reason": "unconfirmed"
+        },
+        {
+          "at": "2026-09-12T06:14:42.814Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "ducking"
+        },
+        {
+          "at": "2026-09-12T06:14:42.814Z",
+          "event": "speech_started",
+          "rms": 1612.7269142666405
+        },
+        {
+          "at": "2026-09-12T06:14:42.834Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 479,
+            "speech_end_to_first_audio_ms": 1452,
+            "asr_final_to_first_text_ms": 307,
+            "asr_final_to_first_audio_ms": 1280,
+            "speech_to_duck_ms": 211
+          }
+        },
+        {
+          "at": "2026-09-12T06:14:42.995Z",
+          "event": "asr_final",
+          "text": "你先继续讲讲。",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1",
+          "begin_time": 4100,
+          "end_time": 5600
+        },
+        {
+          "at": "2026-09-12T06:14:42.995Z",
+          "event": "intent_status",
+          "response_epoch": 1,
+          "status": "checking",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1"
+        },
+        {
+          "at": "2026-09-12T06:14:43.382Z",
+          "event": "asr_partial",
+          "text": "审完再扣",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2",
+          "begin_time": 5600,
+          "end_time": 6180
+        },
+        {
+          "at": "2026-09-12T06:14:43.442Z",
+          "event": "intent_result",
+          "response_epoch": 1,
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1",
+          "interrupt": false,
+          "latency_ms": 446
+        },
+        {
+          "at": "2026-09-12T06:14:43.442Z",
+          "event": "input_buffered",
+          "response_epoch": 1,
+          "text": "你先继续讲讲。",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1"
+        },
+        {
+          "at": "2026-09-12T06:14:43.442Z",
+          "event": "input_queue",
+          "response_epoch": 1,
+          "queue_size": 1
+        },
+        {
+          "at": "2026-09-12T06:14:43.442Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "speaking",
+          "reason": "intent_deferred"
+        },
+        {
+          "at": "2026-09-12T06:14:43.568Z",
+          "event": "asr_partial",
+          "text": "审完再扣",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2",
+          "begin_time": 5600,
+          "end_time": 6380
+        },
+        {
+          "at": "2026-09-12T06:14:43.993Z",
+          "event": "asr_partial",
+          "text": "讲完再告诉我一",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2",
+          "begin_time": 5600,
+          "end_time": 6780
+        },
+        {
+          "at": "2026-09-12T06:14:44.580Z",
+          "event": "asr_partial",
+          "text": "想完再告诉我。一加一等于",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2",
+          "begin_time": 5600,
+          "end_time": 7380
+        },
+        {
+          "at": "2026-09-12T06:14:44.984Z",
+          "event": "asr_final",
+          "text": "想完再告诉我1+1等于几？",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2",
+          "begin_time": 5600,
+          "end_time": 7780
+        },
+        {
+          "at": "2026-09-12T06:14:44.986Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "ducking"
+        },
+        {
+          "at": "2026-09-12T06:14:44.986Z",
+          "event": "intent_status",
+          "response_epoch": 1,
+          "status": "checking",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2"
+        },
+        {
+          "at": "2026-09-12T06:14:44.987Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 479,
+            "speech_end_to_first_audio_ms": 1452,
+            "asr_final_to_first_text_ms": 307,
+            "asr_final_to_first_audio_ms": 1280,
+            "speech_to_duck_ms": 1
+          }
+        },
+        {
+          "at": "2026-09-12T06:14:45.001Z",
+          "event": "speech_ended",
+          "rms": 0
+        },
+        {
+          "at": "2026-09-12T06:14:45.808Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "speaking",
+          "reason": "unconfirmed"
+        },
+        {
+          "at": "2026-09-12T06:14:45.841Z",
+          "event": "intent_result",
+          "response_epoch": 1,
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2",
+          "interrupt": false,
+          "latency_ms": 854
+        },
+        {
+          "at": "2026-09-12T06:14:45.842Z",
+          "event": "input_buffered",
+          "response_epoch": 1,
+          "text": "想完再告诉我1+1等于几？",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2"
+        },
+        {
+          "at": "2026-09-12T06:14:45.842Z",
+          "event": "input_queue",
+          "response_epoch": 1,
+          "queue_size": 2
+        },
+        {
+          "at": "2026-09-12T06:14:56.308Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "completed"
+        },
+        {
+          "at": "2026-09-12T06:14:56.308Z",
+          "event": "input_queue",
+          "response_epoch": 1,
+          "queue_size": 1
+        },
+        {
+          "at": "2026-09-12T06:14:56.309Z",
+          "event": "input_dispatched",
+          "response_epoch": 1,
+          "text": "你先继续讲讲。",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:1"
+        },
+        {
+          "at": "2026-09-12T06:14:56.309Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:14:56.309Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "thinking"
+        },
+        {
+          "at": "2026-09-12T06:14:56.836Z",
+          "event": "response_metrics",
+          "response_epoch": 2,
+          "metrics": {
+            "speech_end_to_first_text_ms": 14180,
+            "asr_final_to_first_text_ms": 13841
+          }
+        },
+        {
+          "at": "2026-09-12T06:14:56.836Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来"
+        },
+        {
+          "at": "2026-09-12T06:14:56.958Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀"
+        },
+        {
+          "at": "2026-09-12T06:14:57.006Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，"
+        },
+        {
+          "at": "2026-09-12T06:14:57.007Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小"
+        },
+        {
+          "at": "2026-09-12T06:14:57.007Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸"
+        },
+        {
+          "at": "2026-09-12T06:14:57.007Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再"
+        },
+        {
+          "at": "2026-09-12T06:14:57.019Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕"
+        },
+        {
+          "at": "2026-09-12T06:14:57.054Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人"
+        },
+        {
+          "at": "2026-09-12T06:14:57.088Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了"
+        },
+        {
+          "at": "2026-09-12T06:14:57.091Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。"
+        },
+        {
+          "at": "2026-09-12T06:14:57.091Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它"
+        },
+        {
+          "at": "2026-09-12T06:14:57.091Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始"
+        },
+        {
+          "at": "2026-09-12T06:14:57.092Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "synthesizing"
+        },
+        {
+          "at": "2026-09-12T06:14:57.129Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮"
+        },
+        {
+          "at": "2026-09-12T06:14:57.176Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友"
+        },
+        {
+          "at": "2026-09-12T06:14:57.209Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用"
+        },
+        {
+          "at": "2026-09-12T06:14:57.251Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大"
+        },
+        {
+          "at": "2026-09-12T06:14:57.297Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴"
+        },
+        {
+          "at": "2026-09-12T06:14:57.297Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫"
+        },
+        {
+          "at": "2026-09-12T06:14:57.330Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪"
+        },
+        {
+          "at": "2026-09-12T06:14:57.376Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，"
+        },
+        {
+          "at": "2026-09-12T06:14:57.377Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还"
+        },
+        {
+          "at": "2026-09-12T06:14:57.412Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当"
+        },
+        {
+          "at": "2026-09-12T06:14:57.463Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小"
+        },
+        {
+          "at": "2026-09-12T06:14:57.487Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "speaking"
+        },
+        {
+          "at": "2026-09-12T06:14:57.491Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔"
+        },
+        {
+          "at": "2026-09-12T06:14:57.526Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的"
+        },
+        {
+          "at": "2026-09-12T06:14:57.526Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软"
+        },
+        {
+          "at": "2026-09-12T06:14:57.560Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头"
+        },
+        {
+          "at": "2026-09-12T06:14:57.602Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。"
+        },
+        {
+          "at": "2026-09-12T06:14:57.602Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都"
+        },
+        {
+          "at": "2026-09-12T06:14:57.644Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说"
+        },
+        {
+          "at": "2026-09-12T06:14:57.686Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，"
+        },
+        {
+          "at": "2026-09-12T06:14:57.686Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的"
+        },
+        {
+          "at": "2026-09-12T06:14:57.725Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴"
+        },
+        {
+          "at": "2026-09-12T06:14:57.726Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴像"
+        },
+        {
+          "at": "2026-09-12T06:14:57.748Z",
+          "event": "response_metrics",
+          "response_epoch": 2,
+          "metrics": {
+            "speech_end_to_first_text_ms": 14180,
+            "speech_end_to_first_audio_ms": 15091,
+            "asr_final_to_first_text_ms": 13841,
+            "asr_final_to_first_audio_ms": 14752
+          }
+        },
+        {
+          "at": "2026-09-12T06:14:57.860Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴像一条"
+        },
+        {
+          "at": "2026-09-12T06:14:57.860Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴像一条会"
+        },
+        {
+          "at": "2026-09-12T06:14:57.860Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴像一条会拥抱"
+        },
+        {
+          "at": "2026-09-12T06:14:57.860Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴像一条会拥抱的"
+        },
+        {
+          "at": "2026-09-12T06:14:57.861Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴像一条会拥抱的云"
+        },
+        {
+          "at": "2026-09-12T06:14:57.892Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "后来呀，小狐狸不再羡慕别人了。它开始帮朋友用大尾巴扫雪，还当小兔子的软枕头。大家都说，它的尾巴像一条会拥抱的云。"
+        },
+        {
+          "at": "2026-09-12T06:15:08.906Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "completed"
+        },
+        {
+          "at": "2026-09-12T06:15:08.906Z",
+          "event": "input_queue",
+          "response_epoch": 2,
+          "queue_size": 0
+        },
+        {
+          "at": "2026-09-12T06:15:08.906Z",
+          "event": "input_dispatched",
+          "response_epoch": 2,
+          "text": "想完再告诉我1+1等于几？",
+          "utterance_id": "a0578aef-7b11-41ea-a126-20d1f4209c8b:2"
+        },
+        {
+          "at": "2026-09-12T06:15:08.906Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:15:08.906Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "thinking"
+        },
+        {
+          "at": "2026-09-12T06:15:09.806Z",
+          "event": "response_metrics",
+          "response_epoch": 3,
+          "metrics": {
+            "speech_end_to_first_text_ms": 24970,
+            "asr_final_to_first_text_ms": 24820
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:09.806Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1"
+        },
+        {
+          "at": "2026-09-12T06:15:09.915Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+"
+        },
+        {
+          "at": "2026-09-12T06:15:09.959Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1"
+        },
+        {
+          "at": "2026-09-12T06:15:09.959Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于"
+        },
+        {
+          "at": "2026-09-12T06:15:09.959Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2"
+        },
+        {
+          "at": "2026-09-12T06:15:09.959Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2呀"
+        },
+        {
+          "at": "2026-09-12T06:15:09.997Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2呀。"
+        },
+        {
+          "at": "2026-09-12T06:15:09.997Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "synthesizing"
+        },
+        {
+          "at": "2026-09-12T06:15:10.446Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "speaking"
+        },
+        {
+          "at": "2026-09-12T06:15:10.706Z",
+          "event": "response_metrics",
+          "response_epoch": 3,
+          "metrics": {
+            "speech_end_to_first_text_ms": 24970,
+            "speech_end_to_first_audio_ms": 25871,
+            "asr_final_to_first_text_ms": 24820,
+            "asr_final_to_first_audio_ms": 25721
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:12.307Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "completed"
+        }
+      ],
+      "reply": "1+1等于2呀。"
+    },
+    {
+      "mode": "interrupt",
+      "events": [
+        {
+          "at": "2026-09-12T06:15:13.037Z",
+          "event": "response_status",
+          "response_epoch": 0,
+          "status": "ready"
+        },
+        {
+          "at": "2026-09-12T06:15:13.038Z",
+          "event": "asr_status",
+          "status": "connecting"
+        },
+        {
+          "at": "2026-09-12T06:15:13.221Z",
+          "event": "asr_status",
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:15:13.924Z",
+          "event": "speech_started",
+          "rms": 2484.4567011723107
+        },
+        {
+          "at": "2026-09-12T06:15:14.316Z",
+          "event": "asr_partial",
+          "text": "您。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:0",
+          "begin_time": 320,
+          "end_time": 971
+        },
+        {
+          "at": "2026-09-12T06:15:14.488Z",
+          "event": "asr_partial",
+          "text": "您。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:0",
+          "begin_time": 320,
+          "end_time": 1131
+        },
+        {
+          "at": "2026-09-12T06:15:14.738Z",
+          "event": "asr_partial",
+          "text": "请您或。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:0",
+          "begin_time": 320,
+          "end_time": 1371
+        },
+        {
+          "at": "2026-09-12T06:15:15.131Z",
+          "event": "asr_partial",
+          "text": "请您或讲1。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:0",
+          "begin_time": 320,
+          "end_time": 1771
+        },
+        {
+          "at": "2026-09-12T06:15:15.527Z",
+          "event": "asr_partial",
+          "text": "请您或讲一个小。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:0",
+          "begin_time": 320,
+          "end_time": 2171
+        },
+        {
+          "at": "2026-09-12T06:15:15.666Z",
+          "event": "speech_ended",
+          "rms": 0
+        },
+        {
+          "at": "2026-09-12T06:15:15.711Z",
+          "event": "asr_final",
+          "text": "请给我讲一个小故事。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:0",
+          "begin_time": 320,
+          "end_time": 2271
+        },
+        {
+          "at": "2026-09-12T06:15:15.715Z",
+          "event": "input_queue",
+          "response_epoch": 0,
+          "queue_size": 0
+        },
+        {
+          "at": "2026-09-12T06:15:15.715Z",
+          "event": "input_dispatched",
+          "response_epoch": 0,
+          "text": "请给我讲一个小故事。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:0"
+        },
+        {
+          "at": "2026-09-12T06:15:15.715Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:15:15.715Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "thinking"
+        },
+        {
+          "at": "2026-09-12T06:15:16.290Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 993,
+            "asr_final_to_first_text_ms": 577
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:16.290Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前"
+        },
+        {
+          "at": "2026-09-12T06:15:16.407Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有"
+        },
+        {
+          "at": "2026-09-12T06:15:16.444Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只"
+        },
+        {
+          "at": "2026-09-12T06:15:16.444Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小"
+        },
+        {
+          "at": "2026-09-12T06:15:16.444Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸"
+        },
+        {
+          "at": "2026-09-12T06:15:16.489Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，"
+        },
+        {
+          "at": "2026-09-12T06:15:16.490Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总"
+        },
+        {
+          "at": "2026-09-12T06:15:16.530Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想"
+        },
+        {
+          "at": "2026-09-12T06:15:16.530Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到"
+        },
+        {
+          "at": "2026-09-12T06:15:16.569Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最"
+        },
+        {
+          "at": "2026-09-12T06:15:16.614Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的"
+        },
+        {
+          "at": "2026-09-12T06:15:16.614Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄"
+        },
+        {
+          "at": "2026-09-12T06:15:16.659Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。"
+        },
+        {
+          "at": "2026-09-12T06:15:16.659Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它"
+        },
+        {
+          "at": "2026-09-12T06:15:16.660Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑"
+        },
+        {
+          "at": "2026-09-12T06:15:16.661Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "synthesizing"
+        },
+        {
+          "at": "2026-09-12T06:15:16.707Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍"
+        },
+        {
+          "at": "2026-09-12T06:15:16.707Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整"
+        },
+        {
+          "at": "2026-09-12T06:15:16.780Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片"
+        },
+        {
+          "at": "2026-09-12T06:15:16.780Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林"
+        },
+        {
+          "at": "2026-09-12T06:15:16.780Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，"
+        },
+        {
+          "at": "2026-09-12T06:15:16.780Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后"
+        },
+        {
+          "at": "2026-09-12T06:15:16.780Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现"
+        },
+        {
+          "at": "2026-09-12T06:15:16.816Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最"
+        },
+        {
+          "at": "2026-09-12T06:15:16.863Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的"
+        },
+        {
+          "at": "2026-09-12T06:15:16.901Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实"
+        },
+        {
+          "at": "2026-09-12T06:15:16.901Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在"
+        },
+        {
+          "at": "2026-09-12T06:15:16.945Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家"
+        },
+        {
+          "at": "2026-09-12T06:15:16.945Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口"
+        },
+        {
+          "at": "2026-09-12T06:15:16.986Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。"
+        },
+        {
+          "at": "2026-09-12T06:15:16.986Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来"
+        },
+        {
+          "at": "2026-09-12T06:15:17.094Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "speaking"
+        },
+        {
+          "at": "2026-09-12T06:15:17.332Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 993,
+            "speech_end_to_first_audio_ms": 2037,
+            "asr_final_to_first_text_ms": 577,
+            "asr_final_to_first_audio_ms": 1621
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:17.389Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来珍惜"
+        },
+        {
+          "at": "2026-09-12T06:15:17.391Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来珍惜眼前"
+        },
+        {
+          "at": "2026-09-12T06:15:17.398Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来珍惜眼前，"
+        },
+        {
+          "at": "2026-09-12T06:15:17.398Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来珍惜眼前，才是"
+        },
+        {
+          "at": "2026-09-12T06:15:17.399Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来珍惜眼前，才是最大的"
+        },
+        {
+          "at": "2026-09-12T06:15:17.400Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来珍惜眼前，才是最大的幸福"
+        },
+        {
+          "at": "2026-09-12T06:15:17.400Z",
+          "event": "response_text",
+          "response_epoch": 1,
+          "text": "从前有只小狐狸，总想找到最甜的葡萄。它跑遍整片森林，最后发现最甜的其实在自家门口。原来珍惜眼前，才是最大的幸福。"
+        },
+        {
+          "at": "2026-09-12T06:15:17.828Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "ducking"
+        },
+        {
+          "at": "2026-09-12T06:15:17.828Z",
+          "event": "speech_started",
+          "rms": 791.5384387381323
+        },
+        {
+          "at": "2026-09-12T06:15:17.832Z",
+          "event": "response_metrics",
+          "response_epoch": 1,
+          "metrics": {
+            "speech_end_to_first_text_ms": 993,
+            "speech_end_to_first_audio_ms": 2037,
+            "asr_final_to_first_text_ms": 577,
+            "asr_final_to_first_audio_ms": 1621,
+            "speech_to_duck_ms": 206
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:18.309Z",
+          "event": "asr_partial",
+          "text": "嗯。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1",
+          "begin_time": 4380,
+          "end_time": 4951
+        },
+        {
+          "at": "2026-09-12T06:15:18.488Z",
+          "event": "asr_partial",
+          "text": "嗯。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1",
+          "begin_time": 4380,
+          "end_time": 5111
+        },
+        {
+          "at": "2026-09-12T06:15:18.709Z",
+          "event": "asr_partial",
+          "text": "等1。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1",
+          "begin_time": 4380,
+          "end_time": 5351
+        },
+        {
+          "at": "2026-09-12T06:15:19.109Z",
+          "event": "asr_partial",
+          "text": "等一下不。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1",
+          "begin_time": 4380,
+          "end_time": 5751
+        },
+        {
+          "at": "2026-09-12T06:15:19.109Z",
+          "event": "intent_status",
+          "response_epoch": 1,
+          "status": "checking",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1"
+        },
+        {
+          "at": "2026-09-12T06:15:19.364Z",
+          "event": "speech_ended",
+          "rms": 5.403702434442518
+        },
+        {
+          "at": "2026-09-12T06:15:19.538Z",
+          "event": "asr_final",
+          "text": "等一下不讲故事了。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1",
+          "begin_time": 4380,
+          "end_time": 6091
+        },
+        {
+          "at": "2026-09-12T06:15:19.538Z",
+          "event": "intent_status",
+          "response_epoch": 1,
+          "status": "checking",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1"
+        },
+        {
+          "at": "2026-09-12T06:15:20.010Z",
+          "event": "intent_result",
+          "response_epoch": 1,
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1",
+          "interrupt": true,
+          "latency_ms": 470
+        },
+        {
+          "at": "2026-09-12T06:15:20.011Z",
+          "event": "input_queue",
+          "response_epoch": 1,
+          "queue_size": 0
+        },
+        {
+          "at": "2026-09-12T06:15:20.011Z",
+          "event": "response_cancelled",
+          "response_epoch": 1,
+          "queue_dropped": 250,
+          "tts_active": true
+        },
+        {
+          "at": "2026-09-12T06:15:20.012Z",
+          "event": "response_status",
+          "response_epoch": 1,
+          "status": "interrupted"
+        },
+        {
+          "at": "2026-09-12T06:15:20.012Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:15:20.013Z",
+          "event": "turn_transition",
+          "response_epoch": 2,
+          "status": "listening",
+          "previous_epoch": 1,
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:1"
+        },
+        {
+          "at": "2026-09-12T06:15:20.014Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "thinking"
+        },
+        {
+          "at": "2026-09-12T06:15:20.111Z",
+          "event": "asr_partial",
+          "text": "嗯。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2",
+          "begin_time": 6180,
+          "end_time": 6751
+        },
+        {
+          "at": "2026-09-12T06:15:20.113Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "ducking"
+        },
+        {
+          "at": "2026-09-12T06:15:20.276Z",
+          "event": "response_metrics",
+          "response_epoch": 2,
+          "metrics": {
+            "speech_end_to_first_text_ms": 1159,
+            "asr_final_to_first_text_ms": 736
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:20.277Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的"
+        },
+        {
+          "at": "2026-09-12T06:15:20.286Z",
+          "event": "asr_partial",
+          "text": "嗯。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2",
+          "begin_time": 6180,
+          "end_time": 6911
+        },
+        {
+          "at": "2026-09-12T06:15:20.379Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，"
+        },
+        {
+          "at": "2026-09-12T06:15:20.411Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们"
+        },
+        {
+          "at": "2026-09-12T06:15:20.411Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊"
+        },
+        {
+          "at": "2026-09-12T06:15:20.450Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点"
+        },
+        {
+          "at": "2026-09-12T06:15:20.450Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点别的"
+        },
+        {
+          "at": "2026-09-12T06:15:20.450Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点别的吧"
+        },
+        {
+          "at": "2026-09-12T06:15:20.494Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点别的吧。"
+        },
+        {
+          "at": "2026-09-12T06:15:20.494Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点别的吧。你想"
+        },
+        {
+          "at": "2026-09-12T06:15:20.494Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点别的吧。你想聊"
+        },
+        {
+          "at": "2026-09-12T06:15:20.494Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点别的吧。你想聊什么"
+        },
+        {
+          "at": "2026-09-12T06:15:20.494Z",
+          "event": "response_text",
+          "response_epoch": 2,
+          "text": "好的，那我们聊点别的吧。你想聊什么？"
+        },
+        {
+          "at": "2026-09-12T06:15:20.518Z",
+          "event": "asr_partial",
+          "text": "请您告诉。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2",
+          "begin_time": 6180,
+          "end_time": 7151
+        },
+        {
+          "at": "2026-09-12T06:15:20.912Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "synthesizing",
+          "reason": "unconfirmed"
+        },
+        {
+          "at": "2026-09-12T06:15:20.921Z",
+          "event": "asr_partial",
+          "text": "请告诉我移交。",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2",
+          "begin_time": 6180,
+          "end_time": 7551
+        },
+        {
+          "at": "2026-09-12T06:15:20.932Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "speaking"
+        },
+        {
+          "at": "2026-09-12T06:15:21.195Z",
+          "event": "response_metrics",
+          "response_epoch": 2,
+          "metrics": {
+            "speech_end_to_first_text_ms": 1159,
+            "speech_end_to_first_audio_ms": 2077,
+            "asr_final_to_first_text_ms": 736,
+            "asr_final_to_first_audio_ms": 1654
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:21.348Z",
+          "event": "asr_final",
+          "text": "请告诉我，1+1等于几？",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2",
+          "begin_time": 6180,
+          "end_time": 7871
+        },
+        {
+          "at": "2026-09-12T06:15:21.348Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "ducking"
+        },
+        {
+          "at": "2026-09-12T06:15:21.348Z",
+          "event": "intent_status",
+          "response_epoch": 2,
+          "status": "checking",
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2"
+        },
+        {
+          "at": "2026-09-12T06:15:21.352Z",
+          "event": "response_metrics",
+          "response_epoch": 2,
+          "metrics": {
+            "speech_end_to_first_text_ms": 1159,
+            "speech_end_to_first_audio_ms": 2077,
+            "asr_final_to_first_text_ms": 736,
+            "asr_final_to_first_audio_ms": 1654,
+            "speech_to_duck_ms": 4
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:22.153Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "speaking",
+          "reason": "unconfirmed"
+        },
+        {
+          "at": "2026-09-12T06:15:22.205Z",
+          "event": "intent_result",
+          "response_epoch": 2,
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2",
+          "interrupt": true,
+          "latency_ms": 855
+        },
+        {
+          "at": "2026-09-12T06:15:22.205Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "ducking"
+        },
+        {
+          "at": "2026-09-12T06:15:22.212Z",
+          "event": "response_metrics",
+          "response_epoch": 2,
+          "metrics": {
+            "speech_end_to_first_text_ms": 1159,
+            "speech_end_to_first_audio_ms": 2077,
+            "asr_final_to_first_text_ms": 736,
+            "asr_final_to_first_audio_ms": 1654,
+            "speech_to_duck_ms": 7
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:22.332Z",
+          "event": "input_queue",
+          "response_epoch": 2,
+          "queue_size": 0
+        },
+        {
+          "at": "2026-09-12T06:15:22.333Z",
+          "event": "response_cancelled",
+          "response_epoch": 2,
+          "queue_dropped": 134
+        },
+        {
+          "at": "2026-09-12T06:15:22.333Z",
+          "event": "response_status",
+          "response_epoch": 2,
+          "status": "interrupted"
+        },
+        {
+          "at": "2026-09-12T06:15:22.335Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "listening"
+        },
+        {
+          "at": "2026-09-12T06:15:22.335Z",
+          "event": "turn_transition",
+          "response_epoch": 3,
+          "status": "listening",
+          "previous_epoch": 2,
+          "utterance_id": "e6499cdf-121e-4ed4-968b-40841d7ac7e4:2"
+        },
+        {
+          "at": "2026-09-12T06:15:22.335Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "thinking"
+        },
+        {
+          "at": "2026-09-12T06:15:23.176Z",
+          "event": "response_metrics",
+          "response_epoch": 3,
+          "metrics": {
+            "speech_end_to_first_text_ms": 2278,
+            "asr_final_to_first_text_ms": 1826
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:23.176Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1"
+        },
+        {
+          "at": "2026-09-12T06:15:23.176Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+"
+        },
+        {
+          "at": "2026-09-12T06:15:23.180Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1"
+        },
+        {
+          "at": "2026-09-12T06:15:23.180Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于"
+        },
+        {
+          "at": "2026-09-12T06:15:23.180Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2"
+        },
+        {
+          "at": "2026-09-12T06:15:23.181Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2。"
+        },
+        {
+          "at": "2026-09-12T06:15:23.181Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2。这是"
+        },
+        {
+          "at": "2026-09-12T06:15:23.181Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2。这是最基本的"
+        },
+        {
+          "at": "2026-09-12T06:15:23.182Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "synthesizing"
+        },
+        {
+          "at": "2026-09-12T06:15:23.183Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2。这是最基本的数学"
+        },
+        {
+          "at": "2026-09-12T06:15:23.183Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2。这是最基本的数学事实"
+        },
+        {
+          "at": "2026-09-12T06:15:23.183Z",
+          "event": "response_text",
+          "response_epoch": 3,
+          "text": "1+1等于2。这是最基本的数学事实。"
+        },
+        {
+          "at": "2026-09-12T06:15:23.613Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "speaking"
+        },
+        {
+          "at": "2026-09-12T06:15:23.854Z",
+          "event": "response_metrics",
+          "response_epoch": 3,
+          "metrics": {
+            "speech_end_to_first_text_ms": 2278,
+            "speech_end_to_first_audio_ms": 2956,
+            "asr_final_to_first_text_ms": 1826,
+            "asr_final_to_first_audio_ms": 2504
+          }
+        },
+        {
+          "at": "2026-09-12T06:15:27.854Z",
+          "event": "response_status",
+          "response_epoch": 3,
+          "status": "completed"
+        }
+      ],
+      "reply": "1+1等于2。这是最基本的数学事实。"
+    }
+  ]
+}

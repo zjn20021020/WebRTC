@@ -23,7 +23,7 @@ func playingFixture(t *testing.T) (*Manager, *testClock, *[]Event) {
 	t.Helper()
 	clock := &testClock{}
 	events := &[]Event{}
-	m := New(nil, nil, func(e Event) { *events = append(*events, e) })
+	m := New(modelFunc(func(context.Context, []llm.Message, func(string) error) error { return nil }), nil, func(e Event) { *events = append(*events, e) })
 	m.now = clock.now
 	ctx, cancel := context.WithCancelCause(context.Background())
 	m.epoch = 1
@@ -46,6 +46,20 @@ func frameFrom(t *testing.T, m *Manager) []byte {
 		t.Fatal(err)
 	}
 	return out
+}
+
+func waitEpoch(t *testing.T, m *Manager, epoch uint64) {
+	t.Helper()
+	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.epoch == epoch })
+}
+
+func waitConfirmed(t *testing.T, m *Manager) {
+	t.Helper()
+	waitFor(t, func() bool {
+		m.mu.Lock()
+		defer m.mu.Unlock()
+		return m.current != nil && m.current.duck != nil && m.current.duck.confirmed
+	})
 }
 
 func TestDuckingReducesServerAudioAndContinuesPlayback(t *testing.T) {
@@ -85,6 +99,7 @@ func TestStablePartialCancelsBackendAndReservesTurnBeforeFinal(t *testing.T) {
 	frameFrom(t, m)
 	clock.advance(partialStability)
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u4fee\u6539\u8ba2\u5355"})
+	waitEpoch(t, m, 2)
 	if old.ctx.Err() == nil || len(old.frames) != 0 || old.pending != nil {
 		t.Fatal("old context and queue not cleared")
 	}
@@ -122,6 +137,7 @@ func TestFullClosedLoopStartsNewGenerationOnlyAfterFinal(t *testing.T) {
 	})
 	m.speech = speechFunc(func(context.Context, string) ([]byte, error) { return bytes.Repeat([]byte{0x44}, 320), nil })
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u505c\u4e00\u4e0b"})
+	waitConfirmed(t, m)
 	if m.epoch != 1 {
 		t.Fatal("explicit stop skipped audible duck stage")
 	}
@@ -155,13 +171,10 @@ func TestFullClosedLoopStartsNewGenerationOnlyAfterFinal(t *testing.T) {
 	}
 }
 
-func TestFillersAndUnstablePartialsDoNotHardInterrupt(t *testing.T) {
+func TestUnstablePartialsDoNotRequestConfirmation(t *testing.T) {
 	m, clock, _ := playingFixture(t)
 	old := m.current
 	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	for _, text := range []string{"\u55ef", "\u554a\u554a", "...", "\u54e6"} {
-		m.Accept(asr.Event{Event: "asr_final", UtteranceID: "filler", Text: text})
-	}
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u4fee\u6539"})
 	clock.advance(partialStability)
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u660e\u5929"})
@@ -179,6 +192,7 @@ func TestFinalOnlyInterruptionStillDucksBeforeCancellation(t *testing.T) {
 	m, clock, _ := playingFixture(t)
 	old := m.current
 	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "new", Text: "new question"})
+	waitConfirmed(t, m)
 	if old.ctx.Err() != nil {
 		t.Fatal("final skipped duck")
 	}

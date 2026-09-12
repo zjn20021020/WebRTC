@@ -33,6 +33,7 @@ func main() {
 	for _, fixture := range []struct{ name, text string }{
 		{"ask-story", "\u8bf7\u7ed9\u6211\u8bb2\u4e00\u4e2a\u5c0f\u6545\u4e8b\u3002"},
 		{"interrupt-question", "\u7b49\u4e00\u4e0b\uff0c\u4e0d\u8bb2\u6545\u4e8b\u4e86\uff0c\u8bf7\u544a\u8bc9\u6211\u4e00\u52a0\u4e00\u7b49\u4e8e\u51e0\u3002"},
+		{"deferred-question", "\u4f60\u5148\u7ee7\u7eed\u8bb2\uff0c\u8bb2\u5b8c\u518d\u544a\u8bc9\u6211\u4e00\u52a0\u4e00\u7b49\u4e8e\u51e0\u3002"},
 	} {
 		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 		encoded, err := client.Synthesize(ctx, fixture.text)

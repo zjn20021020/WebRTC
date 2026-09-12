@@ -17,6 +17,7 @@ import (
 
 type LanguageModel interface {
 	Stream(context.Context, []llm.Message, func(string) error) error
+	ClassifyInterruption(context.Context, llm.InterruptionInput) (bool, error)
 }
 
 type SpeechSynthesizer interface {
@@ -36,6 +37,9 @@ type Event struct {
 	QueueDropped  int      `json:"queue_dropped,omitempty"`
 	LLMActive     bool     `json:"llm_active,omitempty"`
 	TTSActive     bool     `json:"tts_active,omitempty"`
+	Interrupt     *bool    `json:"interrupt,omitempty"`
+	LatencyMS     *int64   `json:"latency_ms,omitempty"`
+	QueueSize     *int     `json:"queue_size,omitempty"`
 }
 
 type turn struct {
@@ -62,19 +66,20 @@ type turn struct {
 // Manager serializes response events and audio writes. Each epoch owns its
 // queues; replacing an epoch makes late cloud results unreachable by playback.
 type Manager struct {
-	mu           sync.Mutex
-	model        LanguageModel
-	speech       SpeechSynthesizer
-	emit         func(Event)
-	epoch        uint64
-	current      *turn
-	closed       bool
-	seen         map[string]bool
-	seenOrder    []string
-	history      []llm.Message
-	now          func() time.Time
-	inSpeech     bool
-	asrListening bool
+	mu            sync.Mutex
+	model         LanguageModel
+	speech        SpeechSynthesizer
+	emit          func(Event)
+	epoch         uint64
+	current       *turn
+	closed        bool
+	seen          map[string]bool
+	seenOrder     []string
+	history       []llm.Message
+	now           func() time.Time
+	inSpeech      bool
+	asrListening  bool
+	interjections []*interjection
 }
 
 func New(model LanguageModel, speech SpeechSynthesizer, emit func(Event)) *Manager {
@@ -100,7 +105,7 @@ func (m *Manager) readyStatus() string {
 }
 
 func (m *Manager) Accept(event asr.Event) {
-	if event.UtteranceID == "" || !validSpeech(event.Text) {
+	if event.UtteranceID == "" || !hasSpeechText(event.Text) {
 		return
 	}
 	m.mu.Lock()
@@ -111,6 +116,9 @@ func (m *Manager) Accept(event asr.Event) {
 	if event.Event != "asr_partial" && event.Event != "asr_final" {
 		return
 	}
+	if event.Event == "asr_final" {
+		event.FinalReceivedAt = m.now()
+	}
 	t := m.current
 	if t != nil && t.utteranceID == event.UtteranceID {
 		if t.waitingFinal && event.Event == "asr_final" {
@@ -118,13 +126,7 @@ func (m *Manager) Accept(event asr.Event) {
 		}
 		return
 	}
-	if t != nil {
-		m.candidateLocked(t, event)
-		return
-	}
-	if event.Event == "asr_final" {
-		m.startFinalLocked(m.reserveLocked(event.UtteranceID), event)
-	}
+	m.acceptInterjectionLocked(event)
 }
 
 func (m *Manager) rememberLocked(id string) {
@@ -159,7 +161,10 @@ func (m *Manager) startFinalLocked(t *turn, event asr.Event) {
 		return
 	}
 	t.waitingFinal = false
-	t.startedAt = m.now()
+	t.startedAt = event.FinalReceivedAt
+	if t.startedAt.IsZero() {
+		t.startedAt = m.now()
+	}
 	t.speechEndAt = event.SpeechEndAt
 	text := []rune(event.Text)
 	if len(text) > 2000 {
@@ -178,6 +183,7 @@ func (m *Manager) Stop(epoch uint64) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	if m.current != nil && m.current.epoch == epoch {
+		m.clearInterjectionsLocked()
 		m.stopLocked("interrupted")
 	}
 }
@@ -186,6 +192,7 @@ func (m *Manager) Close() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	m.closed = true
+	m.clearInterjectionsLocked()
 	if m.current != nil {
 		m.current.cancel()
 		m.current = nil
@@ -197,6 +204,7 @@ func (m *Manager) stopLocked(status string) {
 		return
 	}
 	t := m.current
+	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()
 	m.rememberLocked(t.utteranceID)
 	dropped := len(t.frames)
@@ -226,6 +234,7 @@ func (m *Manager) failLocked(t *turn, err error) {
 	if m.current != t || m.closed {
 		return
 	}
+	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()
 	log.Printf("response epoch=%d failed: %v", t.epoch, err)
 	m.statusLocked(t, "failed", err.Error())
@@ -408,6 +417,7 @@ func silenceFrame() []byte {
 func (m *Manager) WriteFrame(write func([]byte) error) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
+	m.pumpInterjectionsLocked()
 	t := m.current
 	if t != nil && t.ctx.Err() != nil {
 		m.failLocked(t, context.Cause(t.ctx))
@@ -475,8 +485,10 @@ func (m *Manager) WriteFrame(write func([]byte) error) error {
 func (m *Manager) completeLocked(t *turn) {
 	m.history = append(m.history, llm.Message{Role: "assistant", Content: t.text})
 	m.statusLocked(t, "completed", "")
+	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()
 	m.current = nil
+	m.drainInterjectionsLocked()
 }
 
 func hasSpeechText(text string) bool {

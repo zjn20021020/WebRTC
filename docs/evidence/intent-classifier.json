@@ -1,0 +1,49 @@
+{
+  "recorded_at": "2026-09-12T06:10:56Z",
+  "model": "deepseek-v4-pro",
+  "passed": true,
+  "results": [
+    {
+      "input": "停一下，换个问题",
+      "final": false,
+      "expected": true,
+      "decision": true,
+      "latency_ms": 743
+    },
+    {
+      "input": "你继续，不用停",
+      "final": true,
+      "expected": false,
+      "decision": false,
+      "latency_ms": 1154
+    },
+    {
+      "input": "讲完以后再告诉我一加一等于几",
+      "final": true,
+      "expected": false,
+      "decision": false,
+      "latency_ms": 415
+    },
+    {
+      "input": "我刚才听到你说停一下这个词",
+      "final": true,
+      "expected": false,
+      "decision": false,
+      "latency_ms": 853
+    },
+    {
+      "input": "等一下，你说错了，是明天",
+      "final": true,
+      "expected": true,
+      "decision": true,
+      "latency_ms": 454
+    },
+    {
+      "input": "嗯",
+      "final": true,
+      "expected": false,
+      "decision": false,
+      "latency_ms": 820
+    }
+  ]
+}

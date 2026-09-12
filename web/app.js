@@ -15,6 +15,7 @@ const replyText = document.querySelector('#replyText');
 const replyError = document.querySelector('#replyError');
 const stopResponseButton = document.querySelector('#stopResponse');
 const interruptionStatus = document.querySelector('#interruptionStatus');
+const queuedStatus = document.querySelector('#queuedStatus');
 const latencyText = document.querySelector('#latencyText');
 const latencyAudio = document.querySelector('#latencyAudio');
 const latencyDuck = document.querySelector('#latencyDuck');
@@ -70,6 +71,8 @@ function handleResponse(message) {
       interruptionStatus.textContent = '未确认插话，已恢复音量';
     } else if (message.reason === 'asr_unavailable') {
       interruptionStatus.textContent = '识别服务不可用，已恢复音量';
+    } else if (message.reason === 'intent_deferred') {
+      interruptionStatus.textContent = '继续当前回答';
     } else if (message.status === 'interrupted') {
       interruptionStatus.textContent = '旧回答已取消';
     }
@@ -101,6 +104,15 @@ function handleControl(data) {
   let message;
   try { message = JSON.parse(data); } catch { log('收到无效服务端事件'); return; }
   if (!message || typeof message !== 'object') return;
+  if (message.event === 'input_queue' && Number.isSafeInteger(message.queue_size) && message.queue_size >= 0) {
+    queuedStatus.textContent = message.queue_size ? `待回答 ${message.queue_size} 条` : '';
+  } else if (message.event === 'input_rejected') {
+    queuedStatus.textContent = message.reason === 'queue_full' ? '待回答队列已满，本句未收录' : '识别未完成，本句未收录';
+  } else if (message.response_epoch === responseEpoch && !responseFinished) {
+    if (message.event === 'intent_status') interruptionStatus.textContent = '正在判断插话意图';
+    if (message.event === 'intent_result') interruptionStatus.textContent = message.status === 'error'
+      ? '意图判断暂不可用，延后处理' : message.interrupt ? '已确认打断' : '本句延后处理';
+  }
   if (['response_status', 'response_text', 'response_metrics'].includes(message.event)) {
     handleResponse(message);
     return;
@@ -155,6 +167,7 @@ function disconnect() {
   setASRStatus('disconnected');
   setReplyStatus('disconnected');
   interruptionStatus.textContent = '';
+  queuedStatus.textContent = '';
   responseFinished = true;
   connectButton.disabled = false;
   disconnectButton.disabled = true;
@@ -246,6 +259,7 @@ connectButton.addEventListener('click', async () => {
   replyError.textContent = '';
   replyError.hidden = true;
   interruptionStatus.textContent = '';
+  queuedStatus.textContent = '';
   for (const element of [latencyText, latencyAudio, latencyDuck]) element.textContent = '--';
   turnLabel.textContent = '';
   setReplyStatus('waiting');

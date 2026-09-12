@@ -20,8 +20,7 @@ const (
 
 type duckState struct {
 	onset, deadline, resumeAt, minimumUntil time.Time
-	partialAt                               time.Time
-	partial, utteranceID                    string
+	utteranceID                             string
 	confirmed, measured                     bool
 	final                                   *asr.Event
 }
@@ -70,6 +69,9 @@ func (m *Manager) SetASRListening(listening bool) {
 		return
 	}
 	m.asrListening = listening
+	if !listening {
+		m.dropUnfinishedInterjectionsLocked()
+	}
 	if !listening && m.current != nil && m.current.duck != nil {
 		if m.current.duck.confirmed {
 			m.confirmLocked(m.current)
@@ -115,11 +117,6 @@ func speechText(text string) string {
 	}, text)
 }
 
-func validSpeech(text string) bool {
-	text = speechText(text)
-	return text != "" && strings.Trim(text, "\u55ef\u554a\u54e6\u5443\u552f\u989d\u5662\u5509\u54ce") != ""
-}
-
 func explicitStop(text string) bool {
 	for _, phrase := range []string{"\u7b49\u4e00\u4e0b", "\u505c\u4e00\u4e0b", "\u505c\u6b62", "\u522b\u8bf4\u4e86", "\u6362\u4e2a\u95ee\u9898", "\u7b49\u7b49"} {
 		if strings.Contains(text, phrase) {
@@ -138,45 +135,10 @@ func commonPrefix(a, b string) int {
 	return n
 }
 
-func (m *Manager) candidateLocked(t *turn, event asr.Event) {
-	text := speechText(event.Text)
-	m.beginDuckLocked(t, m.now())
-	d := t.duck
-	if d.confirmed && d.utteranceID != event.UtteranceID {
-		return
-	}
-	if d.utteranceID != event.UtteranceID {
-		d.utteranceID = event.UtteranceID
-		d.partial = ""
-		d.partialAt = m.now()
-	}
-	stable := false
-	if event.Event == "asr_partial" {
-		if commonPrefix(d.partial, text) < 2 {
-			d.partialAt = m.now()
-		} else {
-			stable = m.now().Sub(d.partialAt) >= partialStability
-		}
-		d.partial = text
-	}
-	if !m.inSpeech {
-		d.resumeAt = m.now().Add(confirmationGrace)
-	}
-	if explicitStop(text) || (len([]rune(text)) >= 2 && (stable || event.Event == "asr_final")) {
-		d.confirmed = true
-		if event.Event == "asr_final" {
-			copy := event
-			d.final = &copy
-		}
-	}
-	if d.confirmed && (!t.playing || !m.now().Before(d.minimumUntil)) {
-		m.confirmLocked(t)
-	}
-}
-
 func (m *Manager) confirmLocked(t *turn) {
 	d := t.duck
 	oldEpoch := t.epoch
+	m.removeInterjectionLocked(d.utteranceID)
 	m.stopLocked("interrupted")
 	next := m.reserveLocked(d.utteranceID)
 	log.Printf("turn_transition old_epoch=%d new_epoch=%d state=listening waiting_final=true", oldEpoch, next.epoch)
