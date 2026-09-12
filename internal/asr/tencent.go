@@ -27,12 +27,13 @@ var secretID = regexp.MustCompile(`^[A-Za-z0-9]+$`)
 
 // Utterance IDs identify input sentences independently of response epochs.
 type Event struct {
-	Event       string `json:"event"`
-	Status      string `json:"status,omitempty"`
-	Text        string `json:"text,omitempty"`
-	UtteranceID string `json:"utterance_id,omitempty"`
-	BeginTime   int64  `json:"begin_time,omitempty"`
-	EndTime     int64  `json:"end_time,omitempty"`
+	Event       string    `json:"event"`
+	Status      string    `json:"status,omitempty"`
+	Text        string    `json:"text,omitempty"`
+	UtteranceID string    `json:"utterance_id,omitempty"`
+	BeginTime   int64     `json:"begin_time,omitempty"`
+	EndTime     int64     `json:"end_time,omitempty"`
+	SpeechEndAt time.Time `json:"-"`
 }
 
 type providerEvent struct {

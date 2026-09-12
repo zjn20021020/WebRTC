@@ -19,6 +19,7 @@ import (
 const (
 	pcmuFrameSamples = 160
 	pcmuSampleRate   = 8000
+	vadStartAfter    = 200 * time.Millisecond
 )
 
 // Session owns the peer connection and the long-lived outbound audio track.
@@ -41,6 +42,7 @@ type Session struct {
 	asrInput        chan []byte
 	asrDone         chan struct{}
 	asrStarted      sync.Once
+	inputClock      inputClock
 }
 
 func NewSession(api *webrtc.API, asrConfig asr.Config, model dialogue.LanguageModel, speech dialogue.SpeechSynthesizer) (*Session, error) {
@@ -72,7 +74,7 @@ func NewSession(api *webrtc.API, asrConfig asr.Config, model dialogue.LanguageMo
 		PeerConnection: peerConnection,
 		OutboundTrack:  outboundTrack,
 		stop:           make(chan struct{}),
-		vad:            interrupt.NewDetector(700, 200*time.Millisecond, 500*time.Millisecond, 20*time.Millisecond),
+		vad:            interrupt.NewDetector(700, vadStartAfter, 500*time.Millisecond, 20*time.Millisecond),
 		asrConfig:      asrConfig,
 		asrContext:     asrContext,
 		asrCancel:      asrCancel,
@@ -107,14 +109,17 @@ func NewSession(api *webrtc.API, asrConfig asr.Config, model dialogue.LanguageMo
 		})
 		channel.OnMessage(func(message webrtc.DataChannelMessage) {
 			var command struct {
-				Event string `json:"event"`
+				Event string  `json:"event"`
+				Epoch *uint64 `json:"response_epoch"`
 			}
 			if json.Unmarshal(message.Data, &command) == nil {
 				switch command.Event {
 				case "disconnect":
 					go session.Close()
 				case "stop_response":
-					session.response.Stop()
+					if command.Epoch != nil {
+						session.response.Stop(*command.Epoch)
+					}
 				}
 			}
 		})
@@ -145,12 +150,15 @@ func (s *Session) readInbound(track *webrtc.TrackRemote) {
 		}
 		packets++
 		if track.Codec().MimeType == webrtc.MimeTypePCMU {
+			arrivedAt := time.Now()
 			samples := audio.DecodePCMU(packet.Payload)
 			rms := audio.RMS(samples)
 			if s.asrConfig.Enabled() && s.asrContext.Err() == nil {
+				s.inputClock.record(len(samples), arrivedAt)
 				s.enqueueASR(audio.PCM16LE(samples))
 			}
 			if event, ok := s.vad.Update(rms); ok {
+				s.response.ObserveVAD(event, arrivedAt.Add(-vadStartAfter))
 				log.Printf("vad event=%s packets=%d pcmu_rms=%.1f", event, packets, rms)
 				s.sendControl(string(event), rms)
 			}
@@ -187,12 +195,19 @@ func (s *Session) sendEvent(event any) {
 
 func (s *Session) runASR() {
 	defer close(s.asrDone)
+	defer s.response.SetASRListening(false)
 	if !s.asrConfig.Enabled() {
 		s.sendEvent(asr.Event{Event: "asr_status", Status: "unconfigured"})
 		return
 	}
 	s.sendEvent(asr.Event{Event: "asr_status", Status: "connecting"})
 	err := asr.Run(s.asrContext, s.asrConfig, s.asrInput, func(event asr.Event) {
+		if event.Event == "asr_status" {
+			s.response.SetASRListening(event.Status == "listening")
+		}
+		if event.Event == "asr_final" {
+			event.SpeechEndAt = s.inputClock.at(event.EndTime)
+		}
 		s.sendEvent(event)
 		s.response.Accept(event)
 	})

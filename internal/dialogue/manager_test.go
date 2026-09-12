@@ -107,7 +107,7 @@ func TestNewEpochDeduplicatesAndCancelsModel(t *testing.T) {
 	if old.Err() == nil || current.Err() != nil {
 		t.Fatal("epoch replacement did not cancel only old model")
 	}
-	m.Stop()
+	m.Stop(2)
 	if current.Err() == nil {
 		t.Fatal("manual stop did not cancel request")
 	}

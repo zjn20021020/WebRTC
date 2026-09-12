@@ -13,6 +13,13 @@ pre { min-height: 180px; padding: 12px; overflow: auto; background: #101820; col
 .transcript h2, .reply h2 { margin: 0; font-size: 18px; }
 #replyStatus { color: #52606d; font-size: 14px; }
 #replyStatus[data-state="speaking"] { color: #187353; }
+#replyStatus[data-state="paused"] { color: #9c5b00; }
+#interruptionStatus { min-height: 24px; color: #52606d; font-size: 14px; }
+.latency { border-top: 1px solid #d8dee4; padding-top: 16px; margin: 20px 0; }
+.latency h2 { margin: 0; font-size: 18px; }
+.latency dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.latency dt { min-height: 40px; color: #52606d; font-size: 13px; line-height: 20px; overflow-wrap: anywhere; }
+.latency dd { margin: 4px 0 0; font-size: 18px; font-variant-numeric: tabular-nums; }
 #replyStatus[data-state="failed"], #replyError { color: #b42318; }
 #replyText { min-height: 52px; max-height: 240px; overflow-y: auto; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
 #replyError { font-size: 14px; overflow-wrap: anywhere; }
@@ -26,4 +33,8 @@ pre { min-height: 180px; padding: 12px; overflow: auto; background: #101820; col
 @media (max-width: 600px) {
   .container { margin: 0; padding: 16px; border: 0; border-radius: 0; }
   h1 { font-size: 24px; }
+  .latency dl { grid-template-columns: 1fr; gap: 12px; }
+  .latency dl > div { display: grid; grid-template-columns: minmax(0, 1fr) 100px; align-items: center; gap: 12px; }
+  .latency dt { min-height: 0; }
+  .latency dd { text-align: right; margin: 0; }
 }
