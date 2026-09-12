@@ -70,11 +70,16 @@ func TestActionRequestAndCancellation(t *testing.T) {
 		if json.NewDecoder(r.Body).Decode(&request) != nil || len(request.Tools) != 6 || request.ToolChoice != "required" || request.Thinking["type"] != "disabled" {
 			t.Error("invalid native function request")
 		}
-		if len(request.Messages) != 2 || !strings.Contains(request.Messages[0].Content, "dimo-home-companion") {
-			t.Error("role skill missing")
+		if len(request.Messages) != 2 || !strings.Contains(request.Messages[0].Content, "action classifier") || strings.Contains(request.Messages[0].Content, home.RoleSkill) {
+			t.Error("classifier must use classification instructions without the speaking role skill")
 		}
 		var input ActionInput
 		_ = json.Unmarshal([]byte(request.Messages[1].Content), &input)
+		if input.UserText == "repair" {
+			if !strings.Contains(request.Messages[0].Content, "Protocol repair") || strings.Contains(request.Messages[1].Content, "Repair") {
+				t.Error("repair instruction is missing or leaked into user data")
+			}
+		}
 		if input.UserText == "wait" {
 			w.Header().Set("Content-Type", "application/json")
 			w.(http.Flusher).Flush()
@@ -90,6 +95,9 @@ func TestActionRequestAndCancellation(t *testing.T) {
 	if call, err := c.ClassifyAction(context.Background(), ActionInput{UserText: "water"}); err != nil || call.Name != home.Water {
 		t.Fatalf("%v %v", call, err)
 	}
+	if _, err := c.ClassifyAction(context.Background(), ActionInput{UserText: "repair", Repair: true}); err != nil {
+		t.Fatal(err)
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	done := make(chan error, 1)
@@ -103,5 +111,23 @@ func TestActionRequestAndCancellation(t *testing.T) {
 		}
 	case <-time.After(time.Second):
 		t.Fatal("action request ignored cancellation")
+	}
+}
+
+func TestActionValidationDiagnosticsDoNotExposeResponseText(t *testing.T) {
+	for _, tc := range []struct {
+		data   []byte
+		reason string
+	}{
+		{toolResponse(home.Fertilize, "{}", "private-provider-prose", "tool_calls"), "unexpected_content"},
+		{toolResponse(home.Fertilize, "{}", "", "length"), "truncated"},
+		{toolResponse(home.Fertilize, "{}", "", "stop"), "no_tool_finish"},
+		{toolResponse(home.Fertilize, `{"secret":"private-argument"}`, "", "tool_calls"), "nonempty_arguments"},
+		{toolResponse("private-unknown-function", "{}", "", "tool_calls"), "unknown_tool"},
+	} {
+		_, err := parseAction(tc.data)
+		if !errors.Is(err, ErrInvalidActionResult) || ActionValidationReason(err) != tc.reason || strings.Contains(err.Error(), "private") {
+			t.Fatalf("unsafe or missing diagnostic: %v", err)
+		}
 	}
 }

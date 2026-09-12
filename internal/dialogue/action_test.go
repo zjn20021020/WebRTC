@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -150,7 +151,7 @@ func TestActionFailureClarifiesWithoutDispatch(t *testing.T) {
 			waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current != nil && m.current.generated })
 			m.mu.Lock()
 			defer m.mu.Unlock()
-			if !fallback.Fallback || fallback.Reason == "" || !strings.Contains(m.current.text, "再说一遍") {
+			if !fallback.Fallback || fallback.Reason == "" || !strings.Contains(m.current.text, "任务没能启动") {
 				t.Fatal("clarification fallback not observable")
 			}
 		})
@@ -187,4 +188,102 @@ func TestCancelledClassificationCannotDispatchLateTool(t *testing.T) {
 	if m.current.toolCall.Name != home.Harvest || m.current.epoch != 2 {
 		t.Fatal("late classification changed new turn")
 	}
+}
+
+func TestMalformedActionRetriesBeforeExecutingExactlyOnce(t *testing.T) {
+	for _, reason := range []string{"unexpected_content", "tool_count", "invalid_arguments", "truncated"} {
+		t.Run(reason, func(t *testing.T) {
+			var calls, executions atomic.Int32
+			var retry, fallback bool
+			var firstContext context.Context
+			model := actionModel{classify: func(ctx context.Context, input llm.ActionInput) (home.Call, error) {
+				attempt := calls.Add(1)
+				if attempt == 1 {
+					firstContext = ctx
+					return home.Call{ID: "invalid", Name: home.Water}, &llm.ActionResultError{Reason: reason}
+				}
+				if !input.Repair || input.UserText != "先别浇水了，去施肥。" || ctx != firstContext {
+					t.Error("retry lost original input or total deadline")
+				}
+				return home.Call{ID: "repaired", Name: home.Fertilize}, nil
+			}}
+			m := NewWithExecutor(model, speechFunc(func(context.Context, string) ([]byte, error) { return []byte{0x33}, nil }), executorFunc(func(ctx context.Context, r home.Request, speak func(string) error) error {
+				executions.Add(1)
+				if r.Call.Name != home.Fertilize || r.Call.ID != "repaired" {
+					t.Error("unvalidated first action executed")
+				}
+				return (home.VoiceExecutor{}).Execute(ctx, r, speak)
+			}), func(e Event) {
+				if e.Event == "action_retry" {
+					retry = true
+				}
+				if e.Event == "action_result" && e.Fallback {
+					fallback = true
+				}
+			})
+			defer m.Close()
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "先别浇水了，去施肥。"})
+			waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current != nil && m.current.generated })
+			m.mu.Lock()
+			defer m.mu.Unlock()
+			if calls.Load() != 2 || executions.Load() != 1 || !retry || fallback || strings.Count(m.current.text, "我正在施肥。") != 10 {
+				t.Fatal("protocol repair did not recover exactly once")
+			}
+		})
+	}
+}
+
+func TestActionRetryIsBoundedAndRefusalDoesNotRetry(t *testing.T) {
+	for _, tc := range []struct {
+		reason   string
+		attempts int
+	}{{"tool_count", 2}, {"refusal", 1}, {"provider_error", 1}} {
+		t.Run(tc.reason, func(t *testing.T) {
+			var calls atomic.Int32
+			model := actionModel{classify: func(context.Context, llm.ActionInput) (home.Call, error) {
+				calls.Add(1)
+				return home.Call{}, &llm.ActionResultError{Reason: tc.reason}
+			}}
+			m := NewWithExecutor(model, speechFunc(func(context.Context, string) ([]byte, error) { return []byte{0x33}, nil }), executorFunc(func(context.Context, home.Request, func(string) error) error {
+				t.Error("invalid tool executed")
+				return nil
+			}), func(Event) {})
+			defer m.Close()
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "去施肥"})
+			waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current != nil && m.current.generated })
+			if int(calls.Load()) != tc.attempts {
+				t.Fatal("retry policy was not respected")
+			}
+		})
+	}
+}
+
+func TestManualStopCancelsActionRepair(t *testing.T) {
+	started, ended := make(chan struct{}), make(chan struct{})
+	model := actionModel{classify: func(ctx context.Context, input llm.ActionInput) (home.Call, error) {
+		if !input.Repair {
+			return home.Call{}, &llm.ActionResultError{Reason: "unexpected_content"}
+		}
+		close(started)
+		<-ctx.Done()
+		defer close(ended)
+		return home.Call{ID: "late", Name: home.Fertilize}, nil
+	}}
+	m := NewWithExecutor(model, speechFunc(func(context.Context, string) ([]byte, error) { t.Error("cancelled repair spoke"); return nil, nil }), executorFunc(func(context.Context, home.Request, func(string) error) error {
+		t.Error("cancelled repair executed")
+		return nil
+	}), func(Event) {})
+	defer m.Close()
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "去施肥"})
+	<-started
+	m.mu.Lock()
+	old := m.current
+	m.mu.Unlock()
+	m.Stop(1)
+	select {
+	case <-ended:
+	case <-time.After(time.Second):
+		t.Fatal("repair request ignored cancellation")
+	}
+	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return !old.llmActive })
 }

@@ -1,0 +1,292 @@
+{
+  "actions": [
+    {
+      "input": "先别浇水了，去施肥。",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_NQ2HNXypieOiDHHAiHUU9208",
+        "name": "fertilize"
+      },
+      "latency_ms": 1070
+    },
+    {
+      "input": "先别浇水了，去施肥。",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_pyHB2n54jX01IqhVVfDx7620",
+        "name": "fertilize"
+      },
+      "latency_ms": 823
+    },
+    {
+      "input": "不用浇水了，改成施肥",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_1Y3UeH3bFfKb113HRvD25093",
+        "name": "fertilize"
+      },
+      "latency_ms": 1061
+    },
+    {
+      "input": "先别浇水了，去种地",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_EsoEFEFfTYJaQJwam4fH7391",
+        "name": "plant"
+      },
+      "latency_ms": 613
+    },
+    {
+      "input": "先别浇水了，去施肥。",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_pGgdiyCsjcgeL4kiahRg8287",
+        "name": "fertilize"
+      },
+      "latency_ms": 1031,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    },
+    {
+      "input": "先别浇水了，去施肥。",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_Pq4jcaWiANxmukYhsTLl7785",
+        "name": "fertilize"
+      },
+      "latency_ms": 981,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    },
+    {
+      "input": "不用浇水了，改成施肥",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_yAbbpYUbG7x3PF32RX8W7343",
+        "name": "fertilize"
+      },
+      "latency_ms": 623,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    },
+    {
+      "input": "先别浇水了，去种地",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_fxyrE2RKnF0WTrD73AEn5159",
+        "name": "plant"
+      },
+      "latency_ms": 936,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    },
+    {
+      "input": "先别浇水了，去施肥。",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_pIey9245QkIAPNUU28m25483",
+        "name": "fertilize"
+      },
+      "latency_ms": 896,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "等一下再去种地。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "你真棒。"
+        },
+        {
+          "role": "assistant",
+          "content": "贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    },
+    {
+      "input": "先别浇水了，去施肥。",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_mprmuwZi7Mr9PM9f6y876099",
+        "name": "fertilize"
+      },
+      "latency_ms": 552,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "等一下再去种地。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "你真棒。"
+        },
+        {
+          "role": "assistant",
+          "content": "贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    },
+    {
+      "input": "不用浇水了，改成施肥",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_MZvUX5VJ4MWqsLM4de2c3929",
+        "name": "fertilize"
+      },
+      "latency_ms": 662,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "等一下再去种地。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "你真棒。"
+        },
+        {
+          "role": "assistant",
+          "content": "贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    },
+    {
+      "input": "先别浇水了，去种地",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_VgMUtlRBl9wjJZWep0wo5258",
+        "name": "plant"
+      },
+      "latency_ms": 740,
+      "recent_history": [
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "等一下再去种地。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        },
+        {
+          "role": "assistant",
+          "content": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+        },
+        {
+          "role": "user",
+          "content": "你真棒。"
+        },
+        {
+          "role": "assistant",
+          "content": "贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。贴贴。"
+        },
+        {
+          "role": "user",
+          "content": "去浇水。"
+        }
+      ]
+    }
+  ],
+  "interruptions": null,
+  "model": "deepseek-v4-pro",
+  "passed": true,
+  "recorded_at": "2026-09-12T07:28:58Z"
+}

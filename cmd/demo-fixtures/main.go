@@ -17,7 +17,7 @@ import (
 
 // Generate public, fixed microphone inputs for the live WebRTC demonstration.
 func main() {
-	scene := flag.String("scene", "intent", "Fixture scene: intent, home or home-wait")
+	scene := flag.String("scene", "intent", "Fixture scene: intent, home, home-wait or home-replacement")
 	flag.Parse()
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		log.Fatal("invalid .env file")
@@ -48,6 +48,12 @@ func main() {
 		fixtures = []struct{ name, text string }{
 			{"home-water-direct", "去浇水。"},
 			{"home-wait-plant", "等一下再去种地。"},
+		}
+	} else if *scene == "home-replacement" {
+		fixtures = []struct{ name, text string }{
+			{"home-water-direct", "去浇水。"},
+			{"home-replace-fertilize", "先别浇水了，去施肥。"},
+			{"home-praise", "迪莫你真棒。"},
 		}
 	} else if *scene != "intent" {
 		log.Fatal("unknown fixture scene")

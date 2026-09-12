@@ -6,7 +6,9 @@ const assert = require('node:assert/strict');
 // and cancellation run through the application and real cloud services.
 (async () => {
   const waitScenario = process.argv.includes('--wait');
-  const evidenceName = waitScenario ? 'home-wait' : 'home';
+  const replacementScenario = process.argv.includes('--replacement');
+  assert.ok(!(waitScenario && replacementScenario), 'Select one scenario');
+  const evidenceName = waitScenario ? 'home-wait' : replacementScenario ? 'home-replacement' : 'home';
   const browser = await chromium.launch({
     executablePath: process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe',
     headless: true, args: ['--autoplay-policy=no-user-gesture-required', '--mute-audio'],
@@ -17,7 +19,7 @@ const assert = require('node:assert/strict');
   try {
     await page.route('**/fixture-home-*.wav', route => {
       const name = new URL(route.request().url()).pathname.replace('/fixture-', '');
-      if (!['home-water.wav', 'home-fertilize.wav', 'home-praise.wav', 'home-water-direct.wav', 'home-wait-plant.wav'].includes(name)) return route.abort();
+      if (!['home-water.wav', 'home-fertilize.wav', 'home-praise.wav', 'home-water-direct.wav', 'home-wait-plant.wav', 'home-replace-fertilize.wav'].includes(name)) return route.abort();
       return route.fulfill({ contentType: 'audio/wav', body: fs.readFileSync(`bin/${name}`) });
     });
     await page.addInitScript(() => {
@@ -49,7 +51,7 @@ const assert = require('node:assert/strict');
     });
     await page.locator('#connect').click();
     await page.waitForFunction(() => document.querySelector('#asrStatus').dataset.state === 'listening', null, { timeout: 15000 });
-    await page.evaluate(name => playFixture(name), waitScenario ? 'home-water-direct' : 'home-water');
+    await page.evaluate(name => playFixture(name), waitScenario || replacementScenario ? 'home-water-direct' : 'home-water');
     await page.waitForFunction(() => voiceEvents.some(e => e.tool_call?.name === 'water' && e.status === 'running')
       && voiceEvents.some(e => e.status === 'speaking'), null, { timeout: 20000 });
     const waterEpoch = await page.evaluate(() => responseEpoch);
@@ -57,7 +59,7 @@ const assert = require('node:assert/strict');
     if (waitScenario) {
       await page.evaluate(() => playFixture('home-wait-plant'));
     } else {
-      await page.evaluate(() => playFixture('home-fertilize'));
+      await page.evaluate(name => playFixture(name), replacementScenario ? 'home-replace-fertilize' : 'home-fertilize');
       await page.waitForFunction(() => voiceEvents.some(e => e.tool_call?.name === 'fertilize' && e.status === 'running')
         && document.querySelector('#replyStatus').dataset.state === 'speaking', null, { timeout: 20000 });
       fertilizerEpoch = await page.evaluate(() => responseEpoch);
@@ -83,6 +85,7 @@ const assert = require('node:assert/strict');
       return { events: voiceEvents, media, reply: document.querySelector('#replyText').textContent };
     });
     const events = result.events;
+    if (replacementScenario) assert.ok(events.some(e => e.event === 'asr_final' && /先别浇水.*施肥/.test(e.text)), 'Expected the reported replacement request in ASR final');
     const index = predicate => events.findIndex(predicate);
     if (!waitScenario) {
       const approved = index(e => e.event === 'intent_result' && e.interrupt === true && e.response_epoch === waterEpoch && !e.fallback);

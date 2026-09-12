@@ -21,7 +21,7 @@
 - DeepSeek V4 Pro 流式回答、分句合成和会话内上下文；
 - 回答轮次管理、有限音频队列、两阶段打断、误触发恢复和手动停止；
 - DeepSeek 语义插话判断、严格布尔 JSON 校验、非打断输入缓存及播完自动回答；
-- DeepSeek 原生工具分类、本地白名单与空参数校验、可取消动作语音执行器、分类异常语音澄清；
+- 独立动作分类指令、本地白名单与空参数校验、格式异常限次重试、可取消动作语音执行器和失败语音提示；
 - 前端连接状态、回答文本、合成/播放/降音状态、当前轮次、延迟观测、远端音频和基础日志。
 
 ASR 和 TTS 使用腾讯云，LLM 使用 DeepSeek 的 `deepseek-v4-pro`。LLM 采用非思考模式，只播放回答正文。
@@ -108,6 +108,8 @@ node scripts/verify_home.cjs
 ```
 
 浏览器脚本需要 Node 可加载 Playwright、已安装 Chrome，并保持服务运行。可用 `DEMO_URL` 指定测试服务器；它会建立新会话并实际调用云接口。真实样例结果见 [home-classifier.json](docs/evidence/home-classifier.json) 和 [home-voice.json](docs/evidence/home-voice.json)。已验证浇水取消、施肥十次、夸赞延后贴贴十次，以及双向媒体收发。ASR 可能拆分称呼与命令，产生额外简短回应；本版本未合并跨 final 输入。
+
+动作分类使用专用 prompt，迪莫角色 skill 只用于说话问答。协议不合法时在原 5 秒总期限内重试一次，通过校验后才执行；拒绝和网络错误不重试。仍失败时提示“任务未能启动”，日志用 `validation` 区分额外正文、多调用、截断、非法参数等，不把技术失败当作听不懂用户。截图原句的专项回归可运行 `go run ./cmd/verify-home -suite replacement`、`go run ./cmd/demo-fixtures -scene home-replacement`、`node scripts/verify_home.cjs --replacement`。
 
 ## 两阶段打断
 

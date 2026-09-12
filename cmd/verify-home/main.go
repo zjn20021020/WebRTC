@@ -6,6 +6,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -15,9 +16,10 @@ import (
 
 // Real provider verification using public scenario text, never microphone data.
 func main() {
-	suite := flag.String("suite", "home", "Verification suite: home or wait")
+	suite := flag.String("suite", "home", "Verification suite: home, wait or replacement")
+	output := flag.String("output", "", "Optional evidence file path")
 	flag.Parse()
-	if *suite != "home" && *suite != "wait" {
+	if *suite != "home" && *suite != "wait" && *suite != "replacement" {
 		log.Fatal("unknown suite")
 	}
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
@@ -29,11 +31,12 @@ func main() {
 		log.Fatal(err)
 	}
 	type result struct {
-		Input     string      `json:"input"`
-		Expected  home.Action `json:"expected"`
-		Call      home.Call   `json:"tool_call"`
-		LatencyMS int64       `json:"latency_ms"`
-		Error     string      `json:"error,omitempty"`
+		Input     string        `json:"input"`
+		Expected  home.Action   `json:"expected"`
+		Call      home.Call     `json:"tool_call"`
+		LatencyMS int64         `json:"latency_ms"`
+		Error     string        `json:"error,omitempty"`
+		History   []llm.Message `json:"recent_history,omitempty"`
 	}
 	results := []result{
 		{Input: "迪莫，你去浇下水", Expected: home.Water},
@@ -57,12 +60,33 @@ func main() {
 			{Input: "等一下别浇水了先去种地", Expected: home.Plant},
 		}
 	}
+	if *suite == "replacement" {
+		results = nil
+		histories := [][]llm.Message{
+			nil,
+			{{Role: "user", Content: "去浇水。"}},
+			{{Role: "user", Content: "去浇水。"}, {Role: "assistant", Content: strings.Repeat("我正在浇水。", 10)},
+				{Role: "user", Content: "等一下再去种地。"}, {Role: "assistant", Content: strings.Repeat("我正在种菜。", 10)},
+				{Role: "user", Content: "去浇水。"}, {Role: "assistant", Content: strings.Repeat("我正在浇水。", 10)},
+				{Role: "user", Content: "你真棒。"}, {Role: "assistant", Content: strings.Repeat("贴贴。", 10)},
+				{Role: "user", Content: "去浇水。"}},
+		}
+		for _, history := range histories {
+			for _, input := range []string{"先别浇水了，去施肥。", "先别浇水了，去施肥。", "不用浇水了，改成施肥", "先别浇水了，去种地"} {
+				expected := home.Fertilize
+				if strings.Contains(input, "种地") {
+					expected = home.Plant
+				}
+				results = append(results, result{Input: input, Expected: expected, History: history})
+			}
+		}
+	}
 	passed := true
 	for i := range results {
 		r := &results[i]
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		started := time.Now()
-		r.Call, err = client.ClassifyAction(ctx, llm.ActionInput{UserText: r.Input})
+		r.Call, err = client.ClassifyAction(ctx, llm.ActionInput{UserText: r.Input, RecentHistory: r.History})
 		r.LatencyMS = time.Since(started).Milliseconds()
 		cancel()
 		if err != nil {
@@ -98,6 +122,9 @@ func main() {
 			{Text: "别浇水了等一下再去种地", Tool: "water", IsFinal: true, Expected: true},
 		}
 	}
+	if *suite == "replacement" {
+		intents = nil
+	}
 	for i := range intents {
 		r := &intents[i]
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
@@ -118,6 +145,12 @@ func main() {
 	path := "docs/evidence/home-classifier.json"
 	if *suite == "wait" {
 		path = "docs/evidence/home-wait-classifier.json"
+	}
+	if *suite == "replacement" {
+		path = "docs/evidence/home-replacement-classifier.json"
+	}
+	if *output != "" {
+		path = *output
 	}
 	if err := os.WriteFile(path, append(data, '\n'), 0644); err != nil {
 		log.Fatal(err)
