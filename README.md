@@ -1,6 +1,12 @@
-# WebRTC 双向音频实验
+# 迪莫家园语音助手 · WebRTC 全双工实验
 
 使用 Go + Pion 建立浏览器与服务端之间的 WebRTC 语音会话，接入腾讯云 ASR、DeepSeek V4 Pro 和腾讯云 TTS。
+
+当前场景固定为《洛克王国：世界》的家园精灵迪莫，默认已经唤起。支持六类原生 function calling：浇水、种菜、收菜、施肥、亲密动作、通用问答。五类动作均以固定台词重复十次模拟，通用问答带迪莫角色回复；尚未连接真实游戏。
+
+可直接说“迪莫你去浇下水”，播报时说“别浇水了去施肥”，施肥时说“迪莫你真棒”。先降音至 50%，合法打断判断 true 才取消旧任务；false 的夸赞在施肥音频发送完成后才执行十次“贴贴”。
+
+角色规则见 [迪莫 SKILL.md](internal/home/skills/dimo/SKILL.md)，游戏资料、分类协议及未来工具接口见 [场景调研与设计](docs/场景调研与设计.md)。角色 skill 内嵌进程序，修改后需重新编译并重启。
 
 当前版本已经包含：
 
@@ -15,6 +21,7 @@
 - DeepSeek V4 Pro 流式回答、分句合成和会话内上下文；
 - 回答轮次管理、有限音频队列、两阶段打断、误触发恢复和手动停止；
 - DeepSeek 语义插话判断、严格布尔 JSON 校验、非打断输入缓存及播完自动回答；
+- DeepSeek 原生工具分类、本地白名单与空参数校验、可取消动作语音执行器、分类异常语音澄清；
 - 前端连接状态、回答文本、合成/播放/降音状态、当前轮次、延迟观测、远端音频和基础日志。
 
 ASR 和 TTS 使用腾讯云，LLM 使用 DeepSeek 的 `deepseek-v4-pro`。LLM 采用非思考模式，只播放回答正文。
@@ -78,7 +85,8 @@ TENCENT_TTS_VOICE_TYPE=1001
 
 ```text
 浏览器麦克风 -> WebRTC PCMU/8kHz -> PCM16LE -> 腾讯 ASR
-  -> asr_final -> DeepSeek V4 Pro SSE -> 回答文本 / 分句
+  -> asr_final -> DeepSeek 六类工具分类
+  -> 固定动作台词 / 迪莫角色 DeepSeek SSE -> 正文分句
   -> 腾讯 TextToStreamAudioWS (PCM16LE 二进制流, 8kHz, mono)
   -> PCMU -> 160 字节 / 20ms RTP -> 浏览器音频输出
 ```
@@ -88,6 +96,18 @@ LLM 返回流式正文；TTS 使用 `wss://tts.cloud.tencent.com/stream_ws`，�
 空闲时由有效 final 启动 `response_epoch`；播放中确认插话时立即递增轮次并等待新句 final，final 到达后在已分配的轮次内生成回答。确认会取消旧 LLM/TTS 上下文并清空待播和重试帧。每次入队在锁内校验轮次和取消状态，晚到片段不能重新进入当前队列。重复 final 不会重复回答，被取消的句子也不能复活。停止命令携带目标轮次，避免延迟到达的旧命令停止新回答。断开会释放本会话的识别、生成和播放资源。
 
 最近约 12 条对话消息用于会话内上下文，只有完整发送到下行的回答会写入助手历史。当前服务仍只维护一个浏览器会话，新连接会关闭上一会话。
+
+## 家园场景验证
+
+```powershell
+E:\go\bin\go.exe test ./...
+E:\go\bin\go.exe vet ./...
+E:\go\bin\go.exe run ./cmd/verify-home
+E:\go\bin\go.exe run ./cmd/demo-fixtures -scene home
+node scripts/verify_home.cjs
+```
+
+浏览器脚本需要 Node 可加载 Playwright、已安装 Chrome，并保持服务运行。可用 `DEMO_URL` 指定测试服务器；它会建立新会话并实际调用云接口。真实样例结果见 [home-classifier.json](docs/evidence/home-classifier.json) 和 [home-voice.json](docs/evidence/home-voice.json)。已验证浇水取消、施肥十次、夸赞延后贴贴十次，以及双向媒体收发。ASR 可能拆分称呼与命令，产生额外简短回应；本版本未合并跨 final 输入。
 
 ## 两阶段打断
 

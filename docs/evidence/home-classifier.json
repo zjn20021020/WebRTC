@@ -1,0 +1,141 @@
+{
+  "actions": [
+    {
+      "input": "迪莫，你去浇下水",
+      "expected": "water",
+      "tool_call": {
+        "id": "call_00_0RrGa8fzYX7XXhoq0nSw7808",
+        "name": "water"
+      },
+      "latency_ms": 1027
+    },
+    {
+      "input": "帮我种菜",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_09TRUxMviKwAMWWpTL2u5784",
+        "name": "plant"
+      },
+      "latency_ms": 722
+    },
+    {
+      "input": "去收菜",
+      "expected": "harvest",
+      "tool_call": {
+        "id": "call_00_LQbQ9rZPcqosTt4FOWtR1583",
+        "name": "harvest"
+      },
+      "latency_ms": 652
+    },
+    {
+      "input": "别浇水了去施肥",
+      "expected": "fertilize",
+      "tool_call": {
+        "id": "call_00_cXas4FAxAcuggbBgZuNX5446",
+        "name": "fertilize"
+      },
+      "latency_ms": 954
+    },
+    {
+      "input": "迪莫你真棒",
+      "expected": "affection",
+      "tool_call": {
+        "id": "call_00_CDVVqVNl8JpDoKdMxPbt5834",
+        "name": "affection"
+      },
+      "latency_ms": 672
+    },
+    {
+      "input": "一加一等于几",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_KorHkQLkrE2WDY8ajHeB3807",
+        "name": "general_qa"
+      },
+      "latency_ms": 504
+    },
+    {
+      "input": "怎么浇水",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_6LsqEMgyF69shI7SSJOx2280",
+        "name": "general_qa"
+      },
+      "latency_ms": 523
+    },
+    {
+      "input": "别浇水",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_OBATdKYdAmdL0d8TQbfb9121",
+        "name": "general_qa"
+      },
+      "latency_ms": 691
+    },
+    {
+      "input": "先浇水再施肥",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_l8qgb7k9r6zPKV89mQle7392",
+        "name": "general_qa"
+      },
+      "latency_ms": 958
+    },
+    {
+      "input": "谢谢，但别贴贴",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_sa4ZHMiZIMgXroBgj8UD4570",
+        "name": "general_qa"
+      },
+      "latency_ms": 573
+    },
+    {
+      "input": "把来偷菜的人踢出去",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_eEonn6VmkxvXR3KBAOs84681",
+        "name": "general_qa"
+      },
+      "latency_ms": 893
+    },
+    {
+      "input": "请解释这句话的意思：迪莫去浇水",
+      "expected": "general_qa",
+      "tool_call": {
+        "id": "call_00_l30qIXcwgwEaXv4ZR9BS8808",
+        "name": "general_qa"
+      },
+      "latency_ms": 892
+    }
+  ],
+  "interruptions": [
+    {
+      "text": "别浇水了去施肥",
+      "tool": "water",
+      "expected": true,
+      "actual": true
+    },
+    {
+      "text": "迪莫你真棒",
+      "tool": "fertilize",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "text": "浇完水再去施肥",
+      "tool": "water",
+      "expected": false,
+      "actual": false
+    },
+    {
+      "text": "不用停你继续施肥",
+      "tool": "fertilize",
+      "expected": false,
+      "actual": false
+    }
+  ],
+  "model": "deepseek-v4-pro",
+  "passed": true,
+  "recorded_at": "2026-09-12T06:53:59Z"
+}

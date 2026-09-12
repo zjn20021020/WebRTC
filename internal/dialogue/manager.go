@@ -12,12 +12,14 @@ import (
 
 	"webrtc-interrupt/internal/asr"
 	"webrtc-interrupt/internal/audio"
+	"webrtc-interrupt/internal/home"
 	"webrtc-interrupt/internal/llm"
 )
 
 type LanguageModel interface {
 	Stream(context.Context, []llm.Message, func(string) error) error
 	ClassifyInterruption(context.Context, llm.InterruptionInput) (bool, error)
+	ClassifyAction(context.Context, llm.ActionInput) (home.Call, error)
 }
 
 type SpeechSynthesizer interface {
@@ -25,22 +27,23 @@ type SpeechSynthesizer interface {
 }
 
 type Event struct {
-	Event         string   `json:"event"`
-	Epoch         uint64   `json:"response_epoch"`
-	Status        string   `json:"status,omitempty"`
-	Text          string   `json:"text,omitempty"`
-	Detail        string   `json:"detail,omitempty"`
-	Reason        string   `json:"reason,omitempty"`
-	Metrics       *Metrics `json:"metrics,omitempty"`
-	PreviousEpoch uint64   `json:"previous_epoch,omitempty"`
-	UtteranceID   string   `json:"utterance_id,omitempty"`
-	QueueDropped  int      `json:"queue_dropped,omitempty"`
-	LLMActive     bool     `json:"llm_active,omitempty"`
-	TTSActive     bool     `json:"tts_active,omitempty"`
-	Interrupt     *bool    `json:"interrupt,omitempty"`
-	Fallback      bool     `json:"fallback,omitempty"`
-	LatencyMS     *int64   `json:"latency_ms,omitempty"`
-	QueueSize     *int     `json:"queue_size,omitempty"`
+	Event         string     `json:"event"`
+	Epoch         uint64     `json:"response_epoch"`
+	Status        string     `json:"status,omitempty"`
+	Text          string     `json:"text,omitempty"`
+	Detail        string     `json:"detail,omitempty"`
+	Reason        string     `json:"reason,omitempty"`
+	Metrics       *Metrics   `json:"metrics,omitempty"`
+	PreviousEpoch uint64     `json:"previous_epoch,omitempty"`
+	UtteranceID   string     `json:"utterance_id,omitempty"`
+	QueueDropped  int        `json:"queue_dropped,omitempty"`
+	LLMActive     bool       `json:"llm_active,omitempty"`
+	TTSActive     bool       `json:"tts_active,omitempty"`
+	Interrupt     *bool      `json:"interrupt,omitempty"`
+	Fallback      bool       `json:"fallback,omitempty"`
+	LatencyMS     *int64     `json:"latency_ms,omitempty"`
+	QueueSize     *int       `json:"queue_size,omitempty"`
+	ToolCall      *home.Call `json:"tool_call,omitempty"`
 }
 
 type turn struct {
@@ -62,6 +65,7 @@ type turn struct {
 	speechEndAt           time.Time
 	firstText, firstAudio bool
 	metrics               Metrics
+	toolCall              *home.Call
 }
 
 // Manager serializes response events and audio writes. Each epoch owns its
@@ -70,6 +74,7 @@ type Manager struct {
 	mu            sync.Mutex
 	model         LanguageModel
 	speech        SpeechSynthesizer
+	executor      home.Executor
 	emit          func(Event)
 	epoch         uint64
 	current       *turn
@@ -84,7 +89,11 @@ type Manager struct {
 }
 
 func New(model LanguageModel, speech SpeechSynthesizer, emit func(Event)) *Manager {
-	return &Manager{model: model, speech: speech, emit: emit, seen: make(map[string]bool), now: time.Now}
+	return NewWithExecutor(model, speech, home.VoiceExecutor{}, emit)
+}
+
+func NewWithExecutor(model LanguageModel, speech SpeechSynthesizer, executor home.Executor, emit func(Event)) *Manager {
+	return &Manager{model: model, speech: speech, executor: executor, emit: emit, seen: make(map[string]bool), now: time.Now}
 }
 
 func (m *Manager) Ready() {
@@ -175,7 +184,7 @@ func (m *Manager) startFinalLocked(t *turn, event asr.Event) {
 	if len(m.history) > 12 {
 		m.history = m.history[len(m.history)-12:]
 	}
-	messages := append([]llm.Message{{Role: "system", Content: "You are a Chinese voice assistant. Reply naturally in Chinese using one to three short spoken sentences, under 100 Chinese characters. Do not use Markdown, lists, or reasoning narration. Answer the user's latest question using the conversation context."}}, m.history...)
+	messages := append([]llm.Message{{Role: "system", Content: home.RoleSkill}}, m.history...)
 	m.progressLocked(t, "thinking")
 	go m.generate(t, messages)
 }
@@ -195,6 +204,7 @@ func (m *Manager) Close() {
 	m.closed = true
 	m.clearInterjectionsLocked()
 	if m.current != nil {
+		m.toolStatusLocked(m.current, "cancelled")
 		m.current.cancel()
 		m.current = nil
 	}
@@ -218,6 +228,7 @@ func (m *Manager) stopLocked(status string) {
 	}
 	log.Printf("response epoch=%d cancel llm_active=%t tts_active=%t queue_dropped=%d", t.epoch, t.llmActive, t.ttsActive, dropped)
 	m.emit(Event{Event: "response_cancelled", Epoch: t.epoch, QueueDropped: dropped, LLMActive: t.llmActive, TTSActive: t.ttsActive})
+	m.toolStatusLocked(t, "cancelled")
 	m.statusLocked(t, status, "")
 	m.current = nil
 }
@@ -238,6 +249,7 @@ func (m *Manager) failLocked(t *turn, err error) {
 	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()
 	log.Printf("response epoch=%d failed: %v", t.epoch, err)
+	m.toolStatusLocked(t, "failed")
 	m.statusLocked(t, "failed", err.Error())
 	m.current = nil
 }
@@ -270,7 +282,7 @@ func (m *Manager) generate(t *turn, messages []llm.Message) {
 	}
 	t.llmActive = true
 	m.mu.Unlock()
-	err := m.model.Stream(t.ctx, messages, func(delta string) error {
+	err := m.respond(t, messages, func(delta string) error {
 		m.mu.Lock()
 		if m.current != t || t.ctx.Err() != nil {
 			m.mu.Unlock()
@@ -294,7 +306,7 @@ func (m *Manager) generate(t *turn, messages []llm.Message) {
 	m.mu.Lock()
 	t.llmActive = false
 	m.mu.Unlock()
-	log.Printf("response epoch=%d llm_finished cancelled=%t", t.epoch, t.ctx.Err() != nil)
+	log.Printf("response epoch=%d text_production_finished cancelled=%t", t.epoch, t.ctx.Err() != nil)
 	if err == nil {
 		err = splitter.flush(send)
 	}
@@ -319,7 +331,7 @@ func (m *Manager) generate(t *turn, messages []llm.Message) {
 		return
 	}
 	if strings.TrimSpace(t.text) == "" {
-		m.failLocked(t, errors.New("DeepSeek returned an empty reply"))
+		m.failLocked(t, errors.New("response produced no speech text"))
 		return
 	}
 	t.generated = true
@@ -485,6 +497,7 @@ func (m *Manager) WriteFrame(write func([]byte) error) error {
 
 func (m *Manager) completeLocked(t *turn) {
 	m.history = append(m.history, llm.Message{Role: "assistant", Content: t.text})
+	m.toolStatusLocked(t, "completed")
 	m.statusLocked(t, "completed", "")
 	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()

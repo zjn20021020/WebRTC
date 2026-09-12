@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"webrtc-interrupt/internal/asr"
+	"webrtc-interrupt/internal/home"
 	"webrtc-interrupt/internal/llm"
 )
 
@@ -21,6 +22,10 @@ func (f modelFunc) Stream(ctx context.Context, m []llm.Message, e func(string) e
 
 func (f modelFunc) ClassifyInterruption(context.Context, llm.InterruptionInput) (bool, error) {
 	return true, nil
+}
+
+func (f modelFunc) ClassifyAction(context.Context, llm.ActionInput) (home.Call, error) {
+	return home.Call{ID: "test-call", Name: home.GeneralQA}, nil
 }
 
 type speechFunc func(context.Context, string) ([]byte, error)

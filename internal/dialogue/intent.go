@@ -113,6 +113,9 @@ func (m *Manager) requestIntentLocked(t *turn, c *interjection) {
 	ctx, cancel := context.WithTimeout(t.ctx, intentTimeout)
 	c.cancel = cancel
 	input := llm.InterruptionInput{UserText: c.event.Text, IsFinal: c.final(), AssistantResponse: limitText(t.text, 1200)}
+	if t.toolCall != nil {
+		input.CurrentTool = string(t.toolCall.Name)
+	}
 	for i := len(m.history) - 1; i >= 0; i-- {
 		if m.history[i].Role == "user" {
 			input.PreviousUserText = limitText(m.history[i].Content, 600)

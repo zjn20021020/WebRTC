@@ -17,6 +17,7 @@ pre { min-height: 180px; padding: 12px; overflow: auto; background: #101820; col
 #turnLabel { color: #52606d; font-size: 14px; margin-left: auto; }
 #interruptionStatus { min-height: 24px; color: #52606d; font-size: 14px; }
 #queuedStatus { min-height: 20px; color: #1769aa; font-size: 14px; }
+#toolStatus { min-height: 24px; color: #187353; font-size: 14px; }
 .latency { border-top: 1px solid #d8dee4; padding-top: 16px; margin: 20px 0; }
 .latency h2 { margin: 0; font-size: 18px; }
 .latency dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }

@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>WebRTC 双向音频实验</title>
+    <title>迪莫 · 家园语音助手</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <main class="container">
-      <h1>WebRTC 双向音频实验</h1>
+      <h1>迪莫 · 家园语音助手</h1>
       <p id="status" class="status">未连接</p>
       <button id="connect" type="button">连接并启用麦克风</button>
       <button id="disconnect" type="button" disabled>断开</button>
@@ -31,6 +31,7 @@
         </div>
         <p id="replyText" aria-live="polite"></p>
         <p id="replyError" role="alert" hidden></p>
+        <p id="toolStatus" role="status"></p>
         <p id="interruptionStatus" role="status"></p>
         <p id="queuedStatus" role="status"></p>
         <button id="stopResponse" type="button" disabled>停止回答</button>

@@ -16,6 +16,7 @@ const replyError = document.querySelector('#replyError');
 const stopResponseButton = document.querySelector('#stopResponse');
 const interruptionStatus = document.querySelector('#interruptionStatus');
 const queuedStatus = document.querySelector('#queuedStatus');
+const toolStatus = document.querySelector('#toolStatus');
 const latencyText = document.querySelector('#latencyText');
 const latencyAudio = document.querySelector('#latencyAudio');
 const latencyDuck = document.querySelector('#latencyDuck');
@@ -48,12 +49,19 @@ function handleResponse(message) {
     replyError.hidden = true;
     replyError.textContent = '';
     interruptionStatus.textContent = '';
+    toolStatus.textContent = '';
     latencyText.textContent = '--';
     latencyAudio.textContent = '--';
     latencyDuck.textContent = '--';
   }
   if (responseFinished) return;
-  if (message.event === 'response_metrics' && message.metrics && typeof message.metrics === 'object') {
+  if (message.event === 'tool_status' && message.tool_call) {
+    const names = { water: '浇水', plant: '种菜', harvest: '收菜', fertilize: '施肥', affection: '贴贴', general_qa: '问答' };
+    const states = { running: '进行中', completed: '已结束', cancelled: '已取消', failed: '失败' };
+    toolStatus.textContent = `${names[message.tool_call.name] || '任务'} · ${states[message.status] || message.status}`;
+  } else if (message.event === 'action_result' && message.fallback) {
+    toolStatus.textContent = '等待澄清';
+  } else if (message.event === 'response_metrics' && message.metrics && typeof message.metrics === 'object') {
     const display = (element, value) => {
       if (Number.isSafeInteger(value) && value >= 0) element.textContent = `${value} ms`;
     };
@@ -113,7 +121,7 @@ function handleControl(data) {
     if (message.event === 'intent_result') interruptionStatus.textContent = message.status === 'error'
       ? '意图判断暂不可用，延后处理' : message.interrupt ? '已确认打断' : '本句延后处理';
   }
-  if (['response_status', 'response_text', 'response_metrics'].includes(message.event)) {
+  if (['response_status', 'response_text', 'response_metrics', 'tool_status', 'action_result'].includes(message.event)) {
     handleResponse(message);
     return;
   }
@@ -168,6 +176,7 @@ function disconnect() {
   setReplyStatus('disconnected');
   interruptionStatus.textContent = '';
   queuedStatus.textContent = '';
+  toolStatus.textContent = '';
   responseFinished = true;
   connectButton.disabled = false;
   disconnectButton.disabled = true;
@@ -260,6 +269,7 @@ connectButton.addEventListener('click', async () => {
   replyError.hidden = true;
   interruptionStatus.textContent = '';
   queuedStatus.textContent = '';
+  toolStatus.textContent = '';
   for (const element of [latencyText, latencyAudio, latencyDuck]) element.textContent = '--';
   turnLabel.textContent = '';
   setReplyStatus('waiting');

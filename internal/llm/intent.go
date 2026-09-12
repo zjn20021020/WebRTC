@@ -21,6 +21,7 @@ type InterruptionInput struct {
 	AssistantResponse string `json:"assistant_response"`
 	UserText          string `json:"user_text"`
 	IsFinal           bool   `json:"is_final"`
+	CurrentTool       string `json:"current_tool,omitempty"`
 }
 
 // ClassifyInterruption uses a separate, short, non-thinking JSON-mode request.
