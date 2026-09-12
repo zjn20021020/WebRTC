@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -32,6 +33,7 @@ func TestActionProtocolRejectsInvalidCalls(t *testing.T) {
 		toolResponse(home.Water, `{}`, "", "length"),
 		toolResponse("delete_home", `{}`, "", "tool_calls"),
 		toolResponse(home.Water, `{"times":10}`, "", "tool_calls"),
+		toolResponse(home.Affection, `{"additionalProperties":{}}`, "", "tool_calls"),
 		toolResponse(home.Water, `{"crop":"a","crop":"b"}`, "", "tool_calls"),
 		toolResponse(home.Water, `null`, "", "tool_calls"),
 		toolResponse(home.Water, `{} {}`, "", "tool_calls"),
@@ -55,6 +57,54 @@ func TestActionProtocolRejectsInvalidCalls(t *testing.T) {
 		if _, err := parseAction(data); !errors.Is(err, ErrInvalidActionResult) {
 			t.Fatalf("invalid envelope accepted: %s", data)
 		}
+	}
+}
+
+type actionTransportFunc func(*http.Request) (*http.Response, error)
+
+func (f actionTransportFunc) RoundTrip(r *http.Request) (*http.Response, error) { return f(r) }
+
+func TestActionStrictSchemaRoutingAndValidation(t *testing.T) {
+	for _, tc := range []struct {
+		base, path string
+		strict     bool
+	}{
+		{"https://api.deepseek.com", "/beta/chat/completions", true},
+		{"https://api.deepseek.com/v1/", "/beta/chat/completions", true},
+		{"https://api.deepseek.com/beta/chat/completions", "/beta/chat/completions", true},
+		{"https://gateway.example/v1", "/v1/chat/completions", false},
+		{"https://api.deepseek.com/proxy", "/proxy/chat/completions", false},
+	} {
+		t.Run(tc.base, func(t *testing.T) {
+			c, err := NewClient(Config{APIKey: "fixture", BaseURL: tc.base, Model: DefaultModel})
+			if err != nil {
+				t.Fatal(err)
+			}
+			original := c.address
+			c.http = &http.Client{Transport: actionTransportFunc(func(r *http.Request) (*http.Response, error) {
+				var body struct {
+					Tools []functionTool `json:"tools"`
+				}
+				if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+					t.Fatal(err)
+				}
+				if r.URL.Path != tc.path || len(body.Tools) != 6 {
+					t.Fatalf("wrong action route or tools: %s", r.URL)
+				}
+				for _, tool := range body.Tools {
+					p := tool.Function.Parameters
+					if tool.Function.Strict != tc.strict || p["type"] != "object" || p["additionalProperties"] != false || len(p["properties"].(map[string]any)) != 0 || len(p["required"].([]any)) != 0 {
+						t.Fatal("incorrect strict empty-object schema")
+					}
+				}
+				// Provider strict mode does not remove our execution-boundary validation.
+				return &http.Response{StatusCode: http.StatusOK, Body: io.NopCloser(strings.NewReader(string(toolResponse(home.Affection, `{"additionalProperties":{}}`, "", "tool_calls"))))}, nil
+			})}
+			_, err = c.ClassifyAction(context.Background(), ActionInput{UserText: "干得不错。"})
+			if ActionValidationReason(err) != "nonempty_arguments" || c.address != original {
+				t.Fatalf("strict output bypassed validation or changed the shared endpoint: %v", err)
+			}
+		})
 	}
 }
 

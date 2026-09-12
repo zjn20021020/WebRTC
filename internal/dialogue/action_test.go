@@ -191,7 +191,7 @@ func TestCancelledClassificationCannotDispatchLateTool(t *testing.T) {
 }
 
 func TestMalformedActionRetriesBeforeExecutingExactlyOnce(t *testing.T) {
-	for _, reason := range []string{"unexpected_content", "tool_count", "invalid_arguments", "truncated"} {
+	for _, reason := range []string{"unexpected_content", "tool_count", "invalid_arguments", "nonempty_arguments", "truncated"} {
 		t.Run(reason, func(t *testing.T) {
 			var calls, executions atomic.Int32
 			var retry, fallback bool
@@ -237,7 +237,7 @@ func TestActionRetryIsBoundedAndRefusalDoesNotRetry(t *testing.T) {
 	for _, tc := range []struct {
 		reason   string
 		attempts int
-	}{{"tool_count", 2}, {"refusal", 1}, {"provider_error", 1}} {
+	}{{"tool_count", 2}, {"nonempty_arguments", 2}, {"refusal", 1}, {"provider_error", 1}} {
 		t.Run(tc.reason, func(t *testing.T) {
 			var calls atomic.Int32
 			model := actionModel{classify: func(context.Context, llm.ActionInput) (home.Call, error) {

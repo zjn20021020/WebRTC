@@ -16,10 +16,10 @@ import (
 
 // Real provider verification using public scenario text, never microphone data.
 func main() {
-	suite := flag.String("suite", "home", "Verification suite: home, wait or replacement")
+	suite := flag.String("suite", "home", "Verification suite: home, wait, replacement or praise")
 	output := flag.String("output", "", "Optional evidence file path")
 	flag.Parse()
-	if *suite != "home" && *suite != "wait" && *suite != "replacement" {
+	if *suite != "home" && *suite != "wait" && *suite != "replacement" && *suite != "praise" {
 		log.Fatal("unknown suite")
 	}
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
@@ -81,6 +81,22 @@ func main() {
 			}
 		}
 	}
+	if *suite == "praise" {
+		results = nil
+		histories := [][]llm.Message{
+			nil,
+			{{Role: "user", Content: "去种地。"}, {Role: "assistant", Content: strings.Repeat("我正在种菜。", 10)}},
+			{{Role: "user", Content: "去浇水。"}, {Role: "assistant", Content: strings.Repeat("我正在浇水。", 10)},
+				{Role: "user", Content: "浇完水去施肥。"}, {Role: "user", Content: "别施肥了，去种地。"},
+				{Role: "assistant", Content: strings.Repeat("我正在种菜。", 10)}},
+			{{Role: "user", Content: "干的不错。"}, {Role: "assistant", Content: "小洛克，这次任务没能启动，请再试一次。"}},
+		}
+		for _, history := range histories {
+			for _, input := range []string{"干的不错。", "干得不错。", "干得不错。"} {
+				results = append(results, result{Input: input, Expected: home.Affection, History: history})
+			}
+		}
+	}
 	passed := true
 	for i := range results {
 		r := &results[i]
@@ -125,6 +141,9 @@ func main() {
 	if *suite == "replacement" {
 		intents = nil
 	}
+	if *suite == "praise" {
+		intents = []intentResult{{Text: "干的不错。", Tool: "plant", IsFinal: true}, {Text: "干得不错。", Tool: "plant", IsFinal: true}}
+	}
 	for i := range intents {
 		r := &intents[i]
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
@@ -148,6 +167,9 @@ func main() {
 	}
 	if *suite == "replacement" {
 		path = "docs/evidence/home-replacement-classifier.json"
+	}
+	if *suite == "praise" {
+		path = "docs/evidence/home-praise-classifier.json"
 	}
 	if *output != "" {
 		path = *output

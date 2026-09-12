@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"webrtc-interrupt/internal/home"
@@ -45,18 +46,36 @@ type functionTool struct {
 		Name        home.Action    `json:"name"`
 		Description string         `json:"description"`
 		Parameters  map[string]any `json:"parameters"`
+		Strict      bool           `json:"strict,omitempty"`
 	} `json:"function"`
 }
 
-func actionTools() []functionTool {
+func actionTools(strict bool) []functionTool {
 	var result []functionTool
 	for _, definition := range home.Definitions() {
 		tool := functionTool{Type: "function"}
 		tool.Function.Name, tool.Function.Description = definition.Name, definition.Description
+		tool.Function.Strict = strict
 		tool.Function.Parameters = map[string]any{"type": "object", "properties": map[string]any{}, "required": []string{}, "additionalProperties": false}
 		result = append(result, tool)
 	}
 	return result
+}
+
+// Strict schemas are a Beta feature of the official API. Keep custom gateways
+// and the endpoints used by streaming answers and interruption decisions intact.
+func actionEndpoint(address string) (string, bool) {
+	u, err := url.Parse(address)
+	if err != nil || u.Scheme != "https" || !strings.EqualFold(u.Host, "api.deepseek.com") {
+		return address, false
+	}
+	switch u.Path {
+	case "/chat/completions", "/v1/chat/completions", "/beta/chat/completions":
+		u.Path = "/beta/chat/completions"
+		return u.String(), true
+	default:
+		return address, false
+	}
 }
 
 // ClassifyAction uses native function calling, then locally validates the
@@ -73,15 +92,16 @@ func (c *Client) ClassifyAction(ctx context.Context, input ActionInput) (home.Ca
 	if input.Repair {
 		prompt += "\nProtocol repair: the previous attempt was rejected and NO tool was executed. Reclassify the same latest user request. Return exactly ONE native function call from the provided tools with arguments {}, no content, no explanation. A cancelled old action is not a second tool to call."
 	}
+	address, strict := actionEndpoint(c.address)
 	body, err := json.Marshal(map[string]any{
 		"model": c.config.Model, "messages": []Message{{Role: "system", Content: prompt}, {Role: "user", Content: string(data)}},
 		"stream": false, "max_tokens": 128, "temperature": 0,
-		"thinking": map[string]string{"type": "disabled"}, "tools": actionTools(), "tool_choice": "required",
+		"thinking": map[string]string{"type": "disabled"}, "tools": actionTools(strict), "tool_choice": "required",
 	})
 	if err != nil {
 		return home.Call{}, errors.New("invalid action request")
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, c.address, bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, address, bytes.NewReader(body))
 	if err != nil {
 		return home.Call{}, errors.New("invalid DeepSeek endpoint")
 	}

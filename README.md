@@ -109,7 +109,9 @@ node scripts/verify_home.cjs
 
 浏览器脚本需要 Node 可加载 Playwright、已安装 Chrome，并保持服务运行。可用 `DEMO_URL` 指定测试服务器；它会建立新会话并实际调用云接口。真实样例结果见 [home-classifier.json](docs/evidence/home-classifier.json) 和 [home-voice.json](docs/evidence/home-voice.json)。已验证浇水取消、施肥十次、夸赞延后贴贴十次，以及双向媒体收发。ASR 可能拆分称呼与命令，产生额外简短回应；本版本未合并跨 final 输入。
 
-动作分类使用专用 prompt，迪莫角色 skill 只用于说话问答。协议不合法时在原 5 秒总期限内重试一次，通过校验后才执行；拒绝和网络错误不重试。仍失败时提示“任务未能启动”，日志用 `validation` 区分额外正文、多调用、截断、非法参数等，不把技术失败当作听不懂用户。截图原句的专项回归可运行 `go run ./cmd/verify-home -suite replacement`、`go run ./cmd/demo-fixtures -scene home-replacement`、`node scripts/verify_home.cjs --replacement`。
+动作分类使用专用 prompt，迪莫角色 skill 只用于说话问答。官方 DeepSeek 地址的动作分类单独使用 `/beta/chat/completions`，六个函数均启用 `strict:true` 和空对象 schema，在生成端约束参数；问答和打断判定仍用原地址，自定义网关保持原路径及本地校验。协议不合法时在原 5 秒总期限内重试一次，通过校验后才执行；拒绝和网络错误不重试。仍失败时提示“任务未能启动”，日志用 `validation` 区分额外正文、多调用、截断、非法参数等，不把技术失败当作听不懂用户。
+
+换任务专项回归可运行 `go run ./cmd/verify-home -suite replacement`、`go run ./cmd/demo-fixtures -scene home-replacement`、`node scripts/verify_home.cjs --replacement`。首次夸赞专项使用 `go run ./cmd/verify-home -suite praise`、`go run ./cmd/demo-fixtures -scene home-praise`、`node scripts/verify_home.cjs --praise`，覆盖“干的不错/干得不错”、历史上下文和种地播放结束后才执行贴贴。
 
 ## 两阶段打断
 
