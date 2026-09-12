@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"webrtc-interrupt/internal/asr"
+	"webrtc-interrupt/internal/audio"
 	"webrtc-interrupt/internal/interrupt"
 	"webrtc-interrupt/internal/llm"
 )
@@ -27,12 +28,12 @@ func playingFixture(t *testing.T) (*Manager, *testClock, *[]Event) {
 	ctx, cancel := context.WithCancelCause(context.Background())
 	m.epoch = 1
 	m.current = &turn{epoch: 1, utteranceID: "old", ctx: ctx, fail: cancel, cancel: func() { cancel(context.Canceled) },
-		frames: make(chan []byte, 4), stage: "speaking", playing: true, generated: true, text: "old answer",
+		frames: make(chan []byte, 250), space: make(chan struct{}, 1), stage: "speaking", playing: true, generated: true, text: "old answer",
 		startedAt: clock.now().Add(-time.Second), speechEndAt: clock.now().Add(-2 * time.Second)}
-	for _, b := range []byte{0x11, 0x22, 0x33, 0x44} {
-		m.current.frames <- bytes.Repeat([]byte{b}, 160)
+	for i := 0; i < 200; i++ {
+		m.current.frames <- bytes.Repeat([]byte{0x11}, 160)
 	}
-	m.seen["old"] = true
+	m.rememberLocked("old")
 	m.SetASRListening(true)
 	t.Cleanup(m.Close)
 	return m, clock, events
@@ -40,208 +41,206 @@ func playingFixture(t *testing.T) (*Manager, *testClock, *[]Event) {
 
 func frameFrom(t *testing.T, m *Manager) []byte {
 	t.Helper()
-	var frame []byte
-	if err := m.WriteFrame(func(b []byte) error { frame = bytes.Clone(b); return nil }); err != nil {
+	var out []byte
+	if err := m.WriteFrame(func(b []byte) error { out = bytes.Clone(b); return nil }); err != nil {
 		t.Fatal(err)
 	}
-	return frame
+	return out
 }
 
-func TestSoftPauseResumesWithoutSkippingAudio(t *testing.T) {
+func TestDuckingReducesServerAudioAndContinuesPlayback(t *testing.T) {
 	m, clock, events := playingFixture(t)
 	old := m.current
-	if frameFrom(t, m)[0] != 0x11 {
-		t.Fatal("incorrect first frame")
-	}
+	original := frameFrom(t, m)
 	m.ObserveVAD(interrupt.SpeechStarted, clock.now().Add(-200*time.Millisecond))
 	clock.advance(20 * time.Millisecond)
-	for i := 0; i < 3; i++ {
-		if !bytes.Equal(frameFrom(t, m), silenceFrame()) {
-			t.Fatal("audio escaped soft pause")
-		}
+	quiet := frameFrom(t, m)
+	ratio := audio.RMS(audio.DecodePCMU(quiet)) / audio.RMS(audio.DecodePCMU(original))
+	if ratio < 0.18 || ratio > 0.22 {
+		t.Fatalf("duck gain=%f, must be audible at about 20%%", ratio)
 	}
-	if old.ctx.Err() != nil || len(old.frames) != 3 || m.epoch != 1 {
-		t.Fatal("soft pause cancelled or consumed the old response")
+	if old.ctx.Err() != nil || len(old.frames) != 198 {
+		t.Fatal("duck cancelled generation or paused queue consumption")
 	}
-	if old.metrics.SpeechToPauseMS == nil || *old.metrics.SpeechToPauseMS != 220 {
-		t.Fatal("VAD hysteresis missing from stop latency")
+	if old.metrics.SpeechToDuckMS == nil || *old.metrics.SpeechToDuckMS != 220 {
+		t.Fatal("duck latency omitted VAD time")
 	}
 	m.ObserveVAD(interrupt.SpeechEnded, time.Time{})
-	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "noise", Text: " ...!? \u3002"})
-	clock.advance(confirmationGrace - time.Millisecond)
+	clock.advance(confirmationGrace)
+	if !bytes.Equal(frameFrom(t, m), original) || m.current != old {
+		t.Fatal("noise recovery failed to restore volume on the same turn")
+	}
+	if (*events)[len(*events)-1].Reason != "unconfirmed" {
+		t.Fatal("recovery reason missing")
+	}
+}
+
+func TestStablePartialCancelsBackendAndReservesTurnBeforeFinal(t *testing.T) {
+	m, clock, events := playingFixture(t)
+	old := m.current
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u4fee\u6539"})
+	if old.ctx.Err() != nil {
+		t.Fatal("first partial caused hard cancellation")
+	}
+	frameFrom(t, m)
+	clock.advance(partialStability)
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u4fee\u6539\u8ba2\u5355"})
+	if old.ctx.Err() == nil || len(old.frames) != 0 || old.pending != nil {
+		t.Fatal("old context and queue not cleared")
+	}
+	if m.epoch != 2 || m.current == old || !m.current.waitingFinal || m.current.stage != "listening" {
+		t.Fatal("new turn was not created before final")
+	}
 	if !bytes.Equal(frameFrom(t, m), silenceFrame()) {
-		t.Fatal("resumed before confirmation grace")
+		t.Fatal("old audio leaked while new turn waits for final")
 	}
-	clock.advance(time.Millisecond)
-	if frameFrom(t, m)[0] != 0x22 || m.current != old || old.ctx.Err() != nil {
-		t.Fatal("did not resume original playback position")
-	}
-	resumed := false
+	transition := false
 	for _, e := range *events {
-		if e.Reason == "unconfirmed" && e.Status == "speaking" {
-			resumed = true
+		if e.Event == "turn_transition" && e.PreviousEpoch == 1 && e.Epoch == 2 {
+			transition = true
 		}
 	}
-	if !resumed {
-		t.Fatal("resume event missing")
+	if !transition {
+		t.Fatal("turn transition evidence missing")
+	}
+	clock.advance(2 * maxDuckDuration)
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "old", Text: "late old final"})
+	if m.epoch != 2 || !m.current.waitingFinal {
+		t.Fatal("retired final revived old turn")
+	}
+	if err := m.enqueueFrame(old, bytes.Repeat([]byte{0x33}, 160)); !errors.Is(err, context.Canceled) {
+		t.Fatal("late TTS frame accepted")
 	}
 }
 
-func TestPausePreservesFrameAfterFailedRTPWrite(t *testing.T) {
+func TestFullClosedLoopStartsNewGenerationOnlyAfterFinal(t *testing.T) {
 	m, clock, _ := playingFixture(t)
-	_ = m.WriteFrame(func([]byte) error { return errors.New("temporary RTP failure") })
-	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	_ = m.WriteFrame(func([]byte) error { return errors.New("silence write failure") })
-	if m.current.metrics.SpeechToPauseMS != nil {
-		t.Fatal("failed silence write counted as a pause")
+	started := make(chan []llm.Message, 1)
+	m.model = modelFunc(func(_ context.Context, msg []llm.Message, emit func(string) error) error {
+		started <- msg
+		return emit("New answer!")
+	})
+	m.speech = speechFunc(func(context.Context, string) ([]byte, error) { return bytes.Repeat([]byte{0x44}, 320), nil })
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u505c\u4e00\u4e0b"})
+	if m.epoch != 1 {
+		t.Fatal("explicit stop skipped audible duck stage")
 	}
-	clock.advance(maxSoftPause)
-	if frameFrom(t, m)[0] != 0x11 {
-		t.Fatal("pending frame lost during pause")
+	frameFrom(t, m)
+	clock.advance(minimumDuck)
+	frameFrom(t, m)
+	if m.epoch != 2 || !m.current.waitingFinal {
+		t.Fatal("confirmation did not enter waiting turn")
+	}
+	select {
+	case <-started:
+		t.Fatal("LLM started before final")
+	default:
+	}
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "new", Text: "\u6362\u4e2a\u95ee\u9898"})
+	select {
+	case messages := <-started:
+		if messages[len(messages)-1].Content != "\u6362\u4e2a\u95ee\u9898" {
+			t.Fatal("wrong question")
+		}
+	case <-time.After(time.Second):
+		t.Fatal("new LLM never started")
+	}
+	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current != nil && m.current.generated })
+	if frameFrom(t, m)[0] != 0x44 {
+		t.Fatal("new TTS did not reach downlink")
+	}
+	frameFrom(t, m)
+	if m.epoch != 2 || m.current != nil {
+		t.Fatal("final allocated an extra epoch or playback never completed")
 	}
 }
 
-func TestContinuousAndRepeatedNoiseHaveBoundedPause(t *testing.T) {
+func TestFillersAndUnstablePartialsDoNotHardInterrupt(t *testing.T) {
+	m, clock, _ := playingFixture(t)
+	old := m.current
+	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
+	for _, text := range []string{"\u55ef", "\u554a\u554a", "...", "\u54e6"} {
+		m.Accept(asr.Event{Event: "asr_final", UtteranceID: "filler", Text: text})
+	}
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u4fee\u6539"})
+	clock.advance(partialStability)
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u660e\u5929"})
+	if old.ctx.Err() != nil {
+		t.Fatal("filler or unstable partial caused cancellation")
+	}
+	clock.advance(partialStability - time.Millisecond)
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "new", Text: "\u660e\u5929\u53bb"})
+	if old.ctx.Err() != nil {
+		t.Fatal("partial confirmed before stability threshold")
+	}
+}
+
+func TestFinalOnlyInterruptionStillDucksBeforeCancellation(t *testing.T) {
+	m, clock, _ := playingFixture(t)
+	old := m.current
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "new", Text: "new question"})
+	if old.ctx.Err() != nil {
+		t.Fatal("final skipped duck")
+	}
+	if !containsAudio(frameFrom(t, m)) {
+		t.Fatal("duck was silence")
+	}
+	clock.advance(minimumDuck)
+	frameFrom(t, m)
+	if old.ctx.Err() == nil || m.epoch != 2 {
+		t.Fatal("final did not confirm after duck")
+	}
+}
+
+func TestNoiseWatchdogAndASRFailureRestoreGain(t *testing.T) {
 	m, clock, _ := playingFixture(t)
 	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	clock.advance(2 * time.Second)
-	m.ObserveVAD(interrupt.SpeechEnded, time.Time{})
-	clock.advance(400 * time.Millisecond)
-	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	clock.advance(400 * time.Millisecond)
-	if !bytes.Equal(frameFrom(t, m), silenceFrame()) {
-		t.Fatal("old quiet-period deadline resumed during new speech")
-	}
-	clock.advance(1200 * time.Millisecond)
+	clock.advance(maxDuckDuration)
 	if frameFrom(t, m)[0] != 0x11 {
-		t.Fatal("repeated noise extended maximum pause indefinitely")
+		t.Fatal("continuous noise did not recover")
 	}
 	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	if frameFrom(t, m)[0] != 0x22 {
-		t.Fatal("duplicate VAD start re-paused continuous noise")
+	if m.current.duck != nil {
+		t.Fatal("duplicate VAD start retriggered noise")
 	}
 	m.ObserveVAD(interrupt.SpeechEnded, time.Time{})
 	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	if !bytes.Equal(frameFrom(t, m), silenceFrame()) {
-		t.Fatal("next speech segment failed to pause")
+	m.SetASRListening(false)
+	if frameFrom(t, m)[0] != 0x11 {
+		t.Fatal("ASR failure did not restore volume")
 	}
 }
 
-func TestConfirmedInterruptCannotResume(t *testing.T) {
-	for _, kind := range []string{"asr_partial", "asr_final"} {
-		t.Run(kind, func(t *testing.T) {
-			m, clock, _ := playingFixture(t)
-			old := m.current
-			m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-			m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "old", Text: "stale own transcript"})
-			if m.current != old {
-				t.Fatal("old transcript interrupted its own reply")
-			}
-			m.Accept(asr.Event{Event: kind, UtteranceID: "new", Text: "\u7b49\u4e00\u4e0b"})
-			if old.ctx.Err() == nil || m.current != nil {
-				t.Fatal("confirmed speech did not cancel old reply")
-			}
-			clock.advance(2 * maxSoftPause)
-			m.ObserveVAD(interrupt.SpeechEnded, time.Time{})
-			if !bytes.Equal(frameFrom(t, m), silenceFrame()) {
-				t.Fatal("cancelled audio returned after timeout")
-			}
-		})
-	}
-}
-
-func TestStopAndDisconnectDuringPause(t *testing.T) {
-	for _, closeSession := range []bool{false, true} {
+func TestManualStopAndCloseCannotResumeDuckedTurn(t *testing.T) {
+	for _, closeSession := range []bool{true, false} {
 		m, clock, _ := playingFixture(t)
 		old := m.current
 		m.ObserveVAD(interrupt.SpeechStarted, clock.now())
 		m.Stop(0)
-		if m.current != old {
-			t.Fatal("stale stop command cancelled current epoch")
+		if old.ctx.Err() != nil {
+			t.Fatal("stale stop affected current turn")
 		}
 		if closeSession {
 			m.Close()
 		} else {
 			m.Stop(1)
 		}
-		clock.advance(2 * maxSoftPause)
+		clock.advance(2 * maxDuckDuration)
 		if old.ctx.Err() == nil || !bytes.Equal(frameFrom(t, m), silenceFrame()) {
-			t.Fatal("stop or disconnect leaked audio")
+			t.Fatal("stopped turn revived")
 		}
 	}
 }
 
-func TestASRFailureResumesAndDisablesSoftPause(t *testing.T) {
-	m, clock, events := playingFixture(t)
-	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	m.SetASRListening(false)
-	if frameFrom(t, m)[0] != 0x11 {
-		t.Fatal("ASR failure left reply paused")
-	}
-	m.ObserveVAD(interrupt.SpeechEnded, time.Time{})
-	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	if frameFrom(t, m)[0] != 0x22 {
-		t.Fatal("unavailable ASR allowed another soft pause")
-	}
-	found := false
-	for _, e := range *events {
-		if e.Reason == "asr_unavailable" {
-			found = true
-		}
-	}
-	if !found {
-		t.Fatal("ASR failure recovery reason missing")
-	}
-}
-
-func TestGenerationDuringPauseDoesNotResumePlayback(t *testing.T) {
-	clock := &testClock{}
-	started := make(chan struct{})
-	release := make(chan struct{})
-	m := New(modelFunc(func(ctx context.Context, _ []llm.Message, emit func(string) error) error {
-		close(started)
-		select {
-		case <-release:
-			return emit("Hello!")
-		case <-ctx.Done():
-			return ctx.Err()
-		}
-	}), speechFunc(func(context.Context, string) ([]byte, error) { return bytes.Repeat([]byte{0x33}, 160*300), nil }), func(Event) {})
-	m.now = clock.now
-	t.Cleanup(m.Close)
-	m.SetASRListening(true)
-	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "question", SpeechEndAt: clock.now().Add(-600 * time.Millisecond)})
-	<-started
-	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
-	clock.advance(100 * time.Millisecond)
-	close(release)
-	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return len(m.current.frames) == 250 })
-	if !bytes.Equal(frameFrom(t, m), silenceFrame()) {
-		t.Fatal("cloud completion resumed paused playback")
-	}
-	m.mu.Lock()
-	if m.current.metrics.SpeechEndToAudioMS != nil || *m.current.metrics.SpeechEndToTextMS != 700 || *m.current.metrics.FinalToTextMS != 100 {
-		t.Error("incorrect first-text or premature first-audio metric")
-	}
-	ctx := m.current.ctx
-	m.mu.Unlock()
-	m.Close()
-	if ctx.Err() == nil {
-		t.Fatal("paused queue producer survived disconnect")
-	}
-}
-
-func TestAudioMetricExcludesSilenceAndMissingInputTime(t *testing.T) {
+func TestFailedDuckedWriteRetainsOriginalPendingFrame(t *testing.T) {
 	m, clock, _ := playingFixture(t)
-	m.current.speechEndAt = time.Time{}
-	m.current.pending = silenceFrame()
-	_ = frameFrom(t, m)
-	if m.current.firstAudio {
-		t.Fatal("leading silence counted as first audible frame")
+	m.ObserveVAD(interrupt.SpeechStarted, clock.now())
+	_ = m.WriteFrame(func([]byte) error { return errors.New("RTP write failed") })
+	if m.current.metrics.SpeechToDuckMS != nil {
+		t.Fatal("failed write counted as duck")
 	}
-	clock.advance(50 * time.Millisecond)
-	_ = frameFrom(t, m)
-	if m.current.metrics.SpeechEndToAudioMS != nil || *m.current.metrics.FinalToAudioMS != 1050 {
-		t.Fatal("missing input timestamp must not fabricate latency")
+	clock.advance(maxDuckDuration)
+	if frameFrom(t, m)[0] != 0x11 {
+		t.Fatal("retry lost or permanently attenuated pending frame")
 	}
 }

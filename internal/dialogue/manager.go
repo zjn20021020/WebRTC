@@ -11,6 +11,7 @@ import (
 	"unicode/utf8"
 
 	"webrtc-interrupt/internal/asr"
+	"webrtc-interrupt/internal/audio"
 	"webrtc-interrupt/internal/llm"
 )
 
@@ -19,17 +20,22 @@ type LanguageModel interface {
 }
 
 type SpeechSynthesizer interface {
-	Synthesize(context.Context, string) ([]byte, error)
+	Stream(context.Context, string, func([]byte) error) error
 }
 
 type Event struct {
-	Event   string   `json:"event"`
-	Epoch   uint64   `json:"response_epoch"`
-	Status  string   `json:"status,omitempty"`
-	Text    string   `json:"text,omitempty"`
-	Detail  string   `json:"detail,omitempty"`
-	Reason  string   `json:"reason,omitempty"`
-	Metrics *Metrics `json:"metrics,omitempty"`
+	Event         string   `json:"event"`
+	Epoch         uint64   `json:"response_epoch"`
+	Status        string   `json:"status,omitempty"`
+	Text          string   `json:"text,omitempty"`
+	Detail        string   `json:"detail,omitempty"`
+	Reason        string   `json:"reason,omitempty"`
+	Metrics       *Metrics `json:"metrics,omitempty"`
+	PreviousEpoch uint64   `json:"previous_epoch,omitempty"`
+	UtteranceID   string   `json:"utterance_id,omitempty"`
+	QueueDropped  int      `json:"queue_dropped,omitempty"`
+	LLMActive     bool     `json:"llm_active,omitempty"`
+	TTSActive     bool     `json:"tts_active,omitempty"`
 }
 
 type turn struct {
@@ -43,7 +49,10 @@ type turn struct {
 	text                  string
 	generated, playing    bool
 	stage                 string
-	pause                 *softPause
+	duck                  *duckState
+	waitingFinal          bool
+	llmActive, ttsActive  bool
+	space                 chan struct{}
 	startedAt             time.Time
 	speechEndAt           time.Time
 	firstText, firstAudio bool
@@ -91,7 +100,7 @@ func (m *Manager) readyStatus() string {
 }
 
 func (m *Manager) Accept(event asr.Event) {
-	if event.UtteranceID == "" || !hasSpeechText(event.Text) {
+	if event.UtteranceID == "" || !validSpeech(event.Text) {
 		return
 	}
 	m.mu.Lock()
@@ -99,32 +108,59 @@ func (m *Manager) Accept(event asr.Event) {
 	if m.closed || m.seen[event.UtteranceID] {
 		return
 	}
-	if event.Event == "asr_partial" {
-		if m.current != nil && m.current.utteranceID != event.UtteranceID {
-			m.stopLocked("interrupted")
+	if event.Event != "asr_partial" && event.Event != "asr_final" {
+		return
+	}
+	t := m.current
+	if t != nil && t.utteranceID == event.UtteranceID {
+		if t.waitingFinal && event.Event == "asr_final" {
+			m.startFinalLocked(t, event)
 		}
 		return
 	}
-	if event.Event != "asr_final" {
+	if t != nil {
+		m.candidateLocked(t, event)
 		return
 	}
-	m.seen[event.UtteranceID] = true
-	m.seenOrder = append(m.seenOrder, event.UtteranceID)
+	if event.Event == "asr_final" {
+		m.startFinalLocked(m.reserveLocked(event.UtteranceID), event)
+	}
+}
+
+func (m *Manager) rememberLocked(id string) {
+	if m.seen[id] {
+		return
+	}
+	m.seen[id] = true
+	m.seenOrder = append(m.seenOrder, id)
 	if len(m.seenOrder) > 100 {
 		delete(m.seen, m.seenOrder[0])
 		m.seenOrder = m.seenOrder[1:]
 	}
-	m.stopLocked("interrupted")
-	if state := m.readyStatus(); state != "ready" {
-		m.statusLocked(nil, state, "")
-		return
-	}
+}
+
+func (m *Manager) reserveLocked(utteranceID string) *turn {
 	m.epoch++
 	deadline, timeoutCancel := context.WithTimeout(context.Background(), 90*time.Second)
 	ctx, cancel := context.WithCancelCause(deadline)
-	t := &turn{epoch: m.epoch, utteranceID: event.UtteranceID, ctx: ctx, fail: cancel,
-		cancel: func() { cancel(context.Canceled); timeoutCancel() }, frames: make(chan []byte, 250), startedAt: m.now(), speechEndAt: event.SpeechEndAt}
+	t := &turn{epoch: m.epoch, utteranceID: utteranceID, ctx: ctx, fail: cancel,
+		cancel: func() { cancel(context.Canceled); timeoutCancel() }, frames: make(chan []byte, 250), space: make(chan struct{}, 1), waitingFinal: true}
 	m.current = t
+	m.progressLocked(t, "listening")
+	return t
+}
+
+func (m *Manager) startFinalLocked(t *turn, event asr.Event) {
+	m.rememberLocked(event.UtteranceID)
+	if state := m.readyStatus(); state != "ready" {
+		m.statusLocked(t, state, "")
+		t.cancel()
+		m.current = nil
+		return
+	}
+	t.waitingFinal = false
+	t.startedAt = m.now()
+	t.speechEndAt = event.SpeechEndAt
 	text := []rune(event.Text)
 	if len(text) > 2000 {
 		text = text[:2000]
@@ -160,8 +196,20 @@ func (m *Manager) stopLocked(status string) {
 	if m.current == nil {
 		return
 	}
-	m.current.cancel()
-	m.statusLocked(m.current, status, "")
+	t := m.current
+	t.cancel()
+	m.rememberLocked(t.utteranceID)
+	dropped := len(t.frames)
+	if t.pending != nil {
+		dropped++
+		t.pending = nil
+	}
+	for len(t.frames) > 0 {
+		<-t.frames
+	}
+	log.Printf("response epoch=%d cancel llm_active=%t tts_active=%t queue_dropped=%d", t.epoch, t.llmActive, t.ttsActive, dropped)
+	m.emit(Event{Event: "response_cancelled", Epoch: t.epoch, QueueDropped: dropped, LLMActive: t.llmActive, TTSActive: t.ttsActive})
+	m.statusLocked(t, status, "")
 	m.current = nil
 }
 
@@ -203,6 +251,15 @@ func (m *Manager) generate(t *turn, messages []llm.Message) {
 		}
 	}
 	var splitter segmenter
+	m.mu.Lock()
+	if m.current != t || t.ctx.Err() != nil {
+		m.mu.Unlock()
+		close(segments)
+		<-speechDone
+		return
+	}
+	t.llmActive = true
+	m.mu.Unlock()
 	err := m.model.Stream(t.ctx, messages, func(delta string) error {
 		m.mu.Lock()
 		if m.current != t || t.ctx.Err() != nil {
@@ -224,6 +281,10 @@ func (m *Manager) generate(t *turn, messages []llm.Message) {
 		m.mu.Unlock()
 		return splitter.push(delta, send)
 	})
+	m.mu.Lock()
+	t.llmActive = false
+	m.mu.Unlock()
+	log.Printf("response epoch=%d llm_finished cancelled=%t", t.epoch, t.ctx.Err() != nil)
 	if err == nil {
 		err = splitter.flush(send)
 	}
@@ -267,26 +328,69 @@ func (m *Manager) synthesize(t *turn, segments <-chan string) error {
 				return context.Cause(t.ctx)
 			}
 			m.mu.Lock()
+			if m.current != t || t.ctx.Err() != nil {
+				m.mu.Unlock()
+				return context.Canceled
+			}
+			t.ttsActive = true
 			if m.current == t && !t.playing {
 				m.progressLocked(t, "synthesizing")
 			}
 			m.mu.Unlock()
-			encoded, err := m.speech.Synthesize(t.ctx, text)
+			var pending []byte
+			received := false
+			err := m.speech.Stream(t.ctx, text, func(chunk []byte) error {
+				if len(chunk) > 0 {
+					received = true
+				}
+				pending = append(pending, chunk...)
+				for len(pending) >= 160 {
+					if err := m.enqueueFrame(t, append([]byte(nil), pending[:160]...)); err != nil {
+						return err
+					}
+					pending = pending[160:]
+				}
+				return nil
+			})
+			m.mu.Lock()
+			t.ttsActive = false
+			m.mu.Unlock()
+			log.Printf("response epoch=%d tts_finished cancelled=%t", t.epoch, t.ctx.Err() != nil)
 			if err != nil {
 				return err
 			}
-			if len(encoded) == 0 {
+			if !received {
 				return errors.New("Tencent TTS returned empty audio")
 			}
-			for offset := 0; offset < len(encoded); offset += 160 {
+			if len(pending) > 0 {
 				frame := silenceFrame()
-				copy(frame, encoded[offset:min(offset+160, len(encoded))])
-				select {
-				case t.frames <- frame:
-				case <-t.ctx.Done():
-					return context.Cause(t.ctx)
+				copy(frame, pending)
+				if err := m.enqueueFrame(t, frame); err != nil {
+					return err
 				}
 			}
+		}
+	}
+}
+
+func (m *Manager) enqueueFrame(t *turn, frame []byte) error {
+	for {
+		m.mu.Lock()
+		if m.current != t || t.ctx.Err() != nil {
+			m.mu.Unlock()
+			return context.Canceled
+		}
+		select {
+		case t.frames <- frame:
+			m.mu.Unlock()
+			return nil
+		default:
+			m.mu.Unlock()
+		}
+		select {
+		case <-t.ctx.Done():
+			return context.Cause(t.ctx)
+		case <-t.space:
 		}
 	}
 }
@@ -309,36 +413,47 @@ func (m *Manager) WriteFrame(write func([]byte) error) error {
 		m.failLocked(t, context.Cause(t.ctx))
 		t = nil
 	}
-	if t != nil && t.pause != nil {
+	if t != nil && t.duck != nil {
+		d := t.duck
 		now := m.now()
-		if !now.Before(t.pause.deadline) || (!t.pause.resumeAt.IsZero() && !now.Before(t.pause.resumeAt)) {
+		if d.confirmed && !now.Before(d.minimumUntil) {
+			m.confirmLocked(t)
+			t = m.current
+		} else if !d.confirmed && (!now.Before(d.deadline) || (!d.resumeAt.IsZero() && !now.Before(d.resumeAt))) {
 			m.resumeLocked(t, "unconfirmed")
-		} else {
-			if err := write(silenceFrame()); err != nil {
-				return err
-			}
-			if !t.pause.measured {
-				t.pause.measured = true
-				t.metrics.SpeechToPauseMS = elapsedMS(t.pause.onset, m.now())
-				m.metricsLocked(t)
-			}
-			return nil
 		}
 	}
 	if t != nil && t.pending == nil {
 		select {
 		case t.pending = <-t.frames:
+			select {
+			case t.space <- struct{}{}:
+			default:
+			}
 		default:
 		}
 	}
 	if t == nil || t.pending == nil {
-		if t != nil && t.generated {
+		if t != nil && t.generated && (t.duck == nil || !t.duck.confirmed) {
 			m.completeLocked(t)
 		}
 		return write(silenceFrame())
 	}
-	if err := write(t.pending); err != nil {
+	frame := t.pending
+	if t.duck != nil {
+		samples := audio.DecodePCMU(frame)
+		for i := range samples {
+			samples[i] = int16(float64(samples[i]) * duckGain)
+		}
+		frame = audio.EncodePCMU(samples)
+	}
+	if err := write(frame); err != nil {
 		return err
+	}
+	if t.duck != nil && !t.duck.measured && containsAudio(frame) {
+		t.duck.measured = true
+		t.metrics.SpeechToDuckMS = elapsedMS(t.duck.onset, m.now())
+		m.metricsLocked(t)
 	}
 	if !t.firstAudio && containsAudio(t.pending) {
 		t.firstAudio = true
@@ -351,7 +466,7 @@ func (m *Manager) WriteFrame(write func([]byte) error) error {
 		t.playing = true
 		m.progressLocked(t, "speaking")
 	}
-	if t.generated && len(t.frames) == 0 {
+	if t.generated && len(t.frames) == 0 && (t.duck == nil || !t.duck.confirmed) {
 		m.completeLocked(t)
 	}
 	return nil

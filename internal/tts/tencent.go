@@ -23,12 +23,13 @@ import (
 const SampleRate = 8000
 
 type Config struct {
+	AppID               string
 	SecretID, SecretKey string
 	VoiceType           int64
 }
 
 func ConfigFromEnv() (Config, error) {
-	c := Config{SecretID: strings.TrimSpace(os.Getenv("TENCENT_SECRET_ID")), SecretKey: strings.TrimSpace(os.Getenv("TENCENT_SECRET_KEY")), VoiceType: 1001}
+	c := Config{AppID: strings.TrimSpace(os.Getenv("TENCENT_APP_ID")), SecretID: strings.TrimSpace(os.Getenv("TENCENT_SECRET_ID")), SecretKey: strings.TrimSpace(os.Getenv("TENCENT_SECRET_KEY")), VoiceType: 1001}
 	if value := strings.TrimSpace(os.Getenv("TENCENT_TTS_VOICE_TYPE")); value != "" {
 		var err error
 		c.VoiceType, err = strconv.ParseInt(value, 10, 64)
@@ -39,11 +40,12 @@ func ConfigFromEnv() (Config, error) {
 	return c, nil
 }
 
-func (c Config) Enabled() bool { return c.SecretID != "" && c.SecretKey != "" }
+func (c Config) Enabled() bool { return c.AppID != "" && c.SecretID != "" && c.SecretKey != "" }
 
 type Client struct {
-	config Config
-	api    *tencent.Client
+	config   Config
+	api      *tencent.Client
+	endpoint string
 }
 
 func NewClient(config Config) (*Client, error) {
@@ -53,7 +55,7 @@ func NewClient(config Config) (*Client, error) {
 	if err != nil {
 		return nil, errors.New("Tencent TTS client initialization failed")
 	}
-	return &Client{config: config, api: api}, nil
+	return &Client{config: config, api: api, endpoint: streamEndpoint}, nil
 }
 
 // Synthesize returns 8kHz mono PCMU without a file header.

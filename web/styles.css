@@ -13,7 +13,8 @@ pre { min-height: 180px; padding: 12px; overflow: auto; background: #101820; col
 .transcript h2, .reply h2 { margin: 0; font-size: 18px; }
 #replyStatus { color: #52606d; font-size: 14px; }
 #replyStatus[data-state="speaking"] { color: #187353; }
-#replyStatus[data-state="paused"] { color: #9c5b00; }
+#replyStatus[data-state="ducking"] { color: #9c5b00; }
+#turnLabel { color: #52606d; font-size: 14px; margin-left: auto; }
 #interruptionStatus { min-height: 24px; color: #52606d; font-size: 14px; }
 .latency { border-top: 1px solid #d8dee4; padding-top: 16px; margin: 20px 0; }
 .latency h2 { margin: 0; font-size: 18px; }

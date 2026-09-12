@@ -21,7 +21,19 @@ func (f modelFunc) Stream(ctx context.Context, m []llm.Message, e func(string) e
 
 type speechFunc func(context.Context, string) ([]byte, error)
 
-func (f speechFunc) Synthesize(ctx context.Context, s string) ([]byte, error) { return f(ctx, s) }
+type streamSpeechFunc func(context.Context, string, func([]byte) error) error
+
+func (f streamSpeechFunc) Stream(ctx context.Context, text string, emit func([]byte) error) error {
+	return f(ctx, text, emit)
+}
+
+func (f speechFunc) Stream(ctx context.Context, s string, emit func([]byte) error) error {
+	data, err := f(ctx, s)
+	if err != nil {
+		return err
+	}
+	return emit(data)
+}
 
 func waitFor(t *testing.T, condition func() bool) {
 	t.Helper()
@@ -73,7 +85,7 @@ func TestInterruptDropsQueuedAndLateAudio(t *testing.T) {
 	defer m.Close()
 	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "first"})
 	<-started
-	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "b", Text: "new speech"})
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "b", Text: "\u505c\u4e00\u4e0b"})
 	close(release)
 	<-finished
 	for i := 0; i < 3; i++ {
@@ -86,7 +98,7 @@ func TestInterruptDropsQueuedAndLateAudio(t *testing.T) {
 	}
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if m.current != nil || len(m.history) != 1 {
+	if m.current == nil || !m.current.waitingFinal || len(m.history) != 1 {
 		t.Fatal("interrupted answer retained")
 	}
 }
@@ -195,5 +207,72 @@ func TestQueuedAudioDiscardedOnNewFinal(t *testing.T) {
 			}
 			return nil
 		})
+	}
+}
+
+func TestStreamingTTSChunksDoNotInsertSilenceBetweenPackets(t *testing.T) {
+	payload := bytes.Repeat([]byte{0x33}, 321)
+	m := New(modelFunc(func(_ context.Context, _ []llm.Message, emit func(string) error) error { return emit("Hello!") }), streamSpeechFunc(func(_ context.Context, _ string, emit func([]byte) error) error {
+		for _, chunk := range [][]byte{payload[:13], payload[13:224], payload[224:]} {
+			if err := emit(chunk); err != nil {
+				return err
+			}
+		}
+		return nil
+	}), func(Event) {})
+	defer m.Close()
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "question"})
+	waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current.generated })
+	var got []byte
+	for i := 0; i < 3; i++ {
+		got = append(got, frameFrom(t, m)...)
+	}
+	if !bytes.Equal(got[:321], payload) || !bytes.Equal(got[321:], bytes.Repeat([]byte{0xff}, 159)) {
+		t.Fatal("TTS chunk boundaries introduced silence or lost samples")
+	}
+}
+
+func TestConfirmedInterruptionCancelsActiveLLMAndStreamingTTS(t *testing.T) {
+	clock := &testClock{}
+	llmStopped := make(chan struct{})
+	ttsStopped := make(chan struct{})
+	m := New(modelFunc(func(ctx context.Context, _ []llm.Message, emit func(string) error) error {
+		if err := emit("Hello!"); err != nil {
+			return err
+		}
+		<-ctx.Done()
+		close(llmStopped)
+		return ctx.Err()
+	}), streamSpeechFunc(func(ctx context.Context, _ string, emit func([]byte) error) error {
+		if err := emit(bytes.Repeat([]byte{0x33}, 160*10)); err != nil {
+			return err
+		}
+		<-ctx.Done()
+		close(ttsStopped)
+		return emit(bytes.Repeat([]byte{0x44}, 160))
+	}), func(Event) {})
+	m.now = clock.now
+	defer m.Close()
+	m.SetASRListening(true)
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "question"})
+	waitFor(t, func() bool {
+		m.mu.Lock()
+		defer m.mu.Unlock()
+		return len(m.current.frames) == 10 && m.current.llmActive && m.current.ttsActive
+	})
+	frameFrom(t, m)
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "b", Text: "\u505c\u4e00\u4e0b"})
+	frameFrom(t, m)
+	clock.advance(minimumDuck)
+	frameFrom(t, m)
+	for _, done := range []chan struct{}{llmStopped, ttsStopped} {
+		select {
+		case <-done:
+		case <-time.After(time.Second):
+			t.Fatal("old cloud task not cancelled")
+		}
+	}
+	if !bytes.Equal(frameFrom(t, m), silenceFrame()) || m.epoch != 2 || !m.current.waitingFinal {
+		t.Fatal("old stream leaked while new turn waits")
 	}
 }

@@ -26,6 +26,7 @@
       <section class="reply" aria-labelledby="replyHeading">
         <div class="transcript-heading">
           <h2 id="replyHeading">语音回答</h2>
+          <span id="turnLabel"></span>
           <span id="replyStatus" role="status">未连接</span>
         </div>
         <p id="replyText" aria-live="polite"></p>
@@ -38,7 +39,7 @@
         <dl>
           <div><dt title="ASR 标记的句末音频到达服务端，到回答首字返回的估算时间">说完到首字（估算）</dt><dd id="latencyText">--</dd></div>
           <div><dt title="句末音频到达服务端，到首个非静音 RTP 帧发送；不含耳机播放缓冲">说完到首音频发送（估算）</dt><dd id="latencyAudio">--</dd></div>
-          <div><dt title="最近一次插话起点到服务端改发静音的估算时间，包含 VAD 判定时间">插话到暂停发送（估算）</dt><dd id="latencyPause">--</dd></div>
+          <div><dt title="最近一次插话起点到服务端发送降音帧的估算时间，包含 VAD 判定时间">插话到降音发送（估算）</dt><dd id="latencyDuck">--</dd></div>
         </dl>
       </section>
       <pre id="log" aria-live="polite"></pre>

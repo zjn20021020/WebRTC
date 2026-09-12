@@ -1,0 +1,39 @@
+Excerpt from bin/duck-stream.stderr.log for the 2026-09-12 live-provider run.
+Server timestamps use Asia/Shanghai (UTC+8). Browser JSON timestamps use UTC.
+Omitted lines are routine requests, RTP counters and generation progress.
+
+2026/09/12 13:12:27 ASR configured=true model=8k_zh sample_rate=8000
+2026/09/12 13:12:27 LLM configured=true model=deepseek-v4-pro; TTS configured=true voice=1001 sample_rate=8000
+2026/09/12 13:17:54 response epoch=1 status=speaking
+2026/09/12 13:17:55 response epoch=1 llm_finished cancelled=false
+2026/09/12 13:17:55 response epoch=1 duck gain=0.20
+2026/09/12 13:17:55 response epoch=1 status=ducking
+2026/09/12 13:17:55 vad event=speech_started packets=262 pcmu_rms=1656.1
+2026/09/12 13:17:55 response epoch=1 metrics={"speech_end_to_first_text_ms":1022,"speech_end_to_first_audio_ms":2070,"asr_final_to_first_text_ms":635,"asr_final_to_first_audio_ms":1683,"speech_to_duck_ms":210}
+2026/09/12 13:17:55 vad event=speech_ended packets=295 pcmu_rms=0.0
+2026/09/12 13:17:56 inbound audio: packets=300 sequence=5503 timestamp=576808359 bytes=160 pcmu_rms=0.0
+2026/09/12 13:17:56 response epoch=1 status=speaking reason=unconfirmed
+2026/09/12 13:17:57 response epoch=1 duck gain=0.20
+2026/09/12 13:17:57 response epoch=1 status=ducking
+2026/09/12 13:17:57 vad event=speech_started packets=361 pcmu_rms=799.4
+2026/09/12 13:17:57 response epoch=1 metrics={"speech_end_to_first_text_ms":1022,"speech_end_to_first_audio_ms":2070,"asr_final_to_first_text_ms":635,"asr_final_to_first_audio_ms":1683,"speech_to_duck_ms":610}
+2026/09/12 13:17:58 inbound audio: packets=400 sequence=5603 timestamp=576824359 bytes=160 pcmu_rms=207.3
+2026/09/12 13:17:58 response epoch=1 cancel llm_active=false tts_active=true queue_dropped=250
+2026/09/12 13:17:58 response epoch=1 status=interrupted
+2026/09/12 13:17:58 response epoch=2 status=listening
+2026/09/12 13:17:58 turn_transition old_epoch=1 new_epoch=2 state=listening waiting_final=true
+2026/09/12 13:17:58 response epoch=1 tts_finished cancelled=true
+2026/09/12 13:17:59 response epoch=2 status=thinking
+2026/09/12 13:17:59 response epoch=2 duck gain=0.20
+2026/09/12 13:17:59 response epoch=2 status=ducking
+2026/09/12 13:17:59 response epoch=2 llm_finished cancelled=false
+2026/09/12 13:18:00 response epoch=2 cancel llm_active=false tts_active=true queue_dropped=0
+2026/09/12 13:18:00 response epoch=2 status=interrupted
+2026/09/12 13:18:00 response epoch=3 status=listening
+2026/09/12 13:18:00 turn_transition old_epoch=2 new_epoch=3 state=listening waiting_final=true
+2026/09/12 13:18:00 response epoch=2 tts_finished cancelled=true
+2026/09/12 13:18:00 response epoch=3 status=thinking
+2026/09/12 13:18:01 response epoch=3 status=synthesizing
+2026/09/12 13:18:02 response epoch=3 status=speaking
+2026/09/12 13:18:02 response epoch=3 metrics={"speech_end_to_first_text_ms":1017,"speech_end_to_first_audio_ms":1869,"asr_final_to_first_text_ms":754,"asr_final_to_first_audio_ms":1606}
+2026/09/12 13:18:03 response epoch=3 status=completed

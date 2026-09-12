@@ -20,7 +20,7 @@ func (f transportFunc) RoundTrip(r *http.Request) (*http.Response, error) { retu
 
 func fixtureClient(t *testing.T, pcm []byte) *Client {
 	t.Helper()
-	c, err := NewClient(Config{SecretID: "fixture-id", SecretKey: "fixture-key", VoiceType: 1001})
+	c, err := NewClient(Config{AppID: "1250000000", SecretID: "fixture-id", SecretKey: "fixture-key", VoiceType: 1001})
 	if err != nil {
 		t.Fatal(err)
 	}

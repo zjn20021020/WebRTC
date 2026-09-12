@@ -13,7 +13,7 @@ type Metrics struct {
 	SpeechEndToAudioMS *int64 `json:"speech_end_to_first_audio_ms,omitempty"`
 	FinalToTextMS      *int64 `json:"asr_final_to_first_text_ms,omitempty"`
 	FinalToAudioMS     *int64 `json:"asr_final_to_first_audio_ms,omitempty"`
-	SpeechToPauseMS    *int64 `json:"speech_to_pause_ms,omitempty"`
+	SpeechToDuckMS     *int64 `json:"speech_to_duck_ms,omitempty"`
 }
 
 func elapsedMS(start, end time.Time) *int64 {

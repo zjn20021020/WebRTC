@@ -17,7 +17,8 @@ const stopResponseButton = document.querySelector('#stopResponse');
 const interruptionStatus = document.querySelector('#interruptionStatus');
 const latencyText = document.querySelector('#latencyText');
 const latencyAudio = document.querySelector('#latencyAudio');
-const latencyPause = document.querySelector('#latencyPause');
+const latencyDuck = document.querySelector('#latencyDuck');
+const turnLabel = document.querySelector('#turnLabel');
 let responseEpoch = -1;
 let responseFinished = false;
 let activeConnection = null;
@@ -26,13 +27,13 @@ function setReplyStatus(status) {
   const labels = {
     disconnected: '未连接', waiting: '连接中', ready: '等待提问',
     thinking: '生成回答中', synthesizing: '合成语音中', speaking: '播放中',
-    paused: '已暂停，确认插话中',
+    ducking: '已降低音量，确认插话中', listening: '等待新问题说完',
     completed: '回答结束', interrupted: '已停止', failed: '回答失败',
     llm_unconfigured: '未配置 DeepSeek', tts_unconfigured: '未配置腾讯语音',
   };
   replyStatus.textContent = labels[status] || status;
   replyStatus.dataset.state = status;
-  stopResponseButton.disabled = !['thinking', 'synthesizing', 'speaking', 'paused'].includes(status);
+  stopResponseButton.disabled = !['thinking', 'synthesizing', 'speaking', 'ducking', 'listening'].includes(status);
 }
 
 function handleResponse(message) {
@@ -40,6 +41,7 @@ function handleResponse(message) {
   if (!Number.isSafeInteger(epoch) || epoch < responseEpoch) return;
   if (epoch > responseEpoch) {
     responseEpoch = epoch;
+    turnLabel.textContent = epoch > 0 ? `第 ${epoch} 轮` : '';
     responseFinished = false;
     replyText.textContent = '';
     replyError.hidden = true;
@@ -47,6 +49,7 @@ function handleResponse(message) {
     interruptionStatus.textContent = '';
     latencyText.textContent = '--';
     latencyAudio.textContent = '--';
+    latencyDuck.textContent = '--';
   }
   if (responseFinished) return;
   if (message.event === 'response_metrics' && message.metrics && typeof message.metrics === 'object') {
@@ -55,18 +58,18 @@ function handleResponse(message) {
     };
     display(latencyText, message.metrics.speech_end_to_first_text_ms);
     display(latencyAudio, message.metrics.speech_end_to_first_audio_ms);
-    display(latencyPause, message.metrics.speech_to_pause_ms);
+    display(latencyDuck, message.metrics.speech_to_duck_ms);
   } else if (message.event === 'response_text' && typeof message.text === 'string') {
     replyText.textContent = message.text;
   } else if (message.event === 'response_status') {
     setReplyStatus(message.status);
-    if (message.status === 'paused') {
+    if (message.status === 'ducking') {
       interruptionStatus.textContent = '等待语音确认';
-      latencyPause.textContent = '--';
+      latencyDuck.textContent = '--';
     } else if (message.reason === 'unconfirmed') {
-      interruptionStatus.textContent = '未确认插话，已恢复回答';
+      interruptionStatus.textContent = '未确认插话，已恢复音量';
     } else if (message.reason === 'asr_unavailable') {
-      interruptionStatus.textContent = '识别服务不可用，已恢复回答';
+      interruptionStatus.textContent = '识别服务不可用，已恢复音量';
     } else if (message.status === 'interrupted') {
       interruptionStatus.textContent = '旧回答已取消';
     }
@@ -243,7 +246,8 @@ connectButton.addEventListener('click', async () => {
   replyError.textContent = '';
   replyError.hidden = true;
   interruptionStatus.textContent = '';
-  for (const element of [latencyText, latencyAudio, latencyPause]) element.textContent = '--';
+  for (const element of [latencyText, latencyAudio, latencyDuck]) element.textContent = '--';
+  turnLabel.textContent = '';
   setReplyStatus('waiting');
   statusElement.textContent = '连接中';
   const connection = { abort: new AbortController() };
