@@ -105,7 +105,9 @@ LLM 返回流式正文；TTS 使用 `wss://tts.cloud.tencent.com/stream_ws`，�
 
 判定采用非思考模式、`temperature=0`、最多 32 个输出 token 和 JSON mode。服务端只接受唯一 `interrupt` 字段且值为 JSON 布尔量：`{"interrupt":true}` 或 `{"interrupt":false}`；大写 `True`、字符串、null、额外字段、重复键、解释文字、截断输出全部拒绝。判断输出不会送入 TTS。
 
-同一句最多 3 次 partial 请求，两次发起至少间隔 500ms；final 不受该限流影响。每句同一时间只保留一个有效请求，final 或改写的 ASR 前缀会取消过时请求。每次请求最长 2 秒，超时或非法输出会报告错误、保留旧播报并缓存 final，不伪造模型 false。结果绑定原轮次和请求版本，旧轮完成或被取消后，迟到的 true 不能打断新轮。
+同一句最多 3 次 partial 请求，两次发起至少间隔 500ms；final 不受该限流影响。每句同一时间只保留一个有效请求，final 或改写的 ASR 前缀会取消过时请求。每次请求最长 2 秒，超时、非法输出或请求失败均显式兜底为 `interrupt=false`，保留旧播报并缓存 final。结果绑定原轮次和请求版本，旧轮完成或被取消后，迟到的 true 不能打断新轮。
+
+兜底的 `intent_result` 带有 `interrupt:false`、`fallback:true`、`status:"error"` 和原因 `invalid_output`、`timeout` 或 `request_failed`。服务端日志显式记录相同字段及耗时和安全错误描述；模型正常返回 false 时，日志为 `interrupt=false fallback=false`。严格 JSON 校验仍然执行，多余文字不会被截取后当作模型结果使用。
 
 缓存最多 8 句，每句最多 2000 字符，按首次收到该句的顺序处理。重复 final 去重；未完成的 partial 连续 15 秒无更新或 ASR 结束时释放。队列满会明确提示本句未收录。手动停止或断开会清空缓存；语音 true 打断只取走该句，其他缓存继续保留。false 表示延后处理，普通“嗯”等完整转写也会被保留并在播完后提交。
 

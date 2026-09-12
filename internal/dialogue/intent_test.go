@@ -59,7 +59,7 @@ func installBufferedModel(m *Manager, decide func(context.Context, llm.Interrupt
 }
 
 func TestFalseIntentPreservesPlaybackAndDrainsFinalsInOrder(t *testing.T) {
-	m, clock, _ := playingFixture(t)
+	m, clock, events := playingFixture(t)
 	old := m.current
 	var calls atomic.Int32
 	started := installBufferedModel(m, func(context.Context, llm.InterruptionInput) (bool, error) { calls.Add(1); return false, nil })
@@ -98,6 +98,11 @@ func TestFalseIntentPreservesPlaybackAndDrainsFinalsInOrder(t *testing.T) {
 	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "late duplicate"})
 	if calls.Load() != 2 || m.current != nil || m.epoch != 3 {
 		t.Fatal("duplicate or deferred question was classified/answered again")
+	}
+	for _, e := range *events {
+		if e.Event == "intent_result" && (e.Interrupt == nil || *e.Interrupt || e.Fallback || e.Status == "error") {
+			t.Fatal("normal model false was marked as a fallback")
+		}
 	}
 }
 
@@ -178,11 +183,19 @@ func TestPlaybackCompletionInvalidatesPendingIntent(t *testing.T) {
 }
 
 func TestIntentErrorDefersInsteadOfInterrupting(t *testing.T) {
-	for _, failure := range []error{errors.New("invalid JSON"), context.DeadlineExceeded} {
-		t.Run(failure.Error(), func(t *testing.T) {
+	for _, tc := range []struct {
+		failure error
+		reason  string
+	}{
+		{llm.ErrInvalidIntentResult, "invalid_output"},
+		{fmt.Errorf("wrapped: %w", llm.ErrInvalidIntentResult), "invalid_output"},
+		{context.DeadlineExceeded, "timeout"},
+		{errors.New("connection failed"), "request_failed"},
+	} {
+		t.Run(tc.failure.Error(), func(t *testing.T) {
 			m, _, events := playingFixture(t)
 			old := m.current
-			installBufferedModel(m, func(context.Context, llm.InterruptionInput) (bool, error) { return true, failure })
+			installBufferedModel(m, func(context.Context, llm.InterruptionInput) (bool, error) { return true, tc.failure })
 			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "next question"})
 			waitFor(t, func() bool { return bufferedCount(m) == 1 })
 			if old.ctx.Err() != nil || frameFrom(t, m)[0] != 0x11 {
@@ -190,12 +203,12 @@ func TestIntentErrorDefersInsteadOfInterrupting(t *testing.T) {
 			}
 			found := false
 			for _, e := range *events {
-				if e.Event == "intent_result" && e.Status == "error" && e.Interrupt == nil {
+				if e.Event == "intent_result" && e.Status == "error" && e.Interrupt != nil && !*e.Interrupt && e.Fallback && e.Reason == tc.reason {
 					found = true
 				}
 			}
 			if !found {
-				t.Fatal("error was disguised as a valid false decision")
+				t.Fatal("explicit false fallback or failure reason missing")
 			}
 		})
 	}

@@ -14,6 +14,8 @@ import (
 //go:embed prompts/interruption.md
 var interruptionPrompt string
 
+var ErrInvalidIntentResult = errors.New("intent result must be exactly one JSON boolean field: interrupt")
+
 type InterruptionInput struct {
 	PreviousUserText  string `json:"previous_user_text"`
 	AssistantResponse string `json:"assistant_response"`
@@ -66,8 +68,11 @@ func (c *Client) ClassifyInterruption(ctx context.Context, input InterruptionInp
 	if ctx.Err() != nil {
 		return false, ctx.Err()
 	}
-	if err != nil || len(data) > 64*1024 {
-		return false, errors.New("invalid DeepSeek intent response size")
+	if err != nil {
+		return false, errors.New("DeepSeek intent response read failed")
+	}
+	if len(data) > 64*1024 {
+		return false, fmt.Errorf("%w: invalid response size", ErrInvalidIntentResult)
 	}
 	var response struct {
 		Choices []struct {
@@ -79,13 +84,13 @@ func (c *Client) ClassifyInterruption(ctx context.Context, input InterruptionInp
 		Error json.RawMessage `json:"error"`
 	}
 	if json.Unmarshal(data, &response) != nil || len(response.Error) != 0 || len(response.Choices) != 1 || response.Choices[0].FinishReason != "stop" {
-		return false, errors.New("incomplete DeepSeek intent response")
+		return false, fmt.Errorf("%w: incomplete provider response", ErrInvalidIntentResult)
 	}
 	return parseInterruption(response.Choices[0].Message.Content)
 }
 
 func parseInterruption(content string) (bool, error) {
-	invalid := errors.New("intent result must be exactly one JSON boolean field: interrupt")
+	invalid := ErrInvalidIntentResult
 	decoder := json.NewDecoder(bytes.NewBufferString(content))
 	if token, err := decoder.Token(); err != nil || token != json.Delim('{') {
 		return false, invalid

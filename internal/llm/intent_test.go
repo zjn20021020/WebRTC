@@ -23,8 +23,8 @@ func TestIntentJSONIsStrict(t *testing.T) {
 	}
 	for _, text := range []string{`true`, `{"interrupt":True}`, `{"interrupt":"true"}`, `{"interrupt":null}`, `{"interrupt":1}`,
 		`{}`, `{"interrupt":true,"reason":"stop"}`, `{"interrupt":true,"interrupt":false}`, `{"Interrupt":true}`,
-		`{"interrupt":true} {}`, "```json\n{\"interrupt\":true}\n```", `{"interrupt":true} explanation`} {
-		if _, err := parseInterruption(text); err == nil {
+		`{"interrupt":true} {}`, "```json\n{\"interrupt\":true}\n```", `{"interrupt":true} explanation`, "\u597d\u7684\uff0c{\"interrupt\":false}"} {
+		if _, err := parseInterruption(text); !errors.Is(err, ErrInvalidIntentResult) {
 			t.Fatalf("accepted invalid intent: %s", text)
 		}
 	}

@@ -38,6 +38,7 @@ type Event struct {
 	LLMActive     bool     `json:"llm_active,omitempty"`
 	TTSActive     bool     `json:"tts_active,omitempty"`
 	Interrupt     *bool    `json:"interrupt,omitempty"`
+	Fallback      bool     `json:"fallback,omitempty"`
 	LatencyMS     *int64   `json:"latency_ms,omitempty"`
 	QueueSize     *int     `json:"queue_size,omitempty"`
 }

@@ -141,12 +141,18 @@ func (m *Manager) requestIntentLocked(t *turn, c *interjection) {
 		latency := time.Since(started).Milliseconds()
 		event := Event{Event: "intent_result", Epoch: t.epoch, UtteranceID: c.event.UtteranceID, LatencyMS: &latency}
 		if err != nil {
-			event.Status, event.Reason = "error", "deferred_on_error"
-			log.Printf("intent epoch=%d failed latency_ms=%d: %v", t.epoch, latency, err)
+			decision = false
+			event.Fallback, event.Status, event.Reason = true, "error", "request_failed"
+			if errors.Is(err, context.DeadlineExceeded) {
+				event.Reason = "timeout"
+			} else if errors.Is(err, llm.ErrInvalidIntentResult) {
+				event.Reason = "invalid_output"
+			}
+			log.Printf("intent epoch=%d interrupt=false fallback=true reason=%s latency_ms=%d error=%q", t.epoch, event.Reason, latency, err)
 		} else {
-			event.Interrupt = &decision
-			log.Printf("intent epoch=%d interrupt=%t latency_ms=%d", t.epoch, decision, latency)
+			log.Printf("intent epoch=%d interrupt=%t fallback=false latency_ms=%d", t.epoch, decision, latency)
 		}
+		event.Interrupt = &decision
 		m.emit(event)
 		if err == nil && decision {
 			c.approved = true
