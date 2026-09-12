@@ -203,6 +203,23 @@ node scripts/verify_intent.cjs
 
 脚本使用虚拟麦克风输入，成功后更新 `docs/evidence/intent-barge-in.json`，截图保存在 `bin/`。自动化运行静音，不代表已测得物理耳机声音。早期噪声和双向音频验证脚本 `scripts/verify_barge_in.cjs` 也保留供复现。
 
+## 固定验收与统计
+
+[固定验收说明](docs/验收测试说明.md)提供 60 个版本化文本样例和 5 个真实语音场景。默认每个文本重复 3 次，统计严格通过率、误打断/漏打断、请求错误、混淆矩阵和 P50/P95；语音验证取消、清缓存、首次夸赞和十次播报。异常 false 不计分类成功，失败也保存证据并返回非零退出码。
+
+```powershell
+# 需要可用的 .env、Node.js、Chrome 和 Playwright；会实际调用云接口。
+$env:GO_BIN = 'E:/go/bin/go.exe'
+$env:NODE_PATH = (Resolve-Path 'bin/browser-check/node_modules').Path
+node scripts/verify_acceptance.cjs
+# 只检查分类；不调用腾讯 ASR/TTS。
+node scripts/verify_acceptance.cjs --text-only --repeat 1
+```
+
+结果位于 `bin/acceptance/<UTC时间>-<进程ID>/report.md`，同目录保留 JSON、日志、固定集快照与截图。脚本使用自动分配端口的独立测试服务，运行中的 8080 服务不受影响。Go 在 PATH 时可省略 `GO_BIN`；Playwright 首次安装方式及指标边界见说明文档。
+
+[2026-09-12 完整基线报告](docs/evidence/acceptance-20260912/report.md)：180/180 次文本分类、5/5 个真实语音场景通过；文本动作/打断请求的 P95 分别为 1216ms / 919ms。这是固定输入回归，不代表真人噪声、回声或物理耳机时延已验收。
+
 ## 下一步
 
 补充真实耳机/扬声器回声、咳嗽和短暂停顿场景，评估断句拆分及误触发，并测量浏览器端实际播放延迟。

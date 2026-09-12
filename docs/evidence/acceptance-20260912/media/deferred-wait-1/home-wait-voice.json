@@ -1,0 +1,512 @@
+{
+  "recorded_at": "2026-09-12T09:11:30.135Z",
+  "passed": true,
+  "providers": [
+    "Tencent ASR 8k_zh",
+    "deepseek-v4-pro",
+    "Tencent TextToStreamAudioWS"
+  ],
+  "input": "Pre-generated speech through WebAudio virtual microphone; physical output muted",
+  "duck_gain": 0.5,
+  "initial_tool": "water",
+  "initial_epoch": 1,
+  "water_epoch": 1,
+  "events": [
+    {
+      "at": "2026-09-12T09:10:47.981Z",
+      "event": "response_status",
+      "response_epoch": 0,
+      "status": "ready"
+    },
+    {
+      "at": "2026-09-12T09:10:47.981Z",
+      "event": "asr_status",
+      "status": "connecting"
+    },
+    {
+      "at": "2026-09-12T09:10:48.248Z",
+      "event": "asr_status",
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-12T09:10:49.132Z",
+      "event": "asr_partial",
+      "text": "去交",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:0",
+      "begin_time": 400,
+      "end_time": 1000
+    },
+    {
+      "at": "2026-09-12T09:10:49.315Z",
+      "event": "asr_partial",
+      "text": "去交",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:0",
+      "begin_time": 400,
+      "end_time": 1200
+    },
+    {
+      "at": "2026-09-12T09:10:49.541Z",
+      "event": "asr_partial",
+      "text": "去浇水",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:0",
+      "begin_time": 400,
+      "end_time": 1400
+    },
+    {
+      "at": "2026-09-12T09:10:49.938Z",
+      "event": "asr_final",
+      "text": "去浇水。",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:0",
+      "begin_time": 400,
+      "end_time": 1640
+    },
+    {
+      "at": "2026-09-12T09:10:49.939Z",
+      "event": "input_queue",
+      "response_epoch": 0,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-12T09:10:49.939Z",
+      "event": "input_dispatched",
+      "response_epoch": 0,
+      "text": "去浇水。",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:0"
+    },
+    {
+      "at": "2026-09-12T09:10:49.939Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-12T09:10:49.939Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "action_result",
+      "response_epoch": 1,
+      "status": "classified",
+      "latency_ms": 1054,
+      "tool_call": {
+        "id": "call_00_sbGLEXfT3xCI0vlzcLxP1465",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_sbGLEXfT3xCI0vlzcLxP1465",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 1376,
+        "asr_final_to_first_text_ms": 1054
+      }
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.993Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-12T09:10:50.994Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:50.994Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-12T09:10:51.487Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-12T09:10:51.728Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 1376,
+        "speech_end_to_first_audio_ms": 2111,
+        "asr_final_to_first_text_ms": 1054,
+        "asr_final_to_first_audio_ms": 1788
+      }
+    },
+    {
+      "at": "2026-09-12T09:10:52.331Z",
+      "event": "asr_partial",
+      "text": "等于",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1",
+      "begin_time": 3600,
+      "end_time": 4200
+    },
+    {
+      "at": "2026-09-12T09:10:52.331Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:10:52.350Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 1376,
+        "speech_end_to_first_audio_ms": 2111,
+        "asr_final_to_first_text_ms": 1054,
+        "asr_final_to_first_audio_ms": 1788,
+        "speech_to_duck_ms": 16
+      }
+    },
+    {
+      "at": "2026-09-12T09:10:52.515Z",
+      "event": "asr_partial",
+      "text": "等于",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1",
+      "begin_time": 3600,
+      "end_time": 4400
+    },
+    {
+      "at": "2026-09-12T09:10:52.751Z",
+      "event": "asr_partial",
+      "text": "等一下再",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1",
+      "begin_time": 3600,
+      "end_time": 4600
+    },
+    {
+      "at": "2026-09-12T09:10:52.751Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "waiting_final",
+      "reason": "ambiguous_wait",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1"
+    },
+    {
+      "at": "2026-09-12T09:10:53.148Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-12T09:10:53.536Z",
+      "event": "asr_partial",
+      "text": "等一下再去种地",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1",
+      "begin_time": 3600,
+      "end_time": 5400
+    },
+    {
+      "at": "2026-09-12T09:10:53.937Z",
+      "event": "asr_final",
+      "text": "等一下再去种地。",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1",
+      "begin_time": 3600,
+      "end_time": 5580
+    },
+    {
+      "at": "2026-09-12T09:10:53.939Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:10:53.939Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1"
+    },
+    {
+      "at": "2026-09-12T09:10:53.960Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 1376,
+        "speech_end_to_first_audio_ms": 2111,
+        "asr_final_to_first_text_ms": 1054,
+        "asr_final_to_first_audio_ms": 1788,
+        "speech_to_duck_ms": 17
+      }
+    },
+    {
+      "at": "2026-09-12T09:10:54.436Z",
+      "event": "intent_result",
+      "response_epoch": 1,
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1",
+      "interrupt": false,
+      "latency_ms": 505
+    },
+    {
+      "at": "2026-09-12T09:10:54.437Z",
+      "event": "input_buffered",
+      "response_epoch": 1,
+      "text": "等一下再去种地。",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1"
+    },
+    {
+      "at": "2026-09-12T09:10:54.438Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 1
+    },
+    {
+      "at": "2026-09-12T09:10:54.438Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "intent_deferred"
+    },
+    {
+      "at": "2026-09-12T09:11:10.668Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_sbGLEXfT3xCI0vlzcLxP1465",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-12T09:11:10.669Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "completed"
+    },
+    {
+      "at": "2026-09-12T09:11:10.669Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-12T09:11:10.670Z",
+      "event": "input_dispatched",
+      "response_epoch": 1,
+      "text": "等一下再去种地。",
+      "utterance_id": "834850c0-6815-4f6a-8e3f-5de634452909:1"
+    },
+    {
+      "at": "2026-09-12T09:11:10.670Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-12T09:11:10.670Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-12T09:11:11.350Z",
+      "event": "action_result",
+      "response_epoch": 2,
+      "status": "classified",
+      "latency_ms": 681,
+      "tool_call": {
+        "id": "call_00_apR1k1cz0m3zrBlGlsXQ9846",
+        "name": "plant"
+      }
+    },
+    {
+      "at": "2026-09-12T09:11:11.350Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_apR1k1cz0m3zrBlGlsXQ9846",
+        "name": "plant"
+      }
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 17794,
+        "asr_final_to_first_text_ms": 17418
+      }
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-12T09:11:11.351Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:11:11.727Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-12T09:11:11.987Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 17794,
+        "speech_end_to_first_audio_ms": 18432,
+        "asr_final_to_first_text_ms": 17418,
+        "asr_final_to_first_audio_ms": 18056
+      }
+    },
+    {
+      "at": "2026-09-12T09:11:30.108Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_apR1k1cz0m3zrBlGlsXQ9846",
+        "name": "plant"
+      }
+    },
+    {
+      "at": "2026-09-12T09:11:30.108Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "completed"
+    }
+  ],
+  "media": [
+    {
+      "type": "inbound-rtp",
+      "packetsReceived": 2107,
+      "totalAudioEnergy": 3.675852061263082,
+      "bytesReceived": 337120
+    },
+    {
+      "type": "outbound-rtp",
+      "packetsSent": 2115,
+      "bytesSent": 337120
+    }
+  ],
+  "reply": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+}

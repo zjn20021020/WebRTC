@@ -1,0 +1,875 @@
+{
+  "recorded_at": "2026-09-12T09:14:02.967Z",
+  "passed": true,
+  "providers": [
+    "Tencent ASR 8k_zh",
+    "deepseek-v4-pro",
+    "Tencent TextToStreamAudioWS"
+  ],
+  "input": "Pre-generated speech through WebAudio virtual microphone; physical output muted",
+  "duck_gain": 0.5,
+  "initial_tool": "plant",
+  "initial_epoch": 1,
+  "fertilizer_epoch": 2,
+  "discarded_input_id": "833d7921-adaa-4396-906e-4abe8f082904:1",
+  "events": [
+    {
+      "at": "2026-09-12T09:13:29.208Z",
+      "event": "response_status",
+      "response_epoch": 0,
+      "status": "ready"
+    },
+    {
+      "at": "2026-09-12T09:13:29.209Z",
+      "event": "asr_status",
+      "status": "connecting"
+    },
+    {
+      "at": "2026-09-12T09:13:29.402Z",
+      "event": "asr_status",
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-12T09:13:30.285Z",
+      "event": "asr_partial",
+      "text": "去种",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:0",
+      "begin_time": 340,
+      "end_time": 980
+    },
+    {
+      "at": "2026-09-12T09:13:30.469Z",
+      "event": "asr_partial",
+      "text": "去种",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:0",
+      "begin_time": 340,
+      "end_time": 1180
+    },
+    {
+      "at": "2026-09-12T09:13:30.693Z",
+      "event": "asr_partial",
+      "text": "去种菜",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:0",
+      "begin_time": 340,
+      "end_time": 1380
+    },
+    {
+      "at": "2026-09-12T09:13:30.883Z",
+      "event": "asr_final",
+      "text": "去种菜。",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:0",
+      "begin_time": 340,
+      "end_time": 1540
+    },
+    {
+      "at": "2026-09-12T09:13:30.884Z",
+      "event": "input_queue",
+      "response_epoch": 0,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-12T09:13:30.884Z",
+      "event": "input_dispatched",
+      "response_epoch": 0,
+      "text": "去种菜。",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:0"
+    },
+    {
+      "at": "2026-09-12T09:13:30.884Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-12T09:13:30.884Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-12T09:13:31.626Z",
+      "event": "action_result",
+      "response_epoch": 1,
+      "status": "classified",
+      "latency_ms": 742,
+      "tool_call": {
+        "id": "call_00_Q65C0Y435uV6Y1LlF4Sq7336",
+        "name": "plant"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:31.626Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_Q65C0Y435uV6Y1LlF4Sq7336",
+        "name": "plant"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:31.626Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 890,
+        "asr_final_to_first_text_ms": 742
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:31.626Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.626Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。我正在种菜。"
+    },
+    {
+      "at": "2026-09-12T09:13:31.627Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-12T09:13:32.016Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-12T09:13:32.274Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 890,
+        "speech_end_to_first_audio_ms": 1538,
+        "asr_final_to_first_text_ms": 742,
+        "asr_final_to_first_audio_ms": 1391
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:32.883Z",
+      "event": "asr_partial",
+      "text": "一家",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:1",
+      "begin_time": 2940,
+      "end_time": 3580
+    },
+    {
+      "at": "2026-09-12T09:13:32.885Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:13:32.894Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 890,
+        "speech_end_to_first_audio_ms": 1538,
+        "asr_final_to_first_text_ms": 742,
+        "asr_final_to_first_audio_ms": 1391,
+        "speech_to_duck_ms": 12
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:33.065Z",
+      "event": "asr_partial",
+      "text": "一家",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:1",
+      "begin_time": 2940,
+      "end_time": 3780
+    },
+    {
+      "at": "2026-09-12T09:13:33.298Z",
+      "event": "asr_partial",
+      "text": "一加一等于",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:1",
+      "begin_time": 2940,
+      "end_time": 3980
+    },
+    {
+      "at": "2026-09-12T09:13:33.694Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-12T09:13:33.883Z",
+      "event": "asr_final",
+      "text": "1加一等于几？",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:1",
+      "begin_time": 2940,
+      "end_time": 4560
+    },
+    {
+      "at": "2026-09-12T09:13:33.884Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:13:33.884Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:1"
+    },
+    {
+      "at": "2026-09-12T09:13:34.116Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 890,
+        "speech_end_to_first_audio_ms": 1538,
+        "asr_final_to_first_text_ms": 742,
+        "asr_final_to_first_audio_ms": 1391,
+        "speech_to_duck_ms": 230
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:34.322Z",
+      "event": "intent_result",
+      "response_epoch": 1,
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:1",
+      "interrupt": false,
+      "latency_ms": 438
+    },
+    {
+      "at": "2026-09-12T09:13:34.322Z",
+      "event": "input_buffered",
+      "response_epoch": 1,
+      "text": "1加一等于几？",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:1"
+    },
+    {
+      "at": "2026-09-12T09:13:34.322Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 1
+    },
+    {
+      "at": "2026-09-12T09:13:34.322Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "intent_deferred"
+    },
+    {
+      "at": "2026-09-12T09:13:34.895Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:13:34.895Z",
+      "event": "speech_started",
+      "rms": 830.2013611166872
+    },
+    {
+      "at": "2026-09-12T09:13:34.916Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 890,
+        "speech_end_to_first_audio_ms": 1538,
+        "asr_final_to_first_text_ms": 742,
+        "asr_final_to_first_audio_ms": 1391,
+        "speech_to_duck_ms": 219
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:35.093Z",
+      "event": "asr_partial",
+      "text": "去试",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:2",
+      "begin_time": 5260,
+      "end_time": 5780
+    },
+    {
+      "at": "2026-09-12T09:13:35.264Z",
+      "event": "asr_partial",
+      "text": "去试",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:2",
+      "begin_time": 5260,
+      "end_time": 5980
+    },
+    {
+      "at": "2026-09-12T09:13:35.690Z",
+      "event": "asr_partial",
+      "text": "去施肥",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:2",
+      "begin_time": 5260,
+      "end_time": 6380
+    },
+    {
+      "at": "2026-09-12T09:13:35.776Z",
+      "event": "speech_ended",
+      "rms": 0
+    },
+    {
+      "at": "2026-09-12T09:13:35.878Z",
+      "event": "asr_final",
+      "text": "去施肥。",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:2",
+      "begin_time": 5260,
+      "end_time": 6560
+    },
+    {
+      "at": "2026-09-12T09:13:35.878Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:2"
+    },
+    {
+      "at": "2026-09-12T09:13:36.595Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-12T09:13:36.791Z",
+      "event": "intent_result",
+      "response_epoch": 1,
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:2",
+      "interrupt": true,
+      "latency_ms": 913
+    },
+    {
+      "at": "2026-09-12T09:13:36.792Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:13:36.794Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 890,
+        "speech_end_to_first_audio_ms": 1538,
+        "asr_final_to_first_text_ms": 742,
+        "asr_final_to_first_audio_ms": 1391,
+        "speech_to_duck_ms": 1
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:36.916Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 1
+    },
+    {
+      "at": "2026-09-12T09:13:36.916Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-12T09:13:36.920Z",
+      "event": "response_cancelled",
+      "response_epoch": 1,
+      "queue_dropped": 215,
+      "tts_active": true
+    },
+    {
+      "at": "2026-09-12T09:13:36.920Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "cancelled",
+      "tool_call": {
+        "id": "call_00_Q65C0Y435uV6Y1LlF4Sq7336",
+        "name": "plant"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:36.920Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "interrupted"
+    },
+    {
+      "at": "2026-09-12T09:13:36.920Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-12T09:13:36.920Z",
+      "event": "turn_transition",
+      "response_epoch": 2,
+      "status": "listening",
+      "previous_epoch": 1,
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:2"
+    },
+    {
+      "at": "2026-09-12T09:13:36.921Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-12T09:13:37.770Z",
+      "event": "action_result",
+      "response_epoch": 2,
+      "status": "classified",
+      "latency_ms": 855,
+      "tool_call": {
+        "id": "call_00_KYQTPF9KH64IEHkzj6Vy2126",
+        "name": "fertilize"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:37.770Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_KYQTPF9KH64IEHkzj6Vy2126",
+        "name": "fertilize"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:37.770Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2014,
+        "asr_final_to_first_text_ms": 1892
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:37.770Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:37.771Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。我正在施肥。"
+    },
+    {
+      "at": "2026-09-12T09:13:38.193Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-12T09:13:38.435Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2014,
+        "speech_end_to_first_audio_ms": 2678,
+        "asr_final_to_first_text_ms": 1892,
+        "asr_final_to_first_audio_ms": 2555
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:38.886Z",
+      "event": "asr_partial",
+      "text": "一家",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3",
+      "begin_time": 9080,
+      "end_time": 9600
+    },
+    {
+      "at": "2026-09-12T09:13:38.886Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:13:38.894Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2014,
+        "speech_end_to_first_audio_ms": 2678,
+        "asr_final_to_first_text_ms": 1892,
+        "asr_final_to_first_audio_ms": 2555,
+        "speech_to_duck_ms": 6
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:39.066Z",
+      "event": "asr_partial",
+      "text": "一家",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3",
+      "begin_time": 9080,
+      "end_time": 9800
+    },
+    {
+      "at": "2026-09-12T09:13:39.496Z",
+      "event": "asr_partial",
+      "text": "一加一等于",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3",
+      "begin_time": 9080,
+      "end_time": 10200
+    },
+    {
+      "at": "2026-09-12T09:13:39.695Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-12T09:13:40.082Z",
+      "event": "asr_final",
+      "text": "1加一等于几？",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3",
+      "begin_time": 9080,
+      "end_time": 10720
+    },
+    {
+      "at": "2026-09-12T09:13:40.083Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-12T09:13:40.083Z",
+      "event": "intent_status",
+      "response_epoch": 2,
+      "status": "checking",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3"
+    },
+    {
+      "at": "2026-09-12T09:13:40.354Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2014,
+        "speech_end_to_first_audio_ms": 2678,
+        "asr_final_to_first_text_ms": 1892,
+        "asr_final_to_first_audio_ms": 2555,
+        "speech_to_duck_ms": 272
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:40.894Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-12T09:13:41.321Z",
+      "event": "intent_result",
+      "response_epoch": 2,
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3",
+      "interrupt": false,
+      "latency_ms": 1240
+    },
+    {
+      "at": "2026-09-12T09:13:41.321Z",
+      "event": "input_buffered",
+      "response_epoch": 2,
+      "text": "1加一等于几？",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3"
+    },
+    {
+      "at": "2026-09-12T09:13:41.322Z",
+      "event": "input_queue",
+      "response_epoch": 2,
+      "queue_size": 1
+    },
+    {
+      "at": "2026-09-12T09:13:57.375Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_KYQTPF9KH64IEHkzj6Vy2126",
+        "name": "fertilize"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:57.375Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "completed"
+    },
+    {
+      "at": "2026-09-12T09:13:57.375Z",
+      "event": "input_queue",
+      "response_epoch": 2,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-12T09:13:57.375Z",
+      "event": "input_dispatched",
+      "response_epoch": 2,
+      "text": "1加一等于几？",
+      "utterance_id": "833d7921-adaa-4396-906e-4abe8f082904:3"
+    },
+    {
+      "at": "2026-09-12T09:13:57.375Z",
+      "event": "response_status",
+      "response_epoch": 3,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-12T09:13:57.375Z",
+      "event": "response_status",
+      "response_epoch": 3,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-12T09:13:58.454Z",
+      "event": "action_result",
+      "response_epoch": 3,
+      "status": "classified",
+      "latency_ms": 1077,
+      "tool_call": {
+        "id": "call_00_MAYUBXynun8xuFwii0fL4532",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:58.455Z",
+      "event": "tool_status",
+      "response_epoch": 3,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_MAYUBXynun8xuFwii0fL4532",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:59.096Z",
+      "event": "response_metrics",
+      "response_epoch": 3,
+      "metrics": {
+        "speech_end_to_first_text_ms": 19181,
+        "asr_final_to_first_text_ms": 19015
+      }
+    },
+    {
+      "at": "2026-09-12T09:13:59.096Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1"
+    },
+    {
+      "at": "2026-09-12T09:13:59.215Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+"
+    },
+    {
+      "at": "2026-09-12T09:13:59.260Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1"
+    },
+    {
+      "at": "2026-09-12T09:13:59.260Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1等于"
+    },
+    {
+      "at": "2026-09-12T09:13:59.260Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1等于2"
+    },
+    {
+      "at": "2026-09-12T09:13:59.260Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1等于2呀"
+    },
+    {
+      "at": "2026-09-12T09:13:59.295Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1等于2呀，"
+    },
+    {
+      "at": "2026-09-12T09:13:59.295Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1等于2呀，小"
+    },
+    {
+      "at": "2026-09-12T09:13:59.295Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1等于2呀，小洛克"
+    },
+    {
+      "at": "2026-09-12T09:13:59.336Z",
+      "event": "response_text",
+      "response_epoch": 3,
+      "text": "1+1等于2呀，小洛克。"
+    },
+    {
+      "at": "2026-09-12T09:13:59.336Z",
+      "event": "response_status",
+      "response_epoch": 3,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-12T09:13:59.774Z",
+      "event": "response_status",
+      "response_epoch": 3,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-12T09:14:00.014Z",
+      "event": "response_metrics",
+      "response_epoch": 3,
+      "metrics": {
+        "speech_end_to_first_text_ms": 19181,
+        "speech_end_to_first_audio_ms": 20098,
+        "asr_final_to_first_text_ms": 19015,
+        "asr_final_to_first_audio_ms": 19932
+      }
+    },
+    {
+      "at": "2026-09-12T09:14:02.936Z",
+      "event": "tool_status",
+      "response_epoch": 3,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_MAYUBXynun8xuFwii0fL4532",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-12T09:14:02.936Z",
+      "event": "response_status",
+      "response_epoch": 3,
+      "status": "completed"
+    }
+  ],
+  "media": [
+    {
+      "type": "inbound-rtp",
+      "packetsReceived": 1687,
+      "totalAudioEnergy": 2.348293898078255,
+      "bytesReceived": 269920
+    },
+    {
+      "type": "outbound-rtp",
+      "packetsSent": 1691,
+      "bytesSent": 269920
+    }
+  ],
+  "reply": "1+1等于2呀，小洛克。"
+}

@@ -1,5 +1,6 @@
 const { chromium } = require('playwright');
 const fs = require('node:fs');
+const path = require('node:path');
 const assert = require('node:assert/strict');
 
 // Only the microphone is substituted. Signaling, ASR, both classifiers, TTS
@@ -12,6 +13,10 @@ const assert = require('node:assert/strict');
   const switchScenario = process.argv.includes('--switch') || clearBufferScenario;
   assert.ok([waitScenario, replacementScenario, praiseScenario, switchScenario].filter(Boolean).length <= 1, 'Select one scenario');
   const evidenceName = clearBufferScenario ? 'home-clear-buffer' : waitScenario ? 'home-wait' : replacementScenario ? 'home-replacement' : praiseScenario ? 'home-praise' : switchScenario ? 'home-switch' : 'home';
+  const evidenceDirectory = process.env.EVIDENCE_DIR || 'docs/evidence';
+  const screenshotDirectory = process.env.SCREENSHOT_DIR || 'bin';
+  fs.mkdirSync(evidenceDirectory, { recursive: true });
+  fs.mkdirSync(screenshotDirectory, { recursive: true });
   const initialTool = praiseScenario || switchScenario ? 'plant' : 'water';
   const lastTool = waitScenario ? 'plant' : switchScenario ? 'general_qa' : 'affection';
   const browser = await chromium.launch({
@@ -80,9 +85,9 @@ const assert = require('node:assert/strict');
     const preservedEpoch = waitScenario || praiseScenario ? initialEpoch : fertilizerEpoch;
     await page.waitForFunction(epoch => voiceEvents.some(e => e.event === 'input_buffered' && e.response_epoch === epoch), preservedEpoch, { timeout: 15000 });
     assert.equal(await page.evaluate(() => responseEpoch), preservedEpoch);
-    await page.screenshot({ path: `bin/${evidenceName}-buffered-desktop.png`, fullPage: true });
+    await page.screenshot({ path: path.join(screenshotDirectory, `${evidenceName}-buffered-desktop.png`), fullPage: true });
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.screenshot({ path: `bin/${evidenceName}-buffered-mobile.png`, fullPage: true });
+    await page.screenshot({ path: path.join(screenshotDirectory, `${evidenceName}-buffered-mobile.png`), fullPage: true });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await page.waitForFunction(name => voiceEvents.some(e => e.event === 'tool_status' && e.tool_call?.name === name && e.status === 'completed'), lastTool, { timeout: 90000 });
     const result = await page.evaluate(async () => {
@@ -142,14 +147,18 @@ const assert = require('node:assert/strict');
     assert.deepEqual(errors, []);
     const evidence = { recorded_at: new Date().toISOString(), passed: true, providers: ['Tencent ASR 8k_zh', 'deepseek-v4-pro', 'Tencent TextToStreamAudioWS'],
       input: 'Pre-generated speech through WebAudio virtual microphone; physical output muted', duck_gain: 0.5, initial_tool: initialTool, initial_epoch: initialEpoch, water_epoch: initialTool === 'water' ? initialEpoch : undefined, fertilizer_epoch: fertilizerEpoch, discarded_input_id: discardedInputID, ...result };
-    const evidenceDirectory = process.env.EVIDENCE_DIR || 'docs/evidence';
-    fs.mkdirSync(evidenceDirectory, { recursive: true });
     fs.writeFileSync(`${evidenceDirectory}/${evidenceName}-voice.json`, `${JSON.stringify(evidence, null, 2)}\n`);
     console.log(JSON.stringify({ passed: true, tools: events.filter(e => e.event === 'tool_status'), decisions: events.filter(e => e.event === 'intent_result'), media: result.media }));
     await page.locator('#disconnect').click();
     await page.evaluate(() => testMic.context.close());
   } catch (error) {
-    console.error(await page.evaluate(() => window.voiceEvents?.filter(e => e.event !== 'response_text')).catch(() => []));
+    const events = await page.evaluate(() => window.voiceEvents || []).catch(() => []);
+    fs.writeFileSync(path.join(evidenceDirectory, `${evidenceName}-voice.json`), `${JSON.stringify({
+      recorded_at: new Date().toISOString(), passed: false, error: error.message, events, page_errors: errors,
+      input: 'Pre-generated speech through WebAudio virtual microphone; physical output muted',
+    }, null, 2)}\n`);
+    await page.screenshot({ path: path.join(screenshotDirectory, `${evidenceName}-failed.png`), fullPage: true }).catch(() => {});
+    console.error(`Scenario ${evidenceName} failed; evidence: ${evidenceDirectory}`);
     throw error;
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
