@@ -133,6 +133,102 @@ func TestPartialFalseIsRejudgedOnFinalAndOnlyTrueCancels(t *testing.T) {
 	}
 }
 
+func TestConfirmedInterruptionClearsOtherInputsAndRejectsLateResults(t *testing.T) {
+	for _, triggerEvent := range []string{"asr_partial", "asr_final"} {
+		t.Run(triggerEvent, func(t *testing.T) {
+			m, clock, events := playingFixture(t)
+			old := m.current
+			judgeStarted, judgeExited := make(chan struct{}), make(chan struct{})
+			started := installBufferedModel(m, func(ctx context.Context, input llm.InterruptionInput) (bool, error) {
+				if input.UserText == "pending decision" {
+					close(judgeStarted)
+					<-ctx.Done()
+					close(judgeExited)
+					return true, nil
+				}
+				return input.UserText == "停一下", nil
+			})
+			for _, id := range []string{"cached-a", "cached-b"} {
+				m.Accept(asr.Event{Event: "asr_final", UtteranceID: id, Text: "old question"})
+			}
+			waitFor(t, func() bool { return bufferedCount(m) == 2 })
+			m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "draft", Text: "嗯"})
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "pending", Text: "pending decision"})
+			<-judgeStarted
+			m.Accept(asr.Event{Event: triggerEvent, UtteranceID: "replacement", Text: "停一下"})
+			waitConfirmed(t, m)
+			clock.advance(minimumDuck)
+			frameFrom(t, m)
+			select {
+			case <-judgeExited:
+			case <-time.After(time.Second):
+				t.Fatal("discarded input kept an active intent request")
+			}
+			m.mu.Lock()
+			if len(m.interjections) != 0 || m.epoch != 2 || m.current == nil || old.ctx.Err() == nil {
+				t.Error("confirmed interruption retained old inputs or failed to replace the turn")
+			}
+			for _, id := range []string{"cached-a", "cached-b", "draft", "pending"} {
+				if !m.seen[id] {
+					t.Errorf("discarded input %s can reappear", id)
+				}
+			}
+			queueSize := -1
+			for _, event := range *events {
+				if event.Event == "input_queue" {
+					queueSize = *event.QueueSize
+				}
+			}
+			if queueSize != 0 {
+				t.Error("browser queue count was not reset")
+			}
+			if triggerEvent == "asr_partial" && (m.seen["replacement"] || !m.current.waitingFinal) {
+				t.Error("triggering partial cannot receive its final")
+			}
+			m.mu.Unlock()
+			for _, id := range []string{"cached-a", "cached-b", "draft", "pending"} {
+				m.Accept(asr.Event{Event: "asr_final", UtteranceID: id, Text: "late discarded final"})
+			}
+			if triggerEvent == "asr_partial" {
+				select {
+				case <-started:
+					t.Fatal("new answer started before the triggering final")
+				default:
+				}
+				m.Accept(asr.Event{Event: "asr_final", UtteranceID: "replacement", Text: "停一下"})
+			}
+			select {
+			case messages := <-started:
+				if messages[len(messages)-1].Content != "停一下" {
+					t.Fatal("discarded input replaced the new instruction")
+				}
+			case <-time.After(time.Second):
+				t.Fatal("new instruction was discarded")
+			}
+			waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current != nil && m.current.generated })
+			// Inputs received after the confirmed switch still follow normal buffering.
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "fresh", Text: "fresh question"})
+			waitFor(t, func() bool { return bufferedCount(m) == 1 })
+			finishEpoch(t, m, 2)
+			select {
+			case messages := <-started:
+				if messages[len(messages)-1].Content != "fresh question" {
+					t.Fatal("old cache replayed after the replacement")
+				}
+			case <-time.After(time.Second):
+				t.Fatal("new input could not be buffered after interruption")
+			}
+			waitFor(t, func() bool { m.mu.Lock(); defer m.mu.Unlock(); return m.current != nil && m.current.generated })
+			finishEpoch(t, m, 3)
+			m.mu.Lock()
+			defer m.mu.Unlock()
+			if m.current != nil || len(m.interjections) != 0 || m.epoch != 3 {
+				t.Error("discarded cache revived after playback")
+			}
+		})
+	}
+}
+
 func TestFinalSupersedesLatePartialApproval(t *testing.T) {
 	m, clock, _ := playingFixture(t)
 	old := m.current
@@ -247,6 +343,8 @@ func TestAppendedPartialRevokesApprovalBeforeHardStop(t *testing.T) {
 	m, clock, _ := playingFixture(t)
 	old := m.current
 	installBufferedModel(m, func(_ context.Context, input llm.InterruptionInput) (bool, error) { return !input.IsFinal, nil })
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "cached", Text: "old question"})
+	waitFor(t, func() bool { return bufferedCount(m) == 1 })
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "a", Text: "停一下"})
 	waitConfirmed(t, m)
 	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "a", Text: "停一下这个词是什么意思"})
@@ -256,7 +354,7 @@ func TestAppendedPartialRevokesApprovalBeforeHardStop(t *testing.T) {
 		t.Fatal("superseded pending approval was applied on next RTP tick")
 	}
 	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "停一下这个词是什么意思"})
-	waitFor(t, func() bool { return bufferedCount(m) == 1 })
+	waitFor(t, func() bool { return bufferedCount(m) == 2 })
 }
 
 func TestPlaybackCompletionInvalidatesPendingIntent(t *testing.T) {

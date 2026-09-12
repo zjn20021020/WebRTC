@@ -8,9 +8,10 @@ const assert = require('node:assert/strict');
   const waitScenario = process.argv.includes('--wait');
   const replacementScenario = process.argv.includes('--replacement');
   const praiseScenario = process.argv.includes('--praise');
-  const switchScenario = process.argv.includes('--switch');
+  const clearBufferScenario = process.argv.includes('--clear-buffer');
+  const switchScenario = process.argv.includes('--switch') || clearBufferScenario;
   assert.ok([waitScenario, replacementScenario, praiseScenario, switchScenario].filter(Boolean).length <= 1, 'Select one scenario');
-  const evidenceName = waitScenario ? 'home-wait' : replacementScenario ? 'home-replacement' : praiseScenario ? 'home-praise' : switchScenario ? 'home-switch' : 'home';
+  const evidenceName = clearBufferScenario ? 'home-clear-buffer' : waitScenario ? 'home-wait' : replacementScenario ? 'home-replacement' : praiseScenario ? 'home-praise' : switchScenario ? 'home-switch' : 'home';
   const initialTool = praiseScenario || switchScenario ? 'plant' : 'water';
   const lastTool = waitScenario ? 'plant' : switchScenario ? 'general_qa' : 'affection';
   const browser = await chromium.launch({
@@ -59,6 +60,13 @@ const assert = require('node:assert/strict');
     await page.waitForFunction(name => voiceEvents.some(e => e.tool_call?.name === name && e.status === 'running')
       && voiceEvents.some(e => e.status === 'speaking'), initialTool, { timeout: 20000 });
     const initialEpoch = await page.evaluate(() => responseEpoch);
+    let discardedInputID;
+    if (clearBufferScenario) {
+      await page.evaluate(() => playFixture('home-question'));
+      await page.waitForFunction(epoch => voiceEvents.some(e => e.event === 'input_buffered' && e.response_epoch === epoch), initialEpoch, { timeout: 15000 });
+      discardedInputID = await page.evaluate(epoch => voiceEvents.find(e => e.event === 'input_buffered' && e.response_epoch === epoch).utterance_id, initialEpoch);
+      assert.equal(await page.evaluate(() => responseEpoch), initialEpoch);
+    }
     let fertilizerEpoch;
     if (waitScenario || praiseScenario) {
       await page.evaluate(name => playFixture(name), praiseScenario ? 'home-good-job' : 'home-wait-plant');
@@ -95,6 +103,15 @@ const assert = require('node:assert/strict');
       assert.ok(!events.some(e => e.event === 'action_result' && e.fallback), 'Switch classification failed');
     }
     const index = predicate => events.findIndex(predicate);
+    if (clearBufferScenario) {
+      const approved = index(e => e.event === 'intent_result' && e.interrupt === true && e.response_epoch === initialEpoch);
+      const nextTurn = index(e => e.event === 'turn_transition' && e.previous_epoch === initialEpoch);
+      assert.ok(approved >= 0 && nextTurn > approved);
+      assert.ok(events.slice(approved + 1, nextTurn).some(e => e.event === 'input_queue' && e.queue_size === 0), 'Confirmed interruption did not clear the old text queue');
+      assert.ok(!events.some(e => e.event === 'input_dispatched' && e.utterance_id === discardedInputID), 'Discarded question was answered after interruption');
+      assert.equal(events.filter(e => e.event === 'tool_status' && e.tool_call?.name === 'general_qa' && e.status === 'running').length, 1);
+      assert.ok(events.some(e => e.event === 'input_dispatched' && e.utterance_id !== discardedInputID), 'Fresh post-interruption question was not answered');
+    }
     if (!waitScenario && !praiseScenario) {
       const approved = index(e => e.event === 'intent_result' && e.interrupt === true && e.response_epoch === initialEpoch && !e.fallback);
       const cancelled = index(e => e.event === 'response_cancelled' && e.response_epoch === initialEpoch);
@@ -124,7 +141,7 @@ const assert = require('node:assert/strict');
     assert.ok(result.media.some(r => r.type === 'outbound-rtp' && r.packetsSent > 0));
     assert.deepEqual(errors, []);
     const evidence = { recorded_at: new Date().toISOString(), passed: true, providers: ['Tencent ASR 8k_zh', 'deepseek-v4-pro', 'Tencent TextToStreamAudioWS'],
-      input: 'Pre-generated speech through WebAudio virtual microphone; physical output muted', duck_gain: 0.5, initial_tool: initialTool, initial_epoch: initialEpoch, water_epoch: initialTool === 'water' ? initialEpoch : undefined, fertilizer_epoch: fertilizerEpoch, ...result };
+      input: 'Pre-generated speech through WebAudio virtual microphone; physical output muted', duck_gain: 0.5, initial_tool: initialTool, initial_epoch: initialEpoch, water_epoch: initialTool === 'water' ? initialEpoch : undefined, fertilizer_epoch: fertilizerEpoch, discarded_input_id: discardedInputID, ...result };
     fs.mkdirSync('docs/evidence', { recursive: true });
     fs.writeFileSync(`docs/evidence/${evidenceName}-voice.json`, `${JSON.stringify(evidence, null, 2)}\n`);
     console.log(JSON.stringify({ passed: true, tools: events.filter(e => e.event === 'tool_status'), decisions: events.filter(e => e.event === 'intent_result'), media: result.media }));

@@ -135,7 +135,9 @@ node scripts/verify_home.cjs
 
 兜底的 `intent_result` 带有 `interrupt:false`、`fallback:true`、`status:"error"` 和原因 `invalid_output`、`timeout` 或 `request_failed`。服务端日志显式记录相同字段及耗时和安全错误描述；模型正常返回 false 时，日志为 `interrupt=false fallback=false`。严格 JSON 校验仍然执行，多余文字不会被截取后当作模型结果使用。
 
-缓存最多 8 句，每句最多 2000 字符，按首次收到该句的顺序处理。重复 final 去重；未完成的 partial 连续 15 秒无更新或 ASR 结束时释放。队列满会明确提示本句未收录。手动停止或断开会清空缓存；语音 true 打断只取走该句，其他缓存继续保留。false 表示延后处理，普通“嗯”等完整转写也会被保留并在播完后提交。
+缓存最多 8 句，每句最多 2000 字符，按首次收到该句的顺序处理。重复 final 去重；未完成的 partial 连续 15 秒无更新或 ASR 结束时释放。队列满会明确提示本句未收录。手动停止、断开或语音确认打断都会清空待处理输入；语音打断只保留触发本次切换的新指令，旧缓存和草稿作废，相关意图请求取消，迟到 final 不会重新入队。清空发生在实际执行打断时，疑似插话、false 和被撤回的确认不清空。新轮期间新收到的输入仍按正常规则处理。false 表示延后处理，普通“嗯”等完整转写也会被保留并在播完后提交。
+
+日志 `input_queue ... cleared=true reason=interrupted inputs_dropped=N` 记录丢弃的待处理输入数（含草稿），页面收到 `input_queue` 的零计数。清缓存语音回归使用 `go run ./cmd/demo-fixtures -scene home-switch` 和 `node scripts/verify_home.cjs --clear-buffer`。
 
 “播完”目前按服务端生成完成且待播帧全部发送判断，不是物理耳机播放结束的精确回调。若判定仍在运行时旧轮已结束，取消这个已经没有必要的判定，直接按队列处理完整文本。
 

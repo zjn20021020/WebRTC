@@ -138,7 +138,11 @@ func commonPrefix(a, b string) int {
 func (m *Manager) confirmLocked(t *turn) {
 	d := t.duck
 	oldEpoch := t.epoch
+	// Preserve the triggering utterance so its final can complete the new turn.
 	m.removeInterjectionLocked(d.utteranceID)
+	droppedInputs := len(m.interjections)
+	m.clearInterjectionsLocked()
+	log.Printf("input_queue epoch=%d cleared=true reason=interrupted inputs_dropped=%d", oldEpoch, droppedInputs)
 	m.stopLocked("interrupted")
 	next := m.reserveLocked(d.utteranceID)
 	log.Printf("turn_transition old_epoch=%d new_epoch=%d state=listening waiting_final=true", oldEpoch, next.epoch)
