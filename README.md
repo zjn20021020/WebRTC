@@ -8,6 +8,8 @@
 
 角色规则见 [迪莫 SKILL.md](internal/home/skills/dimo/SKILL.md)，游戏资料、分类协议及未来工具接口见 [场景调研与设计](docs/场景调研与设计.md)。角色 skill 内嵌进程序，修改后需重新编译并重启。
 
+前端采用家园风格：官方原野场景与迪莫贴纸、绿白工作台、桌面双栏字幕/回答、手机纵向布局。连接、收音波形、播放器、所有状态、延迟指标和日志完整保留。预览见 [桌面截图](docs/evidence/home-ui-desktop.png) / [手机截图](docs/evidence/home-ui-mobile.png)，素材来源与图标许可见 [SOURCES.md](web/assets/SOURCES.md)。页面素材均本地加载，静态文件修改后刷新即可生效。
+
 当前版本已经包含：
 
 - `POST /api/offer` 非 Trickle ICE 信令；
@@ -29,6 +31,8 @@ ASR 和 TTS 使用腾讯云，LLM 使用 DeepSeek 的 `deepseek-v4-pro`。LLM �
 作业要求、实现思路、架构与状态机、已验证的结果统一维护在 [作业任务说明](docs/作业任务说明.md)；未完成的说明项保留空白。真实云服务联调记录见 [带时间戳的浏览器事件](docs/evidence/barge-in.json) 和 [服务端日志摘录](docs/evidence/server-barge-in.txt)。
 
 ## 运行
+
+界面回归可运行 `node scripts/verify_ui.cjs`（Playwright 环境配置见后文）：覆盖 1440/1024/768/390/320px、21 个原有控件、图片加载、波形像素、长文本/错误状态和减少动画偏好。`verify_home.cjs` 可通过 `EVIDENCE_DIR` 指定证据输出目录，避免覆盖历史联调记录。
 
 需要 Go 1.22 或更高版本：
 

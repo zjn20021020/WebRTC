@@ -3,48 +3,69 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#356d54" />
     <title>迪莫 · 家园语音助手</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <main class="container">
-      <h1>迪莫 · 家园语音助手</h1>
-      <p id="status" class="status">未连接</p>
-      <button id="connect" type="button">连接并启用麦克风</button>
-      <button id="disconnect" type="button" disabled>断开</button>
-      <p id="meter" class="meter">麦克风未启用</p>
-      <canvas id="waveform" width="720" height="180" aria-label="麦克风实时波形"></canvas>
-      <audio id="remoteAudio" autoplay controls></audio>
-      <section class="transcript" aria-labelledby="transcriptHeading">
-        <div class="transcript-heading">
-          <h2 id="transcriptHeading">实时字幕</h2>
-          <span id="asrStatus" role="status">未连接</span>
+      <header class="masthead">
+        <div class="identity">
+          <img class="dimo" src="/assets/dimo.webp" alt="迪莫" width="100" height="112" />
+          <h1><span class="companion-name">迪莫</span><span class="title-dot"> · </span>家园语音助手</h1>
         </div>
-        <ol id="finalTranscript" aria-live="polite"></ol>
-        <p id="partialTranscript" aria-live="off"></p>
-      </section>
-      <section class="reply" aria-labelledby="replyHeading">
-        <div class="transcript-heading">
-          <h2 id="replyHeading">语音回答</h2>
-          <span id="turnLabel"></span>
-          <span id="replyStatus" role="status">未连接</span>
+        <p id="status" class="status" data-state="disconnected" role="status">未连接</p>
+      </header>
+      <div class="workbench">
+        <div class="connection-bar">
+          <div class="connection-actions">
+            <button id="connect" type="button"><img src="/assets/icons/mic.svg" alt="" class="icon" />连接并启用麦克风</button>
+            <button id="disconnect" type="button" disabled><img src="/assets/icons/unplug.svg" alt="" class="icon" />断开</button>
+          </div>
+          <p id="meter" class="meter">麦克风未启用</p>
         </div>
-        <p id="replyText" aria-live="polite"></p>
-        <p id="replyError" role="alert" hidden></p>
-        <p id="toolStatus" role="status"></p>
-        <p id="interruptionStatus" role="status"></p>
-        <p id="queuedStatus" role="status"></p>
-        <button id="stopResponse" type="button" disabled>停止回答</button>
-      </section>
-      <section class="latency" aria-labelledby="latencyHeading">
-        <h2 id="latencyHeading">延迟观测</h2>
-        <dl>
-          <div><dt title="ASR 标记的句末音频到达服务端，到回答首字返回的估算时间">说完到首字（估算）</dt><dd id="latencyText">--</dd></div>
-          <div><dt title="句末音频到达服务端，到首个非静音 RTP 帧发送；不含耳机播放缓冲">说完到首音频发送（估算）</dt><dd id="latencyAudio">--</dd></div>
-          <div><dt title="最近一次插话起点到服务端发送降音帧的估算时间，包含 VAD 判定时间">插话到降音发送（估算）</dt><dd id="latencyDuck">--</dd></div>
-        </dl>
-      </section>
-      <pre id="log" aria-live="polite"></pre>
+        <div class="audio-strip">
+          <canvas id="waveform" width="720" height="96" aria-label="麦克风实时波形"></canvas>
+          <audio id="remoteAudio" aria-label="语音播放" autoplay controls></audio>
+        </div>
+        <div class="conversation">
+          <section class="transcript" aria-labelledby="transcriptHeading">
+            <div class="transcript-heading">
+              <h2 id="transcriptHeading"><img src="/assets/icons/messages-square.svg" alt="" class="icon" />实时字幕</h2>
+              <span id="asrStatus" role="status">未连接</span>
+            </div>
+            <ol id="finalTranscript" aria-live="polite"></ol>
+            <p id="partialTranscript" aria-live="off"></p>
+          </section>
+          <section class="reply" aria-labelledby="replyHeading">
+            <div class="transcript-heading">
+              <h2 id="replyHeading"><img src="/assets/icons/audio-lines.svg" alt="" class="icon" />语音回答</h2>
+              <span id="turnLabel"></span>
+              <span id="replyStatus" role="status">未连接</span>
+            </div>
+            <p id="replyText" aria-live="polite"></p>
+            <p id="replyError" role="alert" hidden></p>
+            <div class="reply-details">
+              <p id="toolStatus" role="status"></p>
+              <p id="interruptionStatus" role="status"></p>
+              <p id="queuedStatus" role="status"></p>
+            </div>
+            <button id="stopResponse" type="button" disabled><img src="/assets/icons/square.svg" alt="" class="icon" />停止回答</button>
+          </section>
+        </div>
+        <section class="latency" aria-labelledby="latencyHeading">
+          <h2 id="latencyHeading"><img src="/assets/icons/activity.svg" alt="" class="icon" />延迟观测</h2>
+          <dl>
+            <div><dt title="ASR 标记的句末音频到达服务端，到回答首字返回的估算时间">说完到首字（估算）</dt><dd id="latencyText">--</dd></div>
+            <div><dt title="句末音频到达服务端，到首个非静音 RTP 帧发送；不含耳机播放缓冲">说完到首音频发送（估算）</dt><dd id="latencyAudio">--</dd></div>
+            <div><dt title="最近一次插话起点到服务端发送降音帧的估算时间，包含 VAD 判定时间">插话到降音发送（估算）</dt><dd id="latencyDuck">--</dd></div>
+          </dl>
+        </section>
+        <section class="log-section" aria-labelledby="logHeading">
+          <h2 id="logHeading"><img src="/assets/icons/terminal.svg" alt="" class="icon" />运行日志</h2>
+          <pre id="log" aria-live="polite"></pre>
+        </section>
+      </div>
     </main>
     <script src="/app.js" defer></script>
   </body>

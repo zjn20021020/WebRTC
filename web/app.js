@@ -184,6 +184,8 @@ function disconnect() {
   connectButton.disabled = false;
   disconnectButton.disabled = true;
   statusElement.textContent = '未连接';
+  statusElement.dataset.state = 'disconnected';
+  resizeWaveform();
 }
 
 disconnectButton.addEventListener('click', disconnect);
@@ -196,6 +198,22 @@ function resizeWaveform() {
   waveform.width = Math.floor(width * ratio);
   waveform.height = Math.floor(height * ratio);
   waveformContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+  paintWaveformBackground(width, height);
+}
+
+function paintWaveformBackground(width, height) {
+  waveformContext.fillStyle = '#edf5ef';
+  waveformContext.fillRect(0, 0, width, height);
+  waveformContext.strokeStyle = '#d7e6da';
+  waveformContext.lineWidth = 1;
+  waveformContext.beginPath();
+  for (let x = 24; x < width; x += 24) {
+    waveformContext.moveTo(x, 0);
+    waveformContext.lineTo(x, height);
+  }
+  waveformContext.moveTo(0, height / 2);
+  waveformContext.lineTo(width, height / 2);
+  waveformContext.stroke();
 }
 
 function drawWaveform(analyser, data, connection) {
@@ -204,9 +222,8 @@ function drawWaveform(analyser, data, connection) {
   const width = waveform.clientWidth || 720;
   const height = waveform.clientHeight || 180;
   waveformContext.clearRect(0, 0, width, height);
-  waveformContext.fillStyle = '#101820';
-  waveformContext.fillRect(0, 0, width, height);
-  waveformContext.strokeStyle = '#55c2a3';
+  paintWaveformBackground(width, height);
+  waveformContext.strokeStyle = '#479479';
   waveformContext.lineWidth = 2;
   waveformContext.beginPath();
   const slice = width / data.length;
@@ -277,6 +294,7 @@ connectButton.addEventListener('click', async () => {
   turnLabel.textContent = '';
   setReplyStatus('waiting');
   statusElement.textContent = '连接中';
+  statusElement.dataset.state = 'connecting';
   const connection = { abort: new AbortController() };
   activeConnection = connection;
   try {
@@ -300,6 +318,7 @@ connectButton.addEventListener('click', async () => {
     peerConnection.onconnectionstatechange = () => {
       if (activeConnection !== connection) return;
       statusElement.textContent = peerConnection.connectionState;
+      statusElement.dataset.state = peerConnection.connectionState;
       log(`peer connection: ${peerConnection.connectionState}`);
       if (['failed', 'closed', 'disconnected'].includes(peerConnection.connectionState)) disconnect();
     };
@@ -334,6 +353,7 @@ connectButton.addEventListener('click', async () => {
     if (activeConnection !== connection) return;
     disconnect();
     statusElement.textContent = '连接失败';
+    statusElement.dataset.state = 'failed';
     log(`错误: ${error.message}`);
     connectButton.disabled = false;
   }

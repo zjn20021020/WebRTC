@@ -142,8 +142,9 @@ const assert = require('node:assert/strict');
     assert.deepEqual(errors, []);
     const evidence = { recorded_at: new Date().toISOString(), passed: true, providers: ['Tencent ASR 8k_zh', 'deepseek-v4-pro', 'Tencent TextToStreamAudioWS'],
       input: 'Pre-generated speech through WebAudio virtual microphone; physical output muted', duck_gain: 0.5, initial_tool: initialTool, initial_epoch: initialEpoch, water_epoch: initialTool === 'water' ? initialEpoch : undefined, fertilizer_epoch: fertilizerEpoch, discarded_input_id: discardedInputID, ...result };
-    fs.mkdirSync('docs/evidence', { recursive: true });
-    fs.writeFileSync(`docs/evidence/${evidenceName}-voice.json`, `${JSON.stringify(evidence, null, 2)}\n`);
+    const evidenceDirectory = process.env.EVIDENCE_DIR || 'docs/evidence';
+    fs.mkdirSync(evidenceDirectory, { recursive: true });
+    fs.writeFileSync(`${evidenceDirectory}/${evidenceName}-voice.json`, `${JSON.stringify(evidence, null, 2)}\n`);
     console.log(JSON.stringify({ passed: true, tools: events.filter(e => e.event === 'tool_status'), decisions: events.filter(e => e.event === 'intent_result'), media: result.media }));
     await page.locator('#disconnect').click();
     await page.evaluate(() => testMic.context.close());
