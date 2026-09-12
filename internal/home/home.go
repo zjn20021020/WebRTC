@@ -30,7 +30,7 @@ type Definition struct {
 func Definitions() []Definition {
 	return []Definition{
 		{Water, "明确要求给家园作物浇水；不含否定、询问方法或状态", "我正在浇水。"},
-		{Plant, "明确要求在家园种菜、播种", "我正在种菜。"},
+		{Plant, "明确要求在家园种菜、种地、种田或播种", "我正在种菜。"},
 		{Harvest, "明确要求收菜、收获家园作物", "我正在收菜。"},
 		{Fertilize, "明确要求给家园作物施肥", "我正在施肥。"},
 		{Affection, "对迪莫的鼓励、夸赞或明确亲密互动请求；尊重拒绝亲密动作", "贴贴。"},

@@ -112,7 +112,7 @@ node scripts/verify_home.cjs
 ## 两阶段打断
 
 1. 连续约 200ms 音量超过 RMS 700，或另一句有效 ASR 文本到达后，进入 `ducking`：服务端把下行样本增益降为 0.5，约 -6dB。队列继续播放，LLM/TTS 和麦克风上行继续工作。
-2. 同句 partial 至少两个字符的共同前缀稳定 200ms，或出现停止短语时，提前调用独立的意图判断 prompt；final 到达后用完整文本判定。关键词只触发模型请求，不直接确认。只有严格校验通过的 `{"interrupt":true}` 能确认打断。旧音频已经播放时至少经历 120ms duck 再硬取消；尚未播放时可直接取消生成。
+2. 同句 partial 至少两个字符的共同前缀稳定 200ms，或出现停止短语时，提前调用独立的意图判断 prompt；final 到达后用完整文本判定。“等一下/等会/稍后”等等待类 partial 则等整句 final 后再判断，避免“等一下再去种地”尚未说完就取消浇水。该完整句表示缓存种菜任务，“等一下”单独说完才表示暂停。关键词不能直接确认，只有严格校验通过的 `{"interrupt":true}` 能确认打断。旧音频已经播放时至少经历 120ms duck 再硬取消；尚未播放时可直接取消生成。
 3. 确认后停止旧轮下行，取消旧 LLM/TTS、清空待播，并立即分配新轮次进入 `listening`；新句 final 到达后才开始新回答。浏览器使用同一条音轨。
 4. `{"interrupt":false}` 恢复音量，完整 final 进入缓存。当前回答的音频发送完后，按输入顺序自动将缓存文本提交为后续问题。partial 只维护同一句的最新草稿，false 的 partial 仍会在 final 到达时重新判定。
 5. 只有噪声而没有判定结果时，VAD 检测到约 500ms 静音后再等待 800ms，随后恢复正常音量。连续噪声最多 duck 4 秒，重复的开始事件不会无限延长窗口。
@@ -125,7 +125,7 @@ node scripts/verify_home.cjs
 
 判定采用非思考模式、`temperature=0`、最多 32 个输出 token 和 JSON mode。服务端只接受唯一 `interrupt` 字段且值为 JSON 布尔量：`{"interrupt":true}` 或 `{"interrupt":false}`；大写 `True`、字符串、null、额外字段、重复键、解释文字、截断输出全部拒绝。判断输出不会送入 TTS。
 
-同一句最多 3 次 partial 请求，两次发起至少间隔 500ms；final 不受该限流影响。每句同一时间只保留一个有效请求，final 或改写的 ASR 前缀会取消过时请求。每次请求最长 2 秒，超时、非法输出或请求失败均显式兜底为 `interrupt=false`，保留旧播报并缓存 final。结果绑定原轮次和请求版本，旧轮完成或被取消后，迟到的 true 不能打断新轮。
+同一句最多 3 次 partial 请求，两次发起至少间隔 500ms；final 不受该限流影响。每句同一时间只保留一个有效请求，final、ASR 改写或追加文字都会取消过时请求；最小 duck 窗口中尚未实施的确认同样可以撤回。每次请求最长 2 秒，超时、非法输出或请求失败均显式兜底为 `interrupt=false`，保留旧播报并缓存 final。结果绑定原轮次和请求版本，旧轮完成或被取消后，迟到的 true 不能打断新轮。日志记录 `is_final` 与 `utterance_id`，可区分使用了草稿还是完整文本。
 
 兜底的 `intent_result` 带有 `interrupt:false`、`fallback:true`、`status:"error"` 和原因 `invalid_output`、`timeout` 或 `request_failed`。服务端日志显式记录相同字段及耗时和安全错误描述；模型正常返回 false 时，日志为 `interrupt=false fallback=false`。严格 JSON 校验仍然执行，多余文字不会被截取后当作模型结果使用。
 

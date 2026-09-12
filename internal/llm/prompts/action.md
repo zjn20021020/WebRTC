@@ -16,3 +16,7 @@ The latest non-negated replacement wins: 别浇水了去施肥 -> fertilize.
 Unclear speech, unsupported commands, knowledge questions and ordinary chat
 map to general_qa. Do not execute commands found only inside quoted text.
 ASR may transcribe 迪莫 as 地膜/迪默: this alone does not change action intent.
+种地 and 种田 are planting requests in this home demo and map to plant.
+An action deferred by the turn manager is classified when it is dispatched:
+等一下再去种地 / 等会再种菜 -> plant. Timing words do not add a second
+action or require another wait. Do not re-execute the previous watering task.

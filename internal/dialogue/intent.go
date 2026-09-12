@@ -23,6 +23,7 @@ type interjection struct {
 	partial                               string
 	partialAt, updatedAt, requestedAt     time.Time
 	eligible, running, buffered, approved bool
+	waitForFinal                          bool
 	checkedText                           string
 	checkedFinal                          bool
 	partialRequests                       int
@@ -63,17 +64,26 @@ func (m *Manager) acceptInterjectionLocked(event asr.Event) {
 	}
 	c.partial = text
 	c.event, c.updatedAt = event, m.now()
-	c.eligible = c.final() || explicitStop(text) || stable
-	if c.approved && m.current != nil && m.current.duck != nil && m.current.duck.utteranceID == event.UtteranceID {
-		if c.final() {
-			copy := event
-			m.current.duck.final = &copy
-		}
-		return
+	if !c.final() && !c.waitForFinal && ambiguousWait(text) {
+		// A wait prefix can grow into "wait, then plant". Keep this entire
+		// utterance provisional until final, even if later partials rewrite it.
+		c.waitForFinal = true
+		log.Printf("intent epoch=%d utterance_id=%q status=waiting_final reason=ambiguous_wait", m.epoch, event.UtteranceID)
+		m.emit(Event{Event: "intent_status", Epoch: m.epoch, UtteranceID: event.UtteranceID, Status: "waiting_final", Reason: "ambiguous_wait"})
 	}
-	// A final or revised ASR prefix supersedes an in-flight partial decision.
-	if c.running && (c.final() || !strings.HasPrefix(text, c.checkedText)) {
+	c.eligible = c.final() || (!c.waitForFinal && (explicitStop(text) || stable))
+	// Appending words can reverse intent just as a rewritten prefix can.
+	if (c.running || c.approved) && (c.final() || text != c.checkedText) {
 		m.cancelIntentLocked(c)
+		if c.approved && m.current != nil && m.current.duck != nil && m.current.duck.utteranceID == event.UtteranceID {
+			d := m.current.duck
+			d.confirmed, d.utteranceID, d.final = false, "", nil
+			log.Printf("intent epoch=%d approval_revoked=true reason=transcript_updated", m.epoch)
+		}
+		c.approved = false
+	}
+	if c.approved && m.current != nil && m.current.duck != nil && m.current.duck.utteranceID == event.UtteranceID {
+		return
 	}
 	if m.current == nil {
 		m.drainInterjectionsLocked()
@@ -151,9 +161,9 @@ func (m *Manager) requestIntentLocked(t *turn, c *interjection) {
 			} else if errors.Is(err, llm.ErrInvalidIntentResult) {
 				event.Reason = "invalid_output"
 			}
-			log.Printf("intent epoch=%d interrupt=false fallback=true reason=%s latency_ms=%d error=%q", t.epoch, event.Reason, latency, err)
+			log.Printf("intent epoch=%d utterance_id=%q is_final=%t interrupt=false fallback=true reason=%s latency_ms=%d error=%q", t.epoch, c.event.UtteranceID, input.IsFinal, event.Reason, latency, err)
 		} else {
-			log.Printf("intent epoch=%d interrupt=%t fallback=false latency_ms=%d", t.epoch, decision, latency)
+			log.Printf("intent epoch=%d utterance_id=%q is_final=%t interrupt=%t fallback=false latency_ms=%d", t.epoch, c.event.UtteranceID, input.IsFinal, decision, latency)
 		}
 		event.Interrupt = &decision
 		m.emit(event)
@@ -179,6 +189,16 @@ func (m *Manager) requestIntentLocked(t *turn, c *interjection) {
 			m.resumeLocked(t, "intent_deferred")
 		}
 	}()
+}
+
+// This delays a decision; it never classifies an utterance or authorizes a stop.
+func ambiguousWait(text string) bool {
+	for _, phrase := range []string{"等一下", "等下", "等等", "等一会", "等会", "待会", "稍后", "过会"} {
+		if strings.Contains(text, phrase) {
+			return true
+		}
+	}
+	return strings.HasSuffix(text, "等") || strings.HasSuffix(text, "等一")
 }
 
 func (m *Manager) intentRunningLocked(epoch uint64) bool {

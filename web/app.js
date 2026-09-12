@@ -117,7 +117,8 @@ function handleControl(data) {
   } else if (message.event === 'input_rejected') {
     queuedStatus.textContent = message.reason === 'queue_full' ? '待回答队列已满，本句未收录' : '识别未完成，本句未收录';
   } else if (message.response_epoch === responseEpoch && !responseFinished) {
-    if (message.event === 'intent_status') interruptionStatus.textContent = '正在判断插话意图';
+    if (message.event === 'intent_status') interruptionStatus.textContent = message.status === 'waiting_final'
+      ? '等待这句话说完' : '正在判断插话意图';
     if (message.event === 'intent_result') interruptionStatus.textContent = message.status === 'error'
       ? '意图判断暂不可用，延后处理' : message.interrupt ? '已确认打断' : '本句延后处理';
   }

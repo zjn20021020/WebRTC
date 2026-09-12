@@ -1,0 +1,108 @@
+{
+  "actions": [
+    {
+      "input": "等一下再去种地",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_FYWRmq2iH7b79TBfxsiO1808",
+        "name": "plant"
+      },
+      "latency_ms": 1106
+    },
+    {
+      "input": "等一下，再去种地",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_aVHVare3cJ9K6KGTzOAL4259",
+        "name": "plant"
+      },
+      "latency_ms": 1021
+    },
+    {
+      "input": "等会再种菜",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_cl8jUcaMAHkPiLekdVhs9823",
+        "name": "plant"
+      },
+      "latency_ms": 579
+    },
+    {
+      "input": "等一下别浇水了先去种地",
+      "expected": "plant",
+      "tool_call": {
+        "id": "call_00_FWHjSlxVA8AQTPRPjIgj6136",
+        "name": "plant"
+      },
+      "latency_ms": 540
+    }
+  ],
+  "interruptions": [
+    {
+      "text": "等一下再去种地",
+      "tool": "water",
+      "expected": false,
+      "actual": false,
+      "is_final": true
+    },
+    {
+      "text": "等一下，再去种地",
+      "tool": "water",
+      "expected": false,
+      "actual": false,
+      "is_final": true
+    },
+    {
+      "text": "等会儿再去种菜",
+      "tool": "water",
+      "expected": false,
+      "actual": false,
+      "is_final": true
+    },
+    {
+      "text": "等一下",
+      "tool": "water",
+      "expected": false,
+      "actual": false,
+      "is_final": false
+    },
+    {
+      "text": "迪莫等一下再",
+      "tool": "water",
+      "expected": false,
+      "actual": false,
+      "is_final": false
+    },
+    {
+      "text": "等一下再去种地",
+      "tool": "water",
+      "expected": false,
+      "actual": false,
+      "is_final": false
+    },
+    {
+      "text": "等一下",
+      "tool": "water",
+      "expected": true,
+      "actual": true,
+      "is_final": true
+    },
+    {
+      "text": "等一下别浇水了先去种地",
+      "tool": "water",
+      "expected": true,
+      "actual": true,
+      "is_final": true
+    },
+    {
+      "text": "别浇水了等一下再去种地",
+      "tool": "water",
+      "expected": true,
+      "actual": true,
+      "is_final": true
+    }
+  ],
+  "model": "deepseek-v4-pro",
+  "passed": true,
+  "recorded_at": "2026-09-12T07:11:44Z"
+}

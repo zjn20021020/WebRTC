@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"flag"
 	"log"
 	"os"
 	"time"
@@ -14,6 +15,11 @@ import (
 
 // Real provider verification using public scenario text, never microphone data.
 func main() {
+	suite := flag.String("suite", "home", "Verification suite: home or wait")
+	flag.Parse()
+	if *suite != "home" && *suite != "wait" {
+		log.Fatal("unknown suite")
+	}
 	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
 		log.Fatal("invalid .env file")
 	}
@@ -43,6 +49,14 @@ func main() {
 		{Input: "把来偷菜的人踢出去", Expected: home.GeneralQA},
 		{Input: "请解释这句话的意思：迪莫去浇水", Expected: home.GeneralQA},
 	}
+	if *suite == "wait" {
+		results = []result{
+			{Input: "等一下再去种地", Expected: home.Plant},
+			{Input: "等一下，再去种地", Expected: home.Plant},
+			{Input: "等会再种菜", Expected: home.Plant},
+			{Input: "等一下别浇水了先去种地", Expected: home.Plant},
+		}
+	}
 	passed := true
 	for i := range results {
 		r := &results[i]
@@ -64,13 +78,30 @@ func main() {
 		Tool     string `json:"tool"`
 		Expected bool   `json:"expected"`
 		Actual   bool   `json:"actual"`
+		IsFinal  bool   `json:"is_final"`
 		Error    string `json:"error,omitempty"`
 	}
 	intents := []intentResult{{Text: "别浇水了去施肥", Tool: "water", Expected: true}, {Text: "迪莫你真棒", Tool: "fertilize"}, {Text: "浇完水再去施肥", Tool: "water"}, {Text: "不用停你继续施肥", Tool: "fertilize"}}
 	for i := range intents {
+		intents[i].IsFinal = true
+	}
+	if *suite == "wait" {
+		intents = []intentResult{
+			{Text: "等一下再去种地", Tool: "water", IsFinal: true},
+			{Text: "等一下，再去种地", Tool: "water", IsFinal: true},
+			{Text: "等会儿再去种菜", Tool: "water", IsFinal: true},
+			{Text: "等一下", Tool: "water"},
+			{Text: "迪莫等一下再", Tool: "water"},
+			{Text: "等一下再去种地", Tool: "water"},
+			{Text: "等一下", Tool: "water", IsFinal: true, Expected: true},
+			{Text: "等一下别浇水了先去种地", Tool: "water", IsFinal: true, Expected: true},
+			{Text: "别浇水了等一下再去种地", Tool: "water", IsFinal: true, Expected: true},
+		}
+	}
+	for i := range intents {
 		r := &intents[i]
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-		r.Actual, err = client.ClassifyInterruption(ctx, llm.InterruptionInput{UserText: r.Text, CurrentTool: r.Tool, IsFinal: true})
+		r.Actual, err = client.ClassifyInterruption(ctx, llm.InterruptionInput{UserText: r.Text, CurrentTool: r.Tool, IsFinal: r.IsFinal})
 		cancel()
 		if err != nil {
 			r.Error = err.Error()
@@ -84,7 +115,11 @@ func main() {
 	if err := os.MkdirAll("docs/evidence", 0755); err != nil {
 		log.Fatal(err)
 	}
-	if err := os.WriteFile("docs/evidence/home-classifier.json", append(data, '\n'), 0644); err != nil {
+	path := "docs/evidence/home-classifier.json"
+	if *suite == "wait" {
+		path = "docs/evidence/home-wait-classifier.json"
+	}
+	if err := os.WriteFile(path, append(data, '\n'), 0644); err != nil {
 		log.Fatal(err)
 	}
 	_ = json.NewEncoder(os.Stdout).Encode(evidence)

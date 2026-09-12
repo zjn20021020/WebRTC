@@ -157,6 +157,108 @@ func TestFinalSupersedesLatePartialApproval(t *testing.T) {
 	}
 }
 
+func TestWaitUtteranceDefersPartialDecisionUntilFinal(t *testing.T) {
+	for _, final := range []struct {
+		text      string
+		interrupt bool
+	}{
+		{"等一下再去种地", false},
+		{"等一下，再去种地", false},
+		{"等一下", true},
+		{"等一下别浇水了去种地", true},
+	} {
+		t.Run(final.text, func(t *testing.T) {
+			m, clock, events := playingFixture(t)
+			old := m.current
+			var calls atomic.Int32
+			installBufferedModel(m, func(_ context.Context, input llm.InterruptionInput) (bool, error) {
+				calls.Add(1)
+				if !input.IsFinal {
+					t.Error("ambiguous wait partial reached the model")
+					return true, nil
+				}
+				return final.interrupt, nil
+			})
+			for _, text := range []string{"等", "等一下", "等一下再", "等一下再去种地"} {
+				m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "wait", Text: text})
+				clock.advance(time.Second)
+				frameFrom(t, m)
+			}
+			if calls.Load() != 0 || old.ctx.Err() != nil || m.epoch != 1 {
+				t.Fatal("wait prefix caused premature interruption")
+			}
+			found := false
+			for _, event := range *events {
+				if event.Event == "intent_status" && event.Reason == "ambiguous_wait" {
+					found = true
+				}
+			}
+			if !found {
+				t.Fatal("missing waiting-final diagnostic")
+			}
+			m.Accept(asr.Event{Event: "asr_final", UtteranceID: "wait", Text: final.text})
+			if final.interrupt {
+				waitConfirmed(t, m)
+				clock.advance(minimumDuck)
+				frameFrom(t, m)
+				if old.ctx.Err() == nil || m.epoch != 2 {
+					t.Fatal("explicit final stop no longer works")
+				}
+			} else {
+				waitFor(t, func() bool { return bufferedCount(m) == 1 })
+				if old.ctx.Err() != nil || m.epoch != 1 || frameFrom(t, m)[0] != 0x11 {
+					t.Fatal("deferred planting cancelled watering")
+				}
+			}
+		})
+	}
+}
+
+func TestAppendedPartialInvalidatesInFlightApproval(t *testing.T) {
+	m, clock, _ := playingFixture(t)
+	old := m.current
+	started, cancelled := make(chan struct{}), make(chan struct{})
+	installBufferedModel(m, func(ctx context.Context, input llm.InterruptionInput) (bool, error) {
+		if input.IsFinal {
+			return false, nil
+		}
+		close(started)
+		<-ctx.Done()
+		close(cancelled)
+		return true, nil
+	})
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "a", Text: "停一下"})
+	<-started
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "a", Text: "停一下这个词是什么意思"})
+	select {
+	case <-cancelled:
+	case <-time.After(time.Second):
+		t.Fatal("appended words did not cancel the obsolete request")
+	}
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "停一下这个词是什么意思"})
+	waitFor(t, func() bool { return bufferedCount(m) == 1 })
+	clock.advance(time.Second)
+	if old.ctx.Err() != nil || m.epoch != 1 || frameFrom(t, m)[0] != 0x11 {
+		t.Fatal("late prefix approval cancelled current playback")
+	}
+}
+
+func TestAppendedPartialRevokesApprovalBeforeHardStop(t *testing.T) {
+	m, clock, _ := playingFixture(t)
+	old := m.current
+	installBufferedModel(m, func(_ context.Context, input llm.InterruptionInput) (bool, error) { return !input.IsFinal, nil })
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "a", Text: "停一下"})
+	waitConfirmed(t, m)
+	m.Accept(asr.Event{Event: "asr_partial", UtteranceID: "a", Text: "停一下这个词是什么意思"})
+	clock.advance(minimumDuck)
+	frameFrom(t, m)
+	if old.ctx.Err() != nil || m.epoch != 1 {
+		t.Fatal("superseded pending approval was applied on next RTP tick")
+	}
+	m.Accept(asr.Event{Event: "asr_final", UtteranceID: "a", Text: "停一下这个词是什么意思"})
+	waitFor(t, func() bool { return bufferedCount(m) == 1 })
+}
+
 func TestPlaybackCompletionInvalidatesPendingIntent(t *testing.T) {
 	m, _, _ := playingFixture(t)
 	judgeStarted, judgeExited := make(chan struct{}), make(chan struct{})
