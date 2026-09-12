@@ -15,7 +15,7 @@ const (
 	maxDuckDuration   = 4 * time.Second
 	minimumDuck       = 120 * time.Millisecond
 	partialStability  = 200 * time.Millisecond
-	duckGain          = 0.2
+	duckGain          = 0.5
 )
 
 type duckState struct {

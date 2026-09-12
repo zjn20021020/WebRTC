@@ -56,8 +56,8 @@ func TestDuckingReducesServerAudioAndContinuesPlayback(t *testing.T) {
 	clock.advance(20 * time.Millisecond)
 	quiet := frameFrom(t, m)
 	ratio := audio.RMS(audio.DecodePCMU(quiet)) / audio.RMS(audio.DecodePCMU(original))
-	if ratio < 0.18 || ratio > 0.22 {
-		t.Fatalf("duck gain=%f, must be audible at about 20%%", ratio)
+	if ratio < 0.48 || ratio > 0.52 {
+		t.Fatalf("duck gain=%f, must be audible at about 50%%", ratio)
 	}
 	if old.ctx.Err() != nil || len(old.frames) != 198 {
 		t.Fatal("duck cancelled generation or paused queue consumption")
