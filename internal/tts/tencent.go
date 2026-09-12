@@ -29,7 +29,7 @@ type Config struct {
 }
 
 func ConfigFromEnv() (Config, error) {
-	c := Config{AppID: strings.TrimSpace(os.Getenv("TENCENT_APP_ID")), SecretID: strings.TrimSpace(os.Getenv("TENCENT_SECRET_ID")), SecretKey: strings.TrimSpace(os.Getenv("TENCENT_SECRET_KEY")), VoiceType: 1001}
+	c := Config{AppID: strings.TrimSpace(os.Getenv("TENCENT_APP_ID")), SecretID: strings.TrimSpace(os.Getenv("TENCENT_SECRET_ID")), SecretKey: strings.TrimSpace(os.Getenv("TENCENT_SECRET_KEY")), VoiceType: 603002}
 	if value := strings.TrimSpace(os.Getenv("TENCENT_TTS_VOICE_TYPE")); value != "" {
 		var err error
 		c.VoiceType, err = strconv.ParseInt(value, 10, 64)

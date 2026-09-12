@@ -82,10 +82,18 @@ ASR 持续接收全部音频，包括静音和下行播放期间的上行声音�
 DEEPSEEK_API_KEY=
 DEEPSEEK_URL=https://api.deepseek.com
 DEEPSEEK_MODEL=deepseek-v4-pro
-TENCENT_TTS_VOICE_TYPE=1001
+TENCENT_TTS_VOICE_TYPE=603002
 ```
 
-腾讯流式 TTS 复用 `TENCENT_APP_ID`、`TENCENT_SECRET_ID` 和 `TENCENT_SECRET_KEY`，需开通语音合成并具有调用权限。默认使用音色 `1001`；可在腾讯音色列表中选择其他支持 8kHz 的音色。设置后重启服务。
+腾讯流式 TTS 复用 `TENCENT_APP_ID`、`TENCENT_SECRET_ID` 和 `TENCENT_SECRET_KEY`，需开通语音合成并具有调用权限。默认使用超自然大模型童声音色 `603002`（软萌心心），作为迪莫角色的近似配音，并非官方迪莫原声。该音色支持 8kHz 实时合成；语速和音量维持供应商默认值。其他可选音色见[腾讯音色列表](https://cloud.tencent.com/document/product/1073/92668)，设置后重启服务。
+
+可用以下命令通过实际运行的流式接口生成试听，WAV 包含 PCM16 → PCMU → PCM16 转换后的 8kHz 单声道声音；命令会实际调用腾讯 TTS，输出首包耗时、音频长度和 RMS，不输出凭证：
+
+```powershell
+go run ./cmd/tts-preview -out bin/tts-preview.wav
+# Compare Tencent's premium child voice without changing the server config:
+go run ./cmd/tts-preview -voice 101015 -out bin/voice-zhimeng.wav
+```
 
 ```text
 浏览器麦克风 -> WebRTC PCMU/8kHz -> PCM16LE -> 腾讯 ASR

@@ -18,7 +18,7 @@ func streamFixture(t *testing.T, serve func(*websocket.Conn, string)) *Client {
 	t.Helper()
 	s := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query()
-		if q.Get("Action") != "TextToStreamAudioWS" || q.Get("SampleRate") != "8000" || q.Get("Codec") != "pcm" || q.Get("Signature") == "" {
+		if q.Get("Action") != "TextToStreamAudioWS" || q.Get("SampleRate") != "8000" || q.Get("Codec") != "pcm" || q.Get("VoiceType") != "603002" || q.Get("Signature") == "" {
 			t.Error("incorrect streaming request")
 		}
 		conn, err := (&websocket.Upgrader{}).Upgrade(w, r, nil)
@@ -29,7 +29,7 @@ func streamFixture(t *testing.T, serve func(*websocket.Conn, string)) *Client {
 		serve(conn, q.Get("SessionId"))
 	}))
 	t.Cleanup(s.Close)
-	c, err := NewClient(Config{AppID: "1250000000", SecretID: "fixture-id", SecretKey: "fixture-key", VoiceType: 1001})
+	c, err := NewClient(Config{AppID: "1250000000", SecretID: "fixture-id", SecretKey: "fixture-key", VoiceType: 603002})
 	if err != nil {
 		t.Fatal(err)
 	}
