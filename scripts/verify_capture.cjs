@@ -56,16 +56,15 @@ const fs = require('node:fs');
     });
     for (const key of ['echoCancellation', 'noiseSuppression', 'autoGainControl']) assert.equal(settings[key], false, `${key} was not disabled by headphone mode`);
     await page.evaluate(() => disconnect());
-    await page.locator('input[value="speakers"]').check();
-    const speakerSettings = await page.evaluate(async () => {
+    assert.equal(await page.locator('#audioMode, input[name="audioMode"]').count(), 0, 'Listening mode selector should be removed');
+    const reconnectedSettings = await page.evaluate(async () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: microphoneConstraints() });
       const settings = stream.getAudioTracks()[0].getSettings();
       stream.getTracks().forEach(track => track.stop());
       return settings;
     });
-    for (const key of ['echoCancellation', 'noiseSuppression', 'autoGainControl']) assert.equal(speakerSettings[key], true, `${key} was not enabled by speaker mode`);
-    await page.locator('input[value="headphones"]').check();
-    result.native_headphone_and_speaker_constraints = true;
+    for (const key of ['echoCancellation', 'noiseSuppression', 'autoGainControl']) assert.equal(reconnectedSettings[key], false, `${key} changed on reconnect`);
+    result.fixed_headphone_constraints = true;
     fs.mkdirSync('bin/asr-probe', { recursive: true });
     await page.screenshot({ path: 'bin/asr-probe/capture-desktop.png', fullPage: true });
     await page.setViewportSize({ width: 390, height: 844 });

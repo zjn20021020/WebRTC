@@ -8,8 +8,6 @@ const waveformContext = waveform.getContext('2d');
 const disconnectButton = document.querySelector('#disconnect');
 const asrStatusElement = document.querySelector('#asrStatus');
 const asrError = document.querySelector('#asrError');
-const audioMode = document.querySelector('#audioMode');
-const audioModeStatus = document.querySelector('#audioModeStatus');
 const partialTranscript = document.querySelector('#partialTranscript');
 const finalTranscript = document.querySelector('#finalTranscript');
 const finalized = new Map();
@@ -38,15 +36,13 @@ let responseFinished = false;
 let activeConnection = null;
 
 function microphoneConstraints() {
-  const speakers = audioMode.querySelector('input:checked').value === 'speakers';
-  return { echoCancellation: speakers, noiseSuppression: speakers, autoGainControl: speakers };
+  return { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
 }
 
 function logMicrophoneSettings(track) {
   const settings = track?.getSettings() || {};
-  const mode = audioMode.querySelector('input:checked').value;
-  audioModeStatus.textContent = mode === 'speakers' ? '回声消除已开启' : '麦克风直通';
-  if (mode === 'headphones' && [settings.echoCancellation, settings.noiseSuppression, settings.autoGainControl].some(value => value === true)) audioModeStatus.textContent = '浏览器未关闭音频处理';
+  const mode = 'headphones';
+  if ([settings.echoCancellation, settings.noiseSuppression, settings.autoGainControl].some(value => value === true)) log('浏览器未关闭音频处理');
   log(`麦克风: ${JSON.stringify({ label: track?.label, mode, sampleRate: settings.sampleRate, channelCount: settings.channelCount, echoCancellation: settings.echoCancellation, noiseSuppression: settings.noiseSuppression, autoGainControl: settings.autoGainControl })}`);
 }
 
@@ -244,8 +240,6 @@ function handleControl(data) {
 }
 
 function disconnect() {
-  audioMode.disabled = false;
-  audioModeStatus.textContent = '';
   resetPlan();
   mergeCollecting = false;
   queuedInputCount = 0;
@@ -374,7 +368,6 @@ function waitForIceGatheringComplete(peerConnection, signal) {
 }
 
 connectButton.addEventListener('click', async () => {
-  audioMode.disabled = true;
   resetPlan();
   mergeCollecting = false;
   queuedInputCount = 0;
