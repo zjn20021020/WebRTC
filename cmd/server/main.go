@@ -66,6 +66,7 @@ func main() {
 	api := webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine))
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/api/audio-output", signaling.AudioOutput)
 	if *diagnostics {
 		mux.HandleFunc("/api/diagnostics", signaling.BrowserDiagnostics)
 		mux.HandleFunc("/debug/goroutines", func(w http.ResponseWriter, r *http.Request) {

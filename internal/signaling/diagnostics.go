@@ -28,6 +28,8 @@ func BrowserDiagnostics(w http.ResponseWriter, r *http.Request) {
 		EchoCancellation *bool   `json:"echo_cancellation"`
 		NoiseSuppression *bool   `json:"noise_suppression"`
 		AutoGainControl  *bool   `json:"auto_gain_control"`
+		OutputKind       string  `json:"output_kind"`
+		OutputReason     string  `json:"output_reason"`
 		Playback         bool    `json:"playback"`
 		PageVisible      bool    `json:"page_visible"`
 		ResponseState    string  `json:"response_state"`
@@ -42,7 +44,7 @@ func BrowserDiagnostics(w http.ResponseWriter, r *http.Request) {
 	}
 	decoder := json.NewDecoder(http.MaxBytesReader(w, r.Body, 2048))
 	decoder.DisallowUnknownFields()
-	if decoder.Decode(&sample) != nil || len(sample.Session) > 64 || len(sample.Context) > 16 || len(sample.Track) > 16 || len(sample.ResponseState) > 32 {
+	if decoder.Decode(&sample) != nil || len(sample.Session) > 64 || len(sample.Context) > 16 || len(sample.Track) > 16 || len(sample.ResponseState) > 32 || len(sample.OutputKind) > 16 || len(sample.OutputReason) > 64 {
 		http.Error(w, "invalid diagnostics", http.StatusBadRequest)
 		return
 	}

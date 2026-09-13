@@ -51,17 +51,17 @@
 
 ### 环境
 
-- Go 1.22 或以上、Git，以及支持 WebRTC 和麦克风权限的浏览器，建议 Chrome。
+- Go 1.22 或以上，以及支持 WebRTC 和麦克风权限的浏览器，建议 Chrome。
 - 可访问腾讯云和 DeepSeek 的网络。
 - 腾讯云实时语音识别大模型 2.0（`16k_zh_en_2.0`）、语音合成服务已开通，凭证具有调用权限且对应额度可用。
 - 可调用 `deepseek-v4-pro` 的 DeepSeek API Key。
 
 ### 获取项目与配置
 
+本次自动音频路由测试使用源码 ZIP。解压后进入包含 `go.mod` 的 `code` 目录；已在源码根目录时省略 `cd code`。
+
 ```bash
-git clone https://github.com/zjn20021020/WebRTC.git
-cd WebRTC
-git switch master
+cd code
 go mod download
 ```
 
@@ -91,5 +91,7 @@ go run ./cmd/server
 ```
 
 打开 [http://localhost:8080](http://localhost:8080)，点击“连接并启用麦克风”，允许麦克风权限，然后按上面的示例对话。声音从浏览器所用的系统输出设备播放。运行本地 Demo 不需要 Node.js 或前端构建。
+
+本测试版本恢复原始下行音量，疑似插话仍降至当前音量的 50%；不再使用 `ASR_GATE_RMS`，旧 `.env` 中留有该字段也不会生效。连接后自动识别输出设备：耳机保持原音采集，扬声器启用浏览器 AEC，无法识别时优先原音。Windows 下从本机 `localhost` 访问还能结合系统默认输出属性判断；其他系统或远程访问只使用浏览器提供的设备信息。页面无需选择耳机或外放，运行日志显示实际路由和 AEC 设置。系统或浏览器无法正确报告设备类型时仍可能误判，不能据此保证所有外放设备消回声成功。
 
 若 8080 已占用，可运行 `go run ./cmd/server -addr :8081`，并打开 `http://localhost:8081`。本机 localhost 可直接申请麦克风权限；远程访问需 HTTPS。修改 `.env` 后重启服务并重新连接。结束体验时点击“断开”，终端按 `Ctrl+C` 停止服务。

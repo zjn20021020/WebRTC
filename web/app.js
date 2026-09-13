@@ -41,9 +41,79 @@ function microphoneConstraints() {
 
 function logMicrophoneSettings(track) {
   const settings = track?.getSettings() || {};
-  const mode = 'headphones';
-  if ([settings.echoCancellation, settings.noiseSuppression, settings.autoGainControl].some(value => value === true)) log('浏览器未关闭音频处理');
+  const mode = activeConnection?.audioRoute?.kind || 'unknown';
   log(`麦克风: ${JSON.stringify({ label: track?.label, mode, sampleRate: settings.sampleRate, channelCount: settings.channelCount, echoCancellation: settings.echoCancellation, noiseSuppression: settings.noiseSuppression, autoGainControl: settings.autoGainControl })}`);
+}
+
+function observeMicrophone(connection, track) {
+  track.onmute = () => { if (activeConnection === connection) log('麦克风音轨暂时无数据'); };
+  track.onunmute = () => { if (activeConnection === connection) log('麦克风音轨恢复'); };
+  track.onended = () => { if (activeConnection === connection) { log('麦克风已被系统停止'); disconnect(); } };
+}
+
+async function startAudioRouting(connection) {
+  const { detectAudioRoute, prepareAudioRoute } = await import('./audio-route.js');
+  const signal = connection.abort.signal;
+  signal.throwIfAborted();
+  let checking = false, repeat = false, revision = 0;
+  const refresh = async event => {
+    if (event?.type === 'devicechange') revision++;
+    if (checking) { repeat = true; return; }
+    checking = true;
+    try {
+      do {
+        repeat = false;
+        const version = revision;
+        const route = await detectAudioRoute(remoteAudio, signal);
+        signal.throwIfAborted();
+        if (version !== revision) { repeat = true; continue; }
+        if (connection.audioRoute?.fingerprint === route.fingerprint) continue;
+        const prepared = await prepareAudioRoute(connection.stream, route, signal);
+        const next = prepared.stream, previous = connection.stream;
+        if (activeConnection !== connection || version !== revision) {
+          if (next !== previous) next.getTracks().forEach(track => track.stop());
+          repeat = true;
+          continue;
+        }
+        if (next !== previous) {
+          let source;
+          try {
+            if (connection.audioContext) {
+              source = connection.audioContext.createMediaStreamSource(next);
+              source.connect(connection.analyser);
+            }
+            await connection.microphoneSender?.replaceTrack(next.getAudioTracks()[0]);
+            if (activeConnection !== connection) { source?.disconnect(); next.getTracks().forEach(track => track.stop()); return; }
+            if (source) {
+              connection.source.disconnect();
+              connection.source = source;
+            }
+            connection.stream = next;
+            observeMicrophone(connection, next.getAudioTracks()[0]);
+            previous.getTracks().forEach(track => { track.onended = null; track.stop(); });
+          } catch (error) {
+            source?.disconnect();
+            next.getTracks().forEach(track => track.stop());
+            throw error;
+          }
+        }
+        const applied = prepared.route;
+        connection.audioRoute = applied;
+        const mode = { headphones: '耳机', speakers: '扬声器', unknown: '输出类型不确定' }[applied.kind];
+        log(`音频路由: ${mode}; AEC=${applied.aec}; reason=${applied.reason}; source=${applied.source}`);
+        if (applied.kind === 'unknown' || ['aec_not_enabled', 'constraints_failed', 'raw_processing_not_disabled'].includes(applied.reason)) {
+          log('音频处理未能确定，优先保留麦克风；外放回声保护可能不可用');
+        }
+        logMicrophoneSettings(connection.stream.getAudioTracks()[0]);
+      } while (repeat && !signal.aborted);
+    } catch (error) {
+      if (!signal.aborted && activeConnection === connection) log(`音频路由检测失败: ${error.name}`);
+    } finally { checking = false; }
+  };
+  await refresh();
+  signal.throwIfAborted();
+  navigator.mediaDevices.addEventListener('devicechange', refresh, { signal });
+  connection.routeTimer = setInterval(refresh, 2000);
 }
 
 function setReplyStatus(status) {
@@ -252,6 +322,7 @@ function disconnect() {
     }
     connection.abort.abort();
     clearInterval(connection.healthTimer);
+    clearInterval(connection.routeTimer);
     connection.longTaskObserver?.disconnect();
     connection.stream?.getTracks().forEach((track) => track.stop());
     cancelAnimationFrame(connection.animationFrame);
@@ -394,19 +465,17 @@ connectButton.addEventListener('click', async () => {
   const connection = { abort: new AbortController() };
   activeConnection = connection;
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: microphoneConstraints() });
+    let stream = await navigator.mediaDevices.getUserMedia({ audio: microphoneConstraints() });
     if (activeConnection !== connection) {
       stream.getTracks().forEach((track) => track.stop());
       return;
     }
     connection.stream = stream;
+    await startAudioRouting(connection);
+    if (activeConnection !== connection) return;
+    stream = connection.stream;
     const microphoneTrack = stream.getAudioTracks()[0];
-    logMicrophoneSettings(microphoneTrack);
-    if (microphoneTrack) {
-      microphoneTrack.onmute = () => { if (activeConnection === connection) log('麦克风音轨暂时无数据'); };
-      microphoneTrack.onunmute = () => { if (activeConnection === connection) log('麦克风音轨恢复'); };
-      microphoneTrack.onended = () => { if (activeConnection === connection) { log('麦克风已被系统停止'); disconnect(); } };
-    }
+    observeMicrophone(connection, microphoneTrack);
     const audioContext = new AudioContext();
     connection.audioContext = audioContext;
     await audioContext.resume();
@@ -444,7 +513,7 @@ connectButton.addEventListener('click', async () => {
     dataChannel.onmessage = (event) => {
       if (activeConnection === connection) handleControl(event.data);
     };
-    for (const track of stream.getAudioTracks()) peerConnection.addTrack(track, stream);
+    connection.microphoneSender = peerConnection.addTrack(microphoneTrack, stream);
 
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
@@ -493,6 +562,7 @@ function startAudioDiagnostics(connection) {
       const measuredRMS = Math.sqrt(connection.healthData.reduce((sum, value) => sum + value * value, 0) / connection.healthData.length);
       const sample = { session: connection.diagnosticSession, context: connection.audioContext.state, track: track?.readyState || 'missing', muted: !!track?.muted, enabled: !!track?.enabled,
         echo_cancellation: settings.echoCancellation ?? null, noise_suppression: settings.noiseSuppression ?? null, auto_gain_control: settings.autoGainControl ?? null,
+        output_kind: connection.audioRoute?.kind || 'unknown', output_reason: connection.audioRoute?.reason || '',
         playback: !remoteAudio.paused && !!remoteAudio.srcObject, response_state: replyStatus.dataset.state || '', page_visible: document.visibilityState === 'visible', frame_age_ms: connection.lastFrame ? performance.now() - connection.lastFrame : 0,
         rms: measuredRMS, energy: media?.totalAudioEnergy || 0, packets: outbound?.packetsSent || 0, bytes: outbound?.bytesSent || 0,
         frame_gap_ms: connection.frameGapMS || 0, long_task_ms: connection.longTaskMS || 0, control_events: connection.controlEvents || 0 };
