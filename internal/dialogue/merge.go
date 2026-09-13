@@ -131,13 +131,24 @@ func combinedEvent(parts []asr.Event) asr.Event {
 	event.UtteranceID = parts[0].UtteranceID
 	event.BeginTime = parts[0].BeginTime
 	event.Text = mergeText(parts)
+	event.SourceIDs = nil
+	for _, part := range parts {
+		event.SourceIDs = append(event.SourceIDs, inputSourceIDs(part)...)
+	}
 	return event
+}
+
+func inputSourceIDs(event asr.Event) []string {
+	if len(event.SourceIDs) > 0 {
+		return event.SourceIDs
+	}
+	return []string{event.UtteranceID}
 }
 
 func (m *Manager) emitMergeLocked(g *mergeGroup, status, reason string) {
 	ids := make([]string, 0, len(g.parts))
 	for _, part := range g.parts {
-		ids = append(ids, part.UtteranceID)
+		ids = append(ids, inputSourceIDs(part)...)
 	}
 	m.emit(Event{Event: "input_merge", Epoch: m.epoch, Status: status, Reason: reason, UtteranceID: ids[0], SourceIDs: ids, Text: mergeText(g.parts)})
 	log.Printf("input_merge epoch=%d input=%q parts=%d status=%s reason=%s", m.epoch, ids[0], len(ids), status, reason)

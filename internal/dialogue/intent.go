@@ -234,6 +234,9 @@ func (m *Manager) cancelIntentRequestsLocked(epoch uint64) {
 func (m *Manager) removeInterjectionLocked(id string) {
 	for i, c := range m.interjections {
 		if c.event.UtteranceID == id {
+			if m.joining != nil && (m.joining.first == c || m.joining.second == c) {
+				m.cancelQueuedJoinLocked()
+			}
 			m.cancelIntentLocked(c)
 			m.interjections = append(m.interjections[:i], m.interjections[i+1:]...)
 			m.queueChangedLocked()
@@ -253,6 +256,7 @@ func (m *Manager) queueChangedLocked() {
 }
 
 func (m *Manager) clearInterjectionsLocked() {
+	m.cancelQueuedJoinLocked()
 	for _, c := range m.interjections {
 		m.cancelIntentLocked(c)
 		m.rememberLocked(c.event.UtteranceID)
@@ -299,6 +303,13 @@ func (m *Manager) drainInterjectionsLocked() {
 	if !c.final() {
 		return
 	}
+	if m.joinQueuedInputsLocked(c) {
+		return
+	}
+	m.dispatchInterjectionLocked(c)
+}
+
+func (m *Manager) dispatchInterjectionLocked(c *interjection) {
 	event := c.event
 	m.removeInterjectionLocked(event.UtteranceID)
 	m.emit(Event{Event: "input_dispatched", Epoch: m.epoch, UtteranceID: event.UtteranceID, Text: event.Text})

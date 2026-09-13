@@ -26,6 +26,7 @@ const actionNames = { water: '浇水', plant: '种菜', harvest: '收菜', ferti
 const taskStates = { pending: '待执行', running: '进行中', completed: '已结束', cancelled: '已取消', failed: '失败' };
 let currentPlanID = '';
 let mergeCollecting = false;
+let queuedInputCount = 0;
 const latencyText = document.querySelector('#latencyText');
 const latencyAudio = document.querySelector('#latencyAudio');
 const latencyDuck = document.querySelector('#latencyDuck');
@@ -48,7 +49,7 @@ function setReplyStatus(status) {
 }
 
 function updateStopButton() {
-  stopResponseButton.disabled = !mergeCollecting && !['thinking', 'synthesizing', 'speaking', 'ducking', 'listening'].includes(replyStatus.dataset.state);
+  stopResponseButton.disabled = !mergeCollecting && queuedInputCount === 0 && !['thinking', 'synthesizing', 'speaking', 'ducking', 'listening'].includes(replyStatus.dataset.state);
 }
 
 function resetPlan() {
@@ -166,7 +167,10 @@ function handleControl(data) {
     return;
   }
   if (message.event === 'input_queue' && Number.isSafeInteger(message.queue_size) && message.queue_size >= 0) {
+    if (!Number.isSafeInteger(message.response_epoch) || message.response_epoch < responseEpoch) return;
+    queuedInputCount = message.queue_size;
     queuedStatus.textContent = message.queue_size ? `待回答 ${message.queue_size} 条` : '';
+    updateStopButton();
   } else if (message.event === 'input_rejected') {
     const reasons = { queue_full: '待回答队列已满，本句未收录', merge_limit: '本次输入过长，请分次说', input_too_long: '本次输入过长，请分次说' };
     queuedStatus.textContent = reasons[message.reason] || '识别未完成，本句未收录';
@@ -217,6 +221,7 @@ function handleControl(data) {
 function disconnect() {
   resetPlan();
   mergeCollecting = false;
+  queuedInputCount = 0;
   mergedInput.textContent = '';
   const connection = activeConnection;
   activeConnection = null;
@@ -338,6 +343,7 @@ function waitForIceGatheringComplete(peerConnection, signal) {
 connectButton.addEventListener('click', async () => {
   resetPlan();
   mergeCollecting = false;
+  queuedInputCount = 0;
   mergedInput.textContent = '';
   connectButton.disabled = true;
   disconnectButton.disabled = false;

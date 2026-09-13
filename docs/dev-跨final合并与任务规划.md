@@ -26,6 +26,8 @@ VAD 和原始 ASR partial 仍可触发 50% duck；合并收集期间的文本标
 
 窗口外、不同会话或音频间隔超限会形成独立输入。已经提交并执行的句子不会事后合并，也不会复活已取消任务。持续讲话或后半句丢失超过上述上限时需要重新发出完整请求。
 
+2026-09-14 补充了第 8 节的缓存关系判断：原始窗口外的独立输入，如果尚未执行且后句只是前句的补充条件，可以在派发前合并。它与上述 ASR 收集窗口是两个阶段。
+
 ## 2. 有序规划与严格协议
 
 生产动作路由调用 `Client.PlanActions`，使用独立 [plan.md](../internal/llm/prompts/plan.md)。它输出一个原生 `execute_plan` function call，参数形如：
@@ -209,3 +211,55 @@ node scripts/verify_story.cjs --interrupt
 最终媒体与 249 次文本使用相同运行代码和 prompt。两份报告的源码摘要不同，仅因为媒体脚本将误伤短故事的 60 字门槛改为 20 字及相应诊断文字；生成媒体摘要时恢复这三处文本后，摘要与文本报告完全一致，`runtime_matches_text_snapshot=true`。首轮另外八个既有媒体场景通过，但它们发生在补充夸赞规则之前，保留在首轮报告中，不与最终三条专项拼成“同一版本完整 10/10”。
 
 本次服务运行在 `http://localhost:8081/`，更新服务后须刷新并重新连接。源码、prompt、测试、文档与合成语音产生的事件可提交；本机 `.env` 和用户视频不进入仓库。
+
+## 8. 缓存请求的补充条件合并（2026-09-14）
+
+### 8.1 原因与规则
+
+用户在浇水期间先说“给我讲个故事吧”，约七秒后补充“要和夜晚和月亮相关的”。[原始事件摘录](evidence/queued-continuation-20260914/user-failure-excerpt.txt)显示，两句分别在 00:27:15 和 00:27:22 返回 false，浇水结束后却生成了 epoch 4、epoch 5 两轮问答。
+
+旧实现只合并 800/1400ms 窗口内的 ASR 断句，缓存仍是逐条 FIFO，没有识别“后句修饰尚未执行的前句”。第一轮故事碰巧包含月亮，不代表补充条件已经传入模型；判断是否合并必须检查最终请求文本和实际派发次数。
+
+新增 [continuation.go](../internal/dialogue/continuation.go)在当前整份计划结束、缓存尚未派发时检查相邻两条输入。使用独立 [continuation.md](../internal/llm/prompts/continuation.md)，结果只有 `{"continuation":true}` 或 `{"continuation":false}`，不能授权硬打断。
+
+| 情况 | 处理 |
+| --- | --- |
+| 故事 + 夜晚/月亮主题、长度、风格、受众等条件 | true，将两段原文连为一个逻辑请求，只规划并回答一次 |
+| 原主题 + 明确更正主题 | true，保留原文及更正，规划器按整句处理 |
+| 连续多个补充 | 合并后继续检查下一条，最多六个 ASR 来源、2000 字符 |
+| 故事 + 独立知识问题、再讲另一个故事、夸赞或新动作 | false，保留独立输入并按顺序派发 |
+| 不同 ASR 会话、超过合并上限 | 不合并、不截断，完整输入分别保留 |
+| 下一条还在 partial | 暂缓队首派发，直到 final 或原有未完成输入超时清理；不拿草稿生成答案 |
+| 关系请求超时、拒绝、非法格式或网络错误 | false 兜底，保留两条输入并记录原因；可能仍分别回答，不能冒充合并成功 |
+| 手动停止、连接关闭、确认打断清缓存 | 同时取消关系请求；迟到 true 不能恢复任务 |
+
+只处理尚未派发的相邻输入，不对已经开始或结束的回答做事后合并，也不跨过独立请求去猜更早的指代。原 ASR 合并窗口及打断 true/false 规则保持原职责。关系请求每次最多 2 秒，无格式重试；只有一条缓存时不增加这次请求。多个补充可能有多次关系请求，并不承诺零等待。
+
+### 8.2 执行和证据
+
+服务端保留首条逻辑输入 ID，追加来源 ID 和后句原文；被合并后句不再独立派发。规划 prompt 明确“故事 + 限定条件”是同一个问答步骤，`response_context.text`记录实际传给回答模型的子请求，防止只看输出碰巧命中主题。
+
+`input_relation`记录 checking/completed/error、严格布尔结果、耗时、fallback 和原因；合并成功发出 `input_merge status=committed reason=queued_continuation`。前端原始字幕仍保留各 ASR 句，下面的“本次输入”显示“2 段合并”和完整内容。播放结束但缓存仍待处理时，停止按钮保持可用。
+
+严格布尔客户端由打断和补充关系复用，仍使用 JSON mode、温度 0、非思考模式、32 token 及本地逐 token 校验。本次也补齐供应商 `message.refusal`检查：即使 content 同时包含合法 true，也必须拒绝并返回错误；调用方明确兜底 false。
+
+### 8.3 回归结果
+
+[完整报告](evidence/queued-continuation-20260914/full/report.md)记录 `home-acceptance-v4-continuation` 的 **98/98**，包含 32 个动作/规划、52 个打断、14 个补充关系用例。新增 15 个相关用例额外各测三轮，**45/45**，见[重复专项](evidence/queued-continuation-20260914/repeat/summary.json)。两组独立记录，不把重复样例算作独立用户。
+
+本次选择四个真实媒体回归，**4/4**，不是完整十二场景复测：
+
+- [故事补充](evidence/queued-continuation-20260914/full/media/story-amendment-1/story-amendment.json)：UTC `16:46:44.665` 缓存故事，`16:46:52.733` 缓存主题，间隔约 8 秒；`16:47:00.048` 浇水完成，关系判断 473ms 后 true，合成“给我讲个故事吧。 要和夜晚和月亮相关的。”并仅派发一次。回答模型实际输入包含两段，正文讲述夜晚循着月光回家的故事，只有一个 `general_qa` epoch，没有预留第二轮、独立派发后句或遗留缓存。
+- [独立问题](evidence/queued-continuation-20260914/full/media/story-independent-1/story-independent.json)：故事加一加一，关系 false，先后两轮分别回答，不误吞第二个问题。
+- [清旧缓存](evidence/queued-continuation-20260914/full/media/discard-old-buffer-1/home-clear-buffer-voice.json)：确认打断后旧缓存仍被清除，不恢复旧问题。
+- [原窗口跨 final](evidence/queued-continuation-20260914/full/media/cross-final-wait-1/plan-merge.json)：“等一下”与“再去种地”仍合成完整输入并返回 false，待浇水结束再种菜。
+
+[本地回归](evidence/queued-continuation-20260914/local-regression.json)通过 `go test ./...`、`go vet ./...`、7 个统计测试、五种宽度的 UI 回归及待处理队列的停止按钮检查。新增组件测试覆盖超过七秒的补充、连续三段、独立输入、不同会话、数量/文本上限、非法输出/超时兜底、partial 等待或丢弃、停止/关闭后的迟到结果；HTTP 测试覆盖严格字段及 refusal 与合法 true 共存。race 仍未运行，环境未启用 cgo。
+
+复现命令（浏览器依赖与 Go 路径同第 5 节）：
+
+```powershell
+node scripts/verify_acceptance.cjs --repeat 1 --media-case story-amendment --media-case story-independent --media-case discard-old-buffer --media-case cross-final-wait
+```
+
+省略 `--media-case` 会运行当前全部十二个媒体场景。也可对已启动的 dev 服务执行 `node scripts/verify_story.cjs --amendment` / `--independent`，需预先生成 `home`、`home-story`、`home-switch` 音频夹具。统计将关系判断耗时和兜底单列，不能混入打断误/漏率。真人回声、物理耳机尾音和已开始回答后的补充修订均不属于本次已验证范围。

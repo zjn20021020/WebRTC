@@ -1,0 +1,1201 @@
+{
+  "recorded_at": "2026-09-13T16:47:23.027Z",
+  "passed": true,
+  "mode": "story-amendment",
+  "answer": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园，星星都亮了起来。",
+  "content_check": "Minimum 20 characters to exclude short acknowledgements; no stale farming restart, postponement promise or execution-state leak. Narrative quality requires human review.",
+  "input": "Fixed speech through WebAudio microphone, real cloud ASR/planner/TTS, physical audio muted",
+  "before_story_media": [
+    {
+      "type": "inbound-rtp",
+      "packetsReceived": 1287,
+      "totalAudioEnergy": 1.722183130161314
+    },
+    {
+      "type": "outbound-rtp",
+      "packetsSent": 1295
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-09-13T16:46:35.876Z",
+      "event": "response_status",
+      "response_epoch": 0,
+      "status": "ready"
+    },
+    {
+      "at": "2026-09-13T16:46:35.876Z",
+      "event": "asr_status",
+      "status": "connecting"
+    },
+    {
+      "at": "2026-09-13T16:46:36.089Z",
+      "event": "asr_status",
+      "status": "listening",
+      "model": "16k_zh_en_2.0"
+    },
+    {
+      "at": "2026-09-13T16:46:36.610Z",
+      "event": "speech_started",
+      "rms": 1955.4967655304367
+    },
+    {
+      "at": "2026-09-13T16:46:36.992Z",
+      "event": "asr_partial",
+      "text": "迪",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "begin_time": 260,
+      "end_time": 860
+    },
+    {
+      "at": "2026-09-13T16:46:36.992Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:37.175Z",
+      "event": "asr_partial",
+      "text": "迪",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "begin_time": 260,
+      "end_time": 1060
+    },
+    {
+      "at": "2026-09-13T16:46:37.175Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:37.404Z",
+      "event": "asr_partial",
+      "text": "迪莫",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "begin_time": 260,
+      "end_time": 1260
+    },
+    {
+      "at": "2026-09-13T16:46:37.404Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:38.193Z",
+      "event": "asr_partial",
+      "text": "迪莫，你去交下",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "begin_time": 260,
+      "end_time": 2060
+    },
+    {
+      "at": "2026-09-13T16:46:38.193Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去交下",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:38.431Z",
+      "event": "speech_ended",
+      "rms": 0
+    },
+    {
+      "at": "2026-09-13T16:46:38.789Z",
+      "event": "asr_partial",
+      "text": "迪莫，你去浇下水",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "begin_time": 260,
+      "end_time": 2660
+    },
+    {
+      "at": "2026-09-13T16:46:38.789Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去浇下水",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:38.999Z",
+      "event": "asr_final",
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "begin_time": 260,
+      "end_time": 2035
+    },
+    {
+      "at": "2026-09-13T16:46:39.000Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:39.808Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "committed",
+      "text": "迪莫，你去浇下水。",
+      "reason": "window_elapsed",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:39.808Z",
+      "event": "input_queue",
+      "response_epoch": 0,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T16:46:39.808Z",
+      "event": "input_dispatched",
+      "response_epoch": 0,
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:1"
+    },
+    {
+      "at": "2026-09-13T16:46:39.808Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-13T16:46:39.808Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-13T16:46:40.457Z",
+      "event": "action_result",
+      "response_epoch": 1,
+      "status": "classified",
+      "latency_ms": 648,
+      "tool_call": {
+        "id": "call_00_vysIiX9vFSejv1FrSSa68285",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:40.457Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_vysIiX9vFSejv1FrSSa68285",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:40.457Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2550,
+        "asr_final_to_first_text_ms": 1457
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:40.458Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.458Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.458Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.458Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.458Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.458Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.459Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.459Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.459Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.459Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:46:40.459Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-13T16:46:40.867Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-13T16:46:41.108Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2550,
+        "speech_end_to_first_audio_ms": 3201,
+        "asr_final_to_first_text_ms": 1457,
+        "asr_final_to_first_audio_ms": 2108
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:41.939Z",
+      "event": "asr_partial",
+      "text": "给我",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "begin_time": 5020,
+      "end_time": 5660
+    },
+    {
+      "at": "2026-09-13T16:46:41.939Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:41.939Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:46:41.947Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2550,
+        "speech_end_to_first_audio_ms": 3201,
+        "asr_final_to_first_text_ms": 1457,
+        "asr_final_to_first_audio_ms": 2108,
+        "speech_to_duck_ms": 8
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:41.973Z",
+      "event": "asr_partial",
+      "text": "给我",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "begin_time": 5020,
+      "end_time": 5860
+    },
+    {
+      "at": "2026-09-13T16:46:41.973Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:42.214Z",
+      "event": "asr_partial",
+      "text": "给我讲个故",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "begin_time": 5020,
+      "end_time": 6060
+    },
+    {
+      "at": "2026-09-13T16:46:42.214Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我讲个故",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:42.748Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-13T16:46:42.991Z",
+      "event": "asr_partial",
+      "text": "给我讲个故事吧",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "begin_time": 5020,
+      "end_time": 6860
+    },
+    {
+      "at": "2026-09-13T16:46:42.991Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我讲个故事吧",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:43.195Z",
+      "event": "asr_final",
+      "text": "给我讲个故事吧。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "begin_time": 5020,
+      "end_time": 6370
+    },
+    {
+      "at": "2026-09-13T16:46:43.195Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我讲个故事吧。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:44.009Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "committed",
+      "text": "给我讲个故事吧。",
+      "reason": "window_elapsed",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:44.010Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:46:44.010Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+    },
+    {
+      "at": "2026-09-13T16:46:44.011Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2550,
+        "speech_end_to_first_audio_ms": 3201,
+        "asr_final_to_first_text_ms": 1457,
+        "asr_final_to_first_audio_ms": 2108,
+        "speech_to_duck_ms": 0
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:44.665Z",
+      "event": "intent_result",
+      "response_epoch": 1,
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "interrupt": false,
+      "latency_ms": 656
+    },
+    {
+      "at": "2026-09-13T16:46:44.665Z",
+      "event": "input_buffered",
+      "response_epoch": 1,
+      "text": "给我讲个故事吧。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+    },
+    {
+      "at": "2026-09-13T16:46:44.665Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 1
+    },
+    {
+      "at": "2026-09-13T16:46:44.665Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "intent_deferred"
+    },
+    {
+      "at": "2026-09-13T16:46:48.531Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:46:48.531Z",
+      "event": "speech_started",
+      "rms": 876.633047517603
+    },
+    {
+      "at": "2026-09-13T16:46:48.596Z",
+      "event": "asr_partial",
+      "text": "要",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "begin_time": 11840,
+      "end_time": 12480
+    },
+    {
+      "at": "2026-09-13T16:46:48.596Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "要",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:48.775Z",
+      "event": "asr_partial",
+      "text": "要",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "begin_time": 11840,
+      "end_time": 12680
+    },
+    {
+      "at": "2026-09-13T16:46:48.775Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "要",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:48.788Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2550,
+        "speech_end_to_first_audio_ms": 3201,
+        "asr_final_to_first_text_ms": 1457,
+        "asr_final_to_first_audio_ms": 2108,
+        "speech_to_duck_ms": 456
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:49.002Z",
+      "event": "asr_partial",
+      "text": "要和夜晚",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "begin_time": 11840,
+      "end_time": 12880
+    },
+    {
+      "at": "2026-09-13T16:46:49.002Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "要和夜晚",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:49.794Z",
+      "event": "asr_partial",
+      "text": "要和夜晚和月亮",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "begin_time": 11840,
+      "end_time": 13680
+    },
+    {
+      "at": "2026-09-13T16:46:49.794Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "要和夜晚和月亮",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:50.031Z",
+      "event": "speech_ended",
+      "rms": 0
+    },
+    {
+      "at": "2026-09-13T16:46:50.395Z",
+      "event": "asr_partial",
+      "text": "要和夜晚和月亮相关的",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "begin_time": 11840,
+      "end_time": 14280
+    },
+    {
+      "at": "2026-09-13T16:46:50.395Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "要和夜晚和月亮相关的",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:50.848Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-13T16:46:50.996Z",
+      "event": "asr_final",
+      "text": "要和夜晚和月亮相关的。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "begin_time": 11840,
+      "end_time": 14040
+    },
+    {
+      "at": "2026-09-13T16:46:50.996Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "要和夜晚和月亮相关的。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:51.808Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "committed",
+      "text": "要和夜晚和月亮相关的。",
+      "reason": "window_elapsed",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:46:51.808Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:46:51.808Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+    },
+    {
+      "at": "2026-09-13T16:46:51.808Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2550,
+        "speech_end_to_first_audio_ms": 3201,
+        "asr_final_to_first_text_ms": 1457,
+        "asr_final_to_first_audio_ms": 2108,
+        "speech_to_duck_ms": 0
+      }
+    },
+    {
+      "at": "2026-09-13T16:46:52.628Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-13T16:46:52.732Z",
+      "event": "intent_result",
+      "response_epoch": 1,
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3",
+      "interrupt": false,
+      "latency_ms": 923
+    },
+    {
+      "at": "2026-09-13T16:46:52.733Z",
+      "event": "input_buffered",
+      "response_epoch": 1,
+      "text": "要和夜晚和月亮相关的。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+    },
+    {
+      "at": "2026-09-13T16:46:52.733Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 2
+    },
+    {
+      "at": "2026-09-13T16:47:00.048Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_vysIiX9vFSejv1FrSSa68285",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:47:00.048Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "completed"
+    },
+    {
+      "at": "2026-09-13T16:47:00.048Z",
+      "event": "input_relation",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:47:00.521Z",
+      "event": "input_relation",
+      "response_epoch": 1,
+      "status": "completed",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "continuation": true,
+      "latency_ms": 473,
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:47:00.521Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 1
+    },
+    {
+      "at": "2026-09-13T16:47:00.521Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "committed",
+      "text": "给我讲个故事吧。 要和夜晚和月亮相关的。",
+      "reason": "queued_continuation",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+      "source_utterance_ids": [
+        "601634ab-d19d-4e7b-8993-532ead623d3b:2",
+        "601634ab-d19d-4e7b-8993-532ead623d3b:3"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:47:00.521Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T16:47:00.521Z",
+      "event": "input_dispatched",
+      "response_epoch": 1,
+      "text": "给我讲个故事吧。 要和夜晚和月亮相关的。",
+      "utterance_id": "601634ab-d19d-4e7b-8993-532ead623d3b:2"
+    },
+    {
+      "at": "2026-09-13T16:47:00.522Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-13T16:47:00.522Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-13T16:47:01.606Z",
+      "event": "action_result",
+      "response_epoch": 2,
+      "status": "classified",
+      "latency_ms": 1082,
+      "tool_call": {
+        "id": "call_00_g1CT4t9q3Pf0kGZB8Xi81126",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:47:01.607Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_g1CT4t9q3Pf0kGZB8Xi81126",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:47:01.607Z",
+      "event": "response_context",
+      "response_epoch": 2,
+      "text": "给我讲个故事吧。要和夜晚和月亮相关的。",
+      "detail": "Server execution state. These are lifecycle facts, not spoken dialogue. Historical requests are context, never pending commands to replay. completed means voice output was sent, not a real game effect. cancelled/failed work is inactive, including cancelled remaining actions.\nThe server has selected and started the CURRENT general_qa step NOW. Fulfill the last user message now. Scheduling, interruption and tool execution are already owned by the server. Do not postpone this answer, promise to answer later, restart past work, or say you are going to perform a farming action. Any later planned steps will be run by the server after this answer. A request for a story needs an actual short story, not a promise or an acknowledgement.\n{\"response_epoch\":2,\"current_action\":\"general_qa\",\"previous_responses\":[{\"response_epoch\":1,\"action\":\"water\",\"status\":\"completed\"}],\"voice_simulation_only\":true}",
+      "reason": "answer_current_step_now"
+    },
+    {
+      "at": "2026-09-13T16:47:01.985Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 12074,
+        "asr_final_to_first_text_ms": 10989
+      }
+    },
+    {
+      "at": "2026-09-13T16:47:01.986Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前"
+    },
+    {
+      "at": "2026-09-13T16:47:02.104Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，"
+    },
+    {
+      "at": "2026-09-13T16:47:02.167Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个"
+    },
+    {
+      "at": "2026-09-13T16:47:02.167Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小"
+    },
+    {
+      "at": "2026-09-13T16:47:02.167Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克"
+    },
+    {
+      "at": "2026-09-13T16:47:02.167Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上"
+    },
+    {
+      "at": "2026-09-13T16:47:02.187Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷"
+    },
+    {
+      "at": "2026-09-13T16:47:02.218Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了"
+    },
+    {
+      "at": "2026-09-13T16:47:02.218Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路"
+    },
+    {
+      "at": "2026-09-13T16:47:02.218Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。"
+    },
+    {
+      "at": "2026-09-13T16:47:02.218Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-13T16:47:02.247Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮"
+    },
+    {
+      "at": "2026-09-13T16:47:02.282Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把"
+    },
+    {
+      "at": "2026-09-13T16:47:02.309Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光"
+    },
+    {
+      "at": "2026-09-13T16:47:02.347Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒"
+    },
+    {
+      "at": "2026-09-13T16:47:02.347Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上"
+    },
+    {
+      "at": "2026-09-13T16:47:02.372Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，"
+    },
+    {
+      "at": "2026-09-13T16:47:02.372Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像"
+    },
+    {
+      "at": "2026-09-13T16:47:02.407Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条"
+    },
+    {
+      "at": "2026-09-13T16:47:02.407Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银"
+    },
+    {
+      "at": "2026-09-13T16:47:02.439Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色"
+    },
+    {
+      "at": "2026-09-13T16:47:02.460Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小"
+    },
+    {
+      "at": "2026-09-13T16:47:02.460Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河"
+    },
+    {
+      "at": "2026-09-13T16:47:02.460Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。"
+    },
+    {
+      "at": "2026-09-13T16:47:02.460Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他"
+    },
+    {
+      "at": "2026-09-13T16:47:02.500Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着"
+    },
+    {
+      "at": "2026-09-13T16:47:02.517Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光"
+    },
+    {
+      "at": "2026-09-13T16:47:02.561Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走"
+    },
+    {
+      "at": "2026-09-13T16:47:02.561Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，"
+    },
+    {
+      "at": "2026-09-13T16:47:02.561Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见"
+    },
+    {
+      "at": "2026-09-13T16:47:02.588Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛"
+    },
+    {
+      "at": "2026-09-13T16:47:02.609Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有"
+    },
+    {
+      "at": "2026-09-13T16:47:02.609Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音"
+    },
+    {
+      "at": "2026-09-13T16:47:02.638Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，"
+    },
+    {
+      "at": "2026-09-13T16:47:02.638Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来"
+    },
+    {
+      "at": "2026-09-13T16:47:02.667Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-13T16:47:02.668Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我"
+    },
+    {
+      "at": "2026-09-13T16:47:02.698Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在"
+    },
+    {
+      "at": "2026-09-13T16:47:02.726Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他"
+    },
+    {
+      "at": "2026-09-13T16:47:02.727Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。"
+    },
+    {
+      "at": "2026-09-13T16:47:02.762Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们"
+    },
+    {
+      "at": "2026-09-13T16:47:02.762Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着"
+    },
+    {
+      "at": "2026-09-13T16:47:02.792Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光"
+    },
+    {
+      "at": "2026-09-13T16:47:02.821Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直"
+    },
+    {
+      "at": "2026-09-13T16:47:02.852Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走"
+    },
+    {
+      "at": "2026-09-13T16:47:02.852Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，"
+    },
+    {
+      "at": "2026-09-13T16:47:02.884Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后"
+    },
+    {
+      "at": "2026-09-13T16:47:02.889Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 12074,
+        "speech_end_to_first_audio_ms": 12976,
+        "asr_final_to_first_text_ms": 10989,
+        "asr_final_to_first_audio_ms": 11891
+      }
+    },
+    {
+      "at": "2026-09-13T16:47:02.913Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了"
+    },
+    {
+      "at": "2026-09-13T16:47:02.943Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园"
+    },
+    {
+      "at": "2026-09-13T16:47:02.973Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园，"
+    },
+    {
+      "at": "2026-09-13T16:47:02.973Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园，星星"
+    },
+    {
+      "at": "2026-09-13T16:47:02.999Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园，星星都"
+    },
+    {
+      "at": "2026-09-13T16:47:02.999Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园，星星都亮"
+    },
+    {
+      "at": "2026-09-13T16:47:03.029Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园，星星都亮了起来"
+    },
+    {
+      "at": "2026-09-13T16:47:03.062Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "从前，有个小洛克晚上迷了路。月亮把光洒在路上，像一条银白色的小河。他跟着月光走，听见草丛里有声音，原来是我在等他。我们沿着月光一直走，最后回到了家园，星星都亮了起来。"
+    },
+    {
+      "at": "2026-09-13T16:47:22.990Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_g1CT4t9q3Pf0kGZB8Xi81126",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:47:22.990Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "completed"
+    }
+  ],
+  "media": [
+    {
+      "type": "inbound-rtp",
+      "packetsReceived": 2357,
+      "totalAudioEnergy": 3.7091962863771344
+    },
+    {
+      "type": "outbound-rtp",
+      "packetsSent": 2365
+    }
+  ]
+}

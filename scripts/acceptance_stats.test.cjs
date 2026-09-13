@@ -2,6 +2,29 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { distribution, summarizeText, mediaObservations } = require('./acceptance_stats.cjs');
 
+test('continuation decisions and errors stay separate from interruption accuracy', () => {
+  const suite = { version: 'continuation', cases: [
+    { id: 'join', kind: 'continuation', category: 'c', expected_continuation: true },
+    { id: 'split', kind: 'continuation', category: 'c', expected_continuation: false },
+  ] };
+  const result = summarizeText(suite, 1, [
+    { id: 'join', round: 1, actual: true, latency_ms: 500 },
+    { id: 'split', round: 1, actual: false, fallback: true, error: 'timeout', latency_ms: 2000 },
+  ]);
+  assert.equal(result.passed, 1);
+  assert.equal(result.continuations.errors, 1);
+  assert.equal(result.interruptions.planned, 0);
+  assert.deepEqual(result.interruptions.effective_confusion_with_false_fallback, { true_positive: 0, false_positive: 0, true_negative: 0, false_negative: 0 });
+  const media = mediaObservations({ events: [
+    { event: 'input_relation', status: 'checking' },
+    { event: 'input_relation', continuation: true, latency_ms: 600 },
+    { event: 'input_merge', reason: 'queued_continuation' },
+  ] });
+  assert.deepEqual(media.continuation_latency_ms, [600]);
+  assert.equal(media.queued_merges, 1);
+  assert.deepEqual(media.intent_latency_ms, []);
+});
+
 test('plans require every step in order, including duplicate actions', () => {
   const suite = { version: 'plan', cases: [{ id: 'p', kind: 'action', category: 'plan', expected_plan: ['water', 'fertilize', 'water'] }] };
   const records = [['water', 'fertilize', 'water'], ['fertilize', 'water', 'water'], ['water', 'fertilize'], 'water']

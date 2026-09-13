@@ -1,0 +1,126 @@
+{
+  "version": "home-acceptance-v4-continuation",
+  "cases": [
+    {
+      "id": "continuation-story-theme",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "给我讲个故事吧。",
+      "user_text": "要和夜晚和月亮相关的。",
+      "expected_continuation": true
+    },
+    {
+      "id": "continuation-story-length",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。",
+      "user_text": "短一点，温暖一点。",
+      "expected_continuation": true
+    },
+    {
+      "id": "continuation-story-correction",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲一个太阳的故事。",
+      "user_text": "不，要月亮的。",
+      "expected_continuation": true
+    },
+    {
+      "id": "continuation-explain-audience",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "解释一下光合作用。",
+      "user_text": "用小朋友能懂的话。",
+      "expected_continuation": true
+    },
+    {
+      "id": "continuation-translation",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "把你好翻译成英文。",
+      "user_text": "不，改成日语。",
+      "expected_continuation": true
+    },
+    {
+      "id": "continuation-chain",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。要和月亮相关的。",
+      "user_text": "结尾温暖一点。",
+      "expected_continuation": true
+    },
+    {
+      "id": "continuation-tool-parameter",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "等会去浇水。",
+      "user_text": "是左边那块菜地。",
+      "expected_continuation": true
+    },
+    {
+      "id": "continuation-another-story",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。",
+      "user_text": "再讲一个月亮的故事。",
+      "expected_continuation": false
+    },
+    {
+      "id": "continuation-related-question",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。",
+      "user_text": "月亮为什么会发光？",
+      "expected_continuation": false
+    },
+    {
+      "id": "continuation-new-question",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。",
+      "user_text": "然后告诉我一加一等于几。",
+      "expected_continuation": false
+    },
+    {
+      "id": "continuation-praise",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。",
+      "user_text": "干得不错。",
+      "expected_continuation": false
+    },
+    {
+      "id": "continuation-affection",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。",
+      "user_text": "贴贴。",
+      "expected_continuation": false
+    },
+    {
+      "id": "continuation-separate-work",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "等会去浇水。",
+      "user_text": "再去施肥。",
+      "expected_continuation": false
+    },
+    {
+      "id": "continuation-stop",
+      "category": "queued_continuation",
+      "kind": "continuation",
+      "pending_text": "讲个故事。",
+      "user_text": "停一下。",
+      "expected_continuation": false
+    },
+    {
+      "id": "plan-amended-story",
+      "category": "queued_continuation",
+      "kind": "action",
+      "user_text": "给我讲个故事吧。要和夜晚和月亮相关的。",
+      "expected_plan": [
+        "general_qa"
+      ]
+    }
+  ]
+}

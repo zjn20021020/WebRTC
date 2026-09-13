@@ -77,6 +77,7 @@ func main() {
 		fixtures = []struct{ name, text string }{
 			{"home-story", "给我讲个故事吧。"},
 			{"home-stop-story", "先别浇水了，给我讲个故事吧。"},
+			{"home-story-theme", "要和夜晚和月亮相关的。"},
 		}
 	} else if *scene != "intent" {
 		log.Fatal("unknown fixture scene")

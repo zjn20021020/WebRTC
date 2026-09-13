@@ -1,0 +1,13 @@
+Source: bin/dev-8081-v3.err.log before queued continuation support.
+Times: Asia/Shanghai. Minimal excerpt; session UUID replaced with <session>.
+The original story content was not logged here; the screenshot/user report is
+the source for the two spoken stories. These events show two separate epochs.
+
+2026/09/14 00:27:14 input_merge epoch=3 input="<session>:4" parts=1 status=committed reason=window_elapsed
+2026/09/14 00:27:15 intent epoch=3 utterance_id="<session>:4" is_final=true interrupt=false fallback=false latency_ms=775
+2026/09/14 00:27:22 input_merge epoch=3 input="<session>:5" parts=1 status=committed reason=window_elapsed
+2026/09/14 00:27:22 intent epoch=3 utterance_id="<session>:5" is_final=true interrupt=false fallback=false latency_ms=526
+2026/09/14 00:27:24 tool epoch=3 name=water status=completed
+2026/09/14 00:27:24 action epoch=4 tool=general_qa attempts=1 steps=1 fallback=false latency_ms=832
+2026/09/14 00:27:43 tool epoch=4 name=general_qa status=completed
+2026/09/14 00:27:44 action epoch=5 tool=general_qa attempts=1 steps=1 fallback=false latency_ms=1309

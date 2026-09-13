@@ -100,7 +100,7 @@ func (m *Manager) executeStep(t *turn, messages []llm.Message, speak func(string
 		stepMessages := append([]llm.Message(nil), messages[:len(messages)-1]...)
 		state := m.executionContextLocked(t, true)
 		stepMessages = append(stepMessages, state, llm.Message{Role: "user", Content: t.stepText})
-		m.emit(Event{Event: "response_context", Epoch: t.epoch, Reason: "answer_current_step_now", Detail: state.Content})
+		m.emit(Event{Event: "response_context", Epoch: t.epoch, Reason: "answer_current_step_now", Detail: state.Content, Text: t.stepText})
 		m.mu.Unlock()
 		return m.model.Stream(t.ctx, stepMessages, speak)
 	}

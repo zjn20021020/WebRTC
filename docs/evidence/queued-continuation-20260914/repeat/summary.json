@@ -1,0 +1,565 @@
+{
+  "recorded_at": "2026-09-13T16:50:38.959Z",
+  "git_commit": "8fa1cca3c656977d03068debe496c749f0ae88b7",
+  "source_sha256": "3ce4396c86b9ddc2b180102c354ed9b365f7e702706f841dc67454a6a1f1aa7f",
+  "suite_sha256": "50c226cc04b935e088322a6a9078cd8fe8bbad236218241a3f4a4805d895a690",
+  "model": "deepseek-v4-pro",
+  "passed": true,
+  "text": {
+    "version": "home-acceptance-v4-continuation",
+    "unique_cases": 15,
+    "repeat": 3,
+    "planned": 45,
+    "attempted": 45,
+    "passed": 45,
+    "errors": 0,
+    "missing": 0,
+    "failures": [],
+    "latency_ms": {
+      "n": 45,
+      "p50": 785,
+      "p95": 943,
+      "max": 1058
+    },
+    "pass_rate": 1,
+    "error_rate": 0,
+    "valid_response_latency_ms": {
+      "n": 45,
+      "p50": 785,
+      "p95": 943,
+      "max": 1058
+    },
+    "actions": {
+      "planned": 3,
+      "attempted": 3,
+      "passed": 3,
+      "errors": 0,
+      "missing": 0,
+      "failures": [],
+      "latency_ms": {
+        "n": 3,
+        "p50": 907,
+        "p95": 1058,
+        "max": 1058
+      },
+      "pass_rate": 1,
+      "error_rate": 0,
+      "valid_response_latency_ms": {
+        "n": 3,
+        "p50": 907,
+        "p95": 1058,
+        "max": 1058
+      },
+      "confusion_matrix": {
+        "[\"general_qa\"]": {
+          "[\"general_qa\"]": 3
+        }
+      }
+    },
+    "interruptions": {
+      "planned": 0,
+      "attempted": 0,
+      "passed": 0,
+      "errors": 0,
+      "missing": 0,
+      "failures": [],
+      "latency_ms": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "pass_rate": null,
+      "error_rate": null,
+      "valid_response_latency_ms": {
+        "n": 0,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "valid_response_confusion": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 0,
+        "false_negative": 0
+      },
+      "effective_confusion_with_false_fallback": {
+        "true_positive": 0,
+        "false_positive": 0,
+        "true_negative": 0,
+        "false_negative": 0
+      },
+      "false_interrupt_rate": null,
+      "missed_interrupt_rate": null
+    },
+    "continuations": {
+      "planned": 42,
+      "attempted": 42,
+      "passed": 42,
+      "errors": 0,
+      "missing": 0,
+      "failures": [],
+      "latency_ms": {
+        "n": 42,
+        "p50": 758,
+        "p95": 878,
+        "max": 1017
+      },
+      "pass_rate": 1,
+      "error_rate": 0,
+      "valid_response_latency_ms": {
+        "n": 42,
+        "p50": 758,
+        "p95": 878,
+        "max": 1017
+      }
+    },
+    "unstable_cases": [],
+    "categories": {
+      "queued_continuation": {
+        "planned": 45,
+        "attempted": 45,
+        "passed": 45,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 45,
+          "p50": 785,
+          "p95": 943,
+          "max": 1058
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 45,
+          "p50": 785,
+          "p95": 943,
+          "max": 1058
+        }
+      }
+    },
+    "cases": [
+      {
+        "id": "continuation-story-theme",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 811,
+          "p95": 1017,
+          "max": 1017
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 811,
+          "p95": 1017,
+          "max": 1017
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "continuation-story-length",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 838,
+          "p95": 843,
+          "max": 843
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 838,
+          "p95": 843,
+          "max": 843
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "continuation-story-correction",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 541,
+          "p95": 636,
+          "max": 636
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 541,
+          "p95": 636,
+          "max": 636
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "continuation-explain-audience",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 833,
+          "p95": 834,
+          "max": 834
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 833,
+          "p95": 834,
+          "max": 834
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "continuation-translation",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 841,
+          "p95": 878,
+          "max": 878
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 841,
+          "p95": 878,
+          "max": 878
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "continuation-chain",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 589,
+          "p95": 835,
+          "max": 835
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 589,
+          "p95": 835,
+          "max": 835
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "continuation-tool-parameter",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 797,
+          "p95": 824,
+          "max": 824
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 797,
+          "p95": 824,
+          "max": 824
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "continuation-another-story",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 797,
+          "p95": 864,
+          "max": 864
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 797,
+          "p95": 864,
+          "max": 864
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "continuation-related-question",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 821,
+          "p95": 844,
+          "max": 844
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 821,
+          "p95": 844,
+          "max": 844
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "continuation-new-question",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 445,
+          "p95": 816,
+          "max": 816
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 445,
+          "p95": 816,
+          "max": 816
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "continuation-praise",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 753,
+          "p95": 943,
+          "max": 943
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 753,
+          "p95": 943,
+          "max": 943
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "continuation-affection",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 483,
+          "p95": 522,
+          "max": 522
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 483,
+          "p95": 522,
+          "max": 522
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "continuation-separate-work",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 785,
+          "p95": 803,
+          "max": 803
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 785,
+          "p95": 803,
+          "max": 803
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "continuation-stop",
+        "kind": "continuation",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 773,
+          "p95": 873,
+          "max": 873
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 773,
+          "p95": 873,
+          "max": 873
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "plan-amended-story",
+        "kind": "action",
+        "category": "queued_continuation",
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 907,
+          "p95": 1058,
+          "max": 1058
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 907,
+          "p95": 1058,
+          "max": 1058
+        },
+        "outcomes": [
+          "[\"general_qa\"]"
+        ]
+      }
+    ]
+  }
+}

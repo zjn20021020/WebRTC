@@ -11,10 +11,14 @@ const digest = data => crypto.createHash('sha256').update(data).digest('hex');
 const writeJSON = (file, value) => fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 
 function options(args) {
-  const o = { repeat: 3, mediaRepeat: 1, textOnly: false };
+  const o = { repeat: 3, mediaRepeat: 1, textOnly: false, mediaCases: [] };
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--text-only') o.textOnly = true;
-    else if (['--repeat', '--media-repeat'].includes(args[i])) {
+    else if (args[i] === '--media-case') {
+      const id = args[++i];
+      if (!id || id.startsWith('--') || o.mediaCases.includes(id)) throw new Error('Specify a unique media case ID');
+      o.mediaCases.push(id);
+    } else if (['--repeat', '--media-repeat'].includes(args[i])) {
       const key = args[i] === '--repeat' ? 'repeat' : 'mediaRepeat';
       o[key] = Number(args[++i]);
       if (!Number.isInteger(o[key]) || o[key] < 1 || o[key] > 20) throw new Error('Repeat must be between 1 and 20');
@@ -68,6 +72,10 @@ async function main() {
   const go = process.env.GO_BIN || 'go';
   const suiteFile = path.join(root, 'testdata/acceptance/cases.json');
   const suite = readJSON(suiteFile), mediaSuite = readJSON(path.join(root, 'testdata/acceptance/media.json'));
+  if (o.mediaCases.length) {
+    if (o.textOnly || o.mediaCases.some(id => !mediaSuite.scenarios.some(s => s.id === id))) throw new Error('Unknown media case or conflicting --text-only');
+    mediaSuite.scenarios = mediaSuite.scenarios.filter(s => o.mediaCases.includes(s.id));
+  }
   const out = path.join(root, 'bin', 'acceptance', `${new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')}-${process.pid}`);
   fs.mkdirSync(out, { recursive: true });
   fs.copyFileSync(suiteFile, path.join(out, 'cases.json'));

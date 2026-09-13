@@ -39,6 +39,7 @@ type Event struct {
 	SpeechEndAt     time.Time `json:"-"`
 	FinalReceivedAt time.Time `json:"-"`
 	Provisional     bool      `json:"-"`
+	SourceIDs       []string  `json:"-"`
 }
 
 type providerEvent struct {

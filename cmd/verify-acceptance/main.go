@@ -20,18 +20,20 @@ import (
 )
 
 type testCase struct {
-	ID                string        `json:"id"`
-	Category          string        `json:"category"`
-	Kind              string        `json:"kind"`
-	UserText          string        `json:"user_text"`
-	CurrentTool       string        `json:"current_tool,omitempty"`
-	IsFinal           *bool         `json:"is_final,omitempty"`
-	ExpectedAction    home.Action   `json:"expected_action,omitempty"`
-	ExpectedPlan      []home.Action `json:"expected_plan,omitempty"`
-	ExpectedInterrupt *bool         `json:"expected_interrupt,omitempty"`
-	RecentHistory     []llm.Message `json:"recent_history,omitempty"`
-	PreviousUserText  string        `json:"previous_user_text,omitempty"`
-	AssistantResponse string        `json:"assistant_response,omitempty"`
+	ID                   string        `json:"id"`
+	Category             string        `json:"category"`
+	Kind                 string        `json:"kind"`
+	UserText             string        `json:"user_text"`
+	CurrentTool          string        `json:"current_tool,omitempty"`
+	IsFinal              *bool         `json:"is_final,omitempty"`
+	ExpectedAction       home.Action   `json:"expected_action,omitempty"`
+	ExpectedPlan         []home.Action `json:"expected_plan,omitempty"`
+	ExpectedInterrupt    *bool         `json:"expected_interrupt,omitempty"`
+	ExpectedContinuation *bool         `json:"expected_continuation,omitempty"`
+	PendingText          string        `json:"pending_text,omitempty"`
+	RecentHistory        []llm.Message `json:"recent_history,omitempty"`
+	PreviousUserText     string        `json:"previous_user_text,omitempty"`
+	AssistantResponse    string        `json:"assistant_response,omitempty"`
 }
 
 type suite struct {
@@ -76,12 +78,16 @@ func readSuite(path string) (suite, error) {
 		seen[c.ID] = true
 		switch c.Kind {
 		case "action":
-			if !validExpectedPlan(c) || c.ExpectedInterrupt != nil || c.IsFinal != nil {
+			if !validExpectedPlan(c) || c.ExpectedInterrupt != nil || c.ExpectedContinuation != nil || c.IsFinal != nil {
 				return s, fmt.Errorf("invalid action case %s", c.ID)
 			}
 		case "interrupt":
-			if c.ExpectedInterrupt == nil || c.IsFinal == nil || !home.Valid(home.Action(c.CurrentTool)) || c.ExpectedAction != "" || c.ExpectedPlan != nil {
+			if c.ExpectedInterrupt == nil || c.ExpectedContinuation != nil || c.IsFinal == nil || !home.Valid(home.Action(c.CurrentTool)) || c.ExpectedAction != "" || c.ExpectedPlan != nil {
 				return s, fmt.Errorf("invalid interruption case %s", c.ID)
+			}
+		case "continuation":
+			if c.ExpectedContinuation == nil || strings.TrimSpace(c.PendingText) == "" || c.ExpectedInterrupt != nil || c.IsFinal != nil || c.CurrentTool != "" || c.ExpectedAction != "" || c.ExpectedPlan != nil {
+				return s, fmt.Errorf("invalid continuation case %s", c.ID)
 			}
 		default:
 			return s, fmt.Errorf("unknown kind for %s", c.ID)
@@ -198,6 +204,12 @@ func run() int {
 				if err == nil {
 					r.Actual, r.Passed = planResult(plan, c)
 				}
+			} else if c.Kind == "continuation" {
+				var decision bool
+				decision, err = client.ClassifyContinuation(requestCtx, llm.ContinuationInput{PendingText: c.PendingText, UserText: c.UserText})
+				r.Actual = decision
+				r.Passed = err == nil && decision == *c.ExpectedContinuation
+				r.Fallback = err != nil
 			} else {
 				var decision bool
 				decision, err = client.ClassifyInterruption(requestCtx, llm.InterruptionInput{UserText: c.UserText, CurrentTool: c.CurrentTool,
@@ -212,7 +224,7 @@ func run() int {
 				r.Error = "request_failed"
 				if errors.Is(err, context.DeadlineExceeded) {
 					r.Error = "timeout"
-				} else if errors.Is(err, llm.ErrInvalidActionResult) || errors.Is(err, llm.ErrInvalidIntentResult) {
+				} else if errors.Is(err, llm.ErrInvalidActionResult) || errors.Is(err, llm.ErrInvalidIntentResult) || errors.Is(err, llm.ErrInvalidContinuationResult) {
 					r.Error = "invalid_output"
 				}
 				r.Validation = llm.ActionValidationReason(err)

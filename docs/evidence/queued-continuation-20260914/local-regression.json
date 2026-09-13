@@ -1,0 +1,35 @@
+{
+  "recorded_at": "2026-09-13T16:50:38.961Z",
+  "source_sha256": "3ce4396c86b9ddc2b180102c354ed9b365f7e702706f841dc67454a6a1f1aa7f",
+  "checks": [
+    {
+      "command": "E:/go/bin/go.exe test ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "E:/go/bin/go.exe vet ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "node --test scripts/acceptance_stats.test.cjs",
+      "passed": 7,
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_ui.cjs",
+      "exit_code": 0,
+      "viewports": [
+        1440,
+        1024,
+        768,
+        390,
+        320
+      ]
+    },
+    {
+      "check": "Playwright: pending queue keeps stop enabled after response completion; stale queue event ignored; clearing queue disables stop",
+      "passed": true
+    }
+  ],
+  "race": "Not rerun: this environment does not enable cgo. UI checks use synthetic events, no microphone."
+}

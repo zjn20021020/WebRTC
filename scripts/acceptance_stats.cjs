@@ -7,7 +7,7 @@ function distribution(values) {
 }
 
 const rate = (count, total) => total ? count / total : null;
-const expectedValue = c => c.kind === 'action' ? (c.expected_plan ?? c.expected_action) : c.expected_interrupt;
+const expectedValue = c => c.kind === 'action' ? (c.expected_plan ?? c.expected_action) : c.kind === 'continuation' ? c.expected_continuation : c.expected_interrupt;
 const label = value => Array.isArray(value) ? JSON.stringify(value) : String(value);
 const sameValue = (a, b) => Array.isArray(a) && Array.isArray(b)
   ? a.length === b.length && a.every((item, i) => item === b[i]) : a === b;
@@ -47,6 +47,7 @@ function summarizeText(suite, repeat, records) {
   };
   const actions = summarize(suite.cases.filter(c => c.kind === 'action'));
   const interruptions = summarize(suite.cases.filter(c => c.kind === 'interrupt'));
+  const continuations = summarize(suite.cases.filter(c => c.kind === 'continuation'));
   const valid = matrix(), effective = matrix(), confusion = {};
   for (const c of suite.cases) for (let round = 1; round <= repeat; round++) {
     const r = byKey.get(`${c.id}/${round}`);
@@ -55,7 +56,7 @@ function summarizeText(suite, repeat, records) {
       const expected = label(expectedValue(c));
       confusion[expected] ||= {};
       confusion[expected][actual] = (confusion[expected][actual] || 0) + 1;
-    } else if (r) {
+    } else if (r && c.kind === 'interrupt') {
       const failed = !!(r.error || r.fallback);
       // Provider failures keep playback running, but never become successful labels.
       addDecision(effective, c.expected_interrupt, failed ? false : r.actual);
@@ -69,7 +70,7 @@ function summarizeText(suite, repeat, records) {
   interruptions.missed_interrupt_rate = rate(effective.false_negative, effective.false_negative + effective.true_positive);
   const cases = suite.cases.map(c => ({ id: c.id, kind: c.kind, category: c.category, ...summarize([c]),
     outcomes: [...new Set(records.filter(r => r.id === c.id).map(r => r.error || (r.fallback ? 'fallback' : label(r.actual))))] }));
-  return { version: suite.version, unique_cases: suite.cases.length, repeat, ...summarize(suite.cases), actions, interruptions,
+  return { version: suite.version, unique_cases: suite.cases.length, repeat, ...summarize(suite.cases), actions, interruptions, continuations,
     unstable_cases: cases.filter(c => c.outcomes.length > 1).map(c => c.id),
     categories: Object.fromEntries([...new Set(suite.cases.map(c => c.category))].map(category => [category, summarize(suite.cases.filter(c => c.category === category))])), cases };
 }
@@ -101,6 +102,9 @@ function mediaObservations(evidence) {
   return { metrics: byGroup, confirm_to_cancel_ms: confirmToCancel, old_turn_resumed_events: residual,
     action_latency_ms: events.filter(e => e.event === 'action_result').map(e => e.latency_ms),
     intent_latency_ms: events.filter(e => e.event === 'intent_result').map(e => e.latency_ms),
+    continuation_latency_ms: events.filter(e => e.event === 'input_relation' && e.continuation !== undefined).map(e => e.latency_ms),
+    continuation_fallbacks: events.filter(e => e.event === 'input_relation' && e.fallback).length,
+    queued_merges: events.filter(e => e.event === 'input_merge' && e.reason === 'queued_continuation').length,
     action_fallbacks: events.filter(e => e.event === 'action_result' && e.fallback).length,
     intent_fallbacks: events.filter(e => e.event === 'intent_result' && e.fallback).length,
     action_retries: events.filter(e => e.event === 'action_retry').length,
@@ -108,8 +112,9 @@ function mediaObservations(evidence) {
 }
 
 function summarizeMedia(runs) {
-  const merged = {}, confirm = [], actions = [], intents = [];
+  const merged = {}, confirm = [], actions = [], intents = [], continuations = [];
   let resumed = 0, actionFallbacks = 0, intentFallbacks = 0, retries = 0;
+  let continuationFallbacks = 0, queuedMerges = 0;
   const results = runs.map(run => {
     const evidence = run.evidence && fs.existsSync(run.evidence) ? JSON.parse(fs.readFileSync(run.evidence, 'utf8')) : {};
     const o = mediaObservations(evidence);
@@ -118,6 +123,8 @@ function summarizeMedia(runs) {
       for (const [key, values] of Object.entries(metrics)) (merged[group][key] ||= []).push(...values);
     }
     confirm.push(...o.confirm_to_cancel_ms); actions.push(...o.action_latency_ms); intents.push(...o.intent_latency_ms);
+    continuations.push(...o.continuation_latency_ms);
+    continuationFallbacks += o.continuation_fallbacks; queuedMerges += o.queued_merges;
     resumed += o.old_turn_resumed_events; actionFallbacks += o.action_fallbacks; intentFallbacks += o.intent_fallbacks; retries += o.action_retries;
     return { id: run.id, round: run.round, passed: run.exit_code === 0 && evidence.passed === true && o.audio_received && o.old_turn_resumed_events === 0,
       exit_code: run.exit_code, error: evidence.error || run.error, evidence: run.relative_evidence,
@@ -125,6 +132,7 @@ function summarizeMedia(runs) {
   });
   return { planned: runs.length, passed: results.filter(r => r.passed).length, pass_rate: rate(results.filter(r => r.passed).length, runs.length),
     old_turn_resumed_events: resumed, physical_audio_residual: 'not_measured', action_fallbacks: actionFallbacks, intent_fallbacks: intentFallbacks, action_retries: retries,
+    continuation_fallbacks: continuationFallbacks, queued_merges: queuedMerges, continuation_latency_ms: distribution(continuations),
     confirm_to_cancel_ms: distribution(confirm), action_latency_ms: distribution(actions), intent_latency_ms: distribution(intents),
     response_metrics_ms: Object.fromEntries(Object.entries(merged).map(([group, metrics]) => [group, Object.fromEntries(Object.entries(metrics).map(([key, values]) => [key, distribution(values)]))])), runs: results };
 }
@@ -139,6 +147,7 @@ function markdown(report) {
     `- TTS 音色：${report.audio_config?.tts_voice_type ?? '未测量'}；采样率：${report.audio_config?.sample_rate ?? '未测量'}`, '',
     '## 文本分类', '', '| 项目 | 通过 / 计划 | 严格通过率 | 请求错误 | 未执行 | 延迟 P50 / P95（ms） |', '| --- | ---: | ---: | ---: | ---: | ---: |'];
   for (const [name, s] of [['动作分类', t.actions], ['打断分类', t.interruptions]]) lines.push(`| ${name} | ${s.passed} / ${s.planned} | ${pct(s.pass_rate)} | ${s.errors} | ${s.missing} | ${value(s.latency_ms.p50)} / ${value(s.latency_ms.p95)} |`);
+  if (t.continuations?.planned) { const s = t.continuations; lines.push(`| 补充关系分类 | ${s.passed} / ${s.planned} | ${pct(s.pass_rate)} | ${s.errors} | ${s.missing} | ${value(s.latency_ms.p50)} / ${value(s.latency_ms.p95)} |`); }
   const c = t.interruptions.effective_confusion_with_false_fallback;
   lines.push('', `误打断：${c.false_positive} / ${c.false_positive + c.true_negative}（${pct(t.interruptions.false_interrupt_rate)}）；漏打断：${c.false_negative} / ${c.false_negative + c.true_positive}（${pct(t.interruptions.missed_interrupt_rate)}）。`,
     '', '分母分别为已执行的预期 false / true 样本。请求异常按运行时 false 兜底计入有效决策，但严格通过率始终将异常计为失败。未执行样本另列，不进入误/漏率分母。',
@@ -150,6 +159,7 @@ function markdown(report) {
   latencyRow('浏览器确认事件到取消事件', m.confirm_to_cancel_ms);
   latencyRow('媒体链路动作分类（含内部重试）', m.action_latency_ms);
   latencyRow('媒体链路打断分类请求', m.intent_latency_ms);
+  if (m.continuation_latency_ms) latencyRow('缓存补充关系分类请求', m.continuation_latency_ms);
   for (const [group, metrics] of Object.entries(m.response_metrics_ms)) for (const [key, d] of Object.entries(metrics)) latencyRow(`${group}: ${key}`, d);
   lines.push('', '## 未通过样例', '');
   for (const f of t.failures) lines.push(`- ${f.id} / round ${f.round}: ${f.reason}; expected=${f.expected ?? '--'}, actual=${f.actual ?? '--'}${f.validation ? `; validation=${f.validation}` : ''}`);
@@ -163,6 +173,7 @@ function markdown(report) {
     '- 首音频指服务端首个非静音 RTP 发送；确认到取消指浏览器收到控制事件的间隔。均不是物理耳机延迟。',
     '- 媒体输入为固定合成音频经 WebAudio 虚拟麦克风进入真实 WebRTC；物理输出静音。旧轮恢复检查不等于耳机尾音测量。',
     '- 跨 final 合并仅在 cross-final-wait 场景通过且记录至少两个来源 final 时计为已测；文本分类测试不代表跨 final 调度已验证。未覆盖真人噪声/回声、多说话人和长期弱网。', '');
+  if (m.queued_merges !== undefined) lines.push(`- 缓存补充合并 ${m.queued_merges} 次；关系分类兜底 ${m.continuation_fallbacks} 次。关系分类只合并尚未执行的相邻输入，不计入打断误/漏率。`, '');
   return lines.join('\n');
 }
 

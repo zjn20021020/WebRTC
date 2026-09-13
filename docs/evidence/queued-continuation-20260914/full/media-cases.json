@@ -1,0 +1,68 @@
+{
+  "version": "home-media-v4-continuation",
+  "scenarios": [
+    {
+      "id": "discard-old-buffer",
+      "flag": "--clear-buffer",
+      "evidence": "home-clear-buffer-voice.json",
+      "fixtures": [
+        "home-plant-direct",
+        "home-fertilize-direct",
+        "home-question"
+      ],
+      "fixture_scenes": [
+        "home-switch"
+      ],
+      "checks": "确认打断清旧文本缓存，旧问题不复活，新问题仍能缓存并回答"
+    },
+    {
+      "id": "cross-final-wait",
+      "script": "scripts/verify_plan.cjs",
+      "flag": "--merge",
+      "evidence": "plan-merge.json",
+      "fixtures": [
+        "home-water",
+        "home-wait-prefix",
+        "home-wait-tail"
+      ],
+      "fixture_scenes": [
+        "home-plan",
+        "home"
+      ],
+      "checks": "等待真实 ASR 的等一下 final 后续说再去种地；必须记录至少两个 final 合并，整句 false，浇水后种菜"
+    },
+    {
+      "id": "story-amendment",
+      "script": "scripts/verify_story.cjs",
+      "flag": "--amendment",
+      "evidence": "story-amendment.json",
+      "fixtures": [
+        "home-water",
+        "home-story",
+        "home-story-theme"
+      ],
+      "fixture_scenes": [
+        "home",
+        "home-story"
+      ],
+      "checks": "故事入缓存后间隔三秒再说夜晚月亮条件；两个独立 final/false 经 queued_continuation 合为一次规划和一次回答，实际模型输入含条件，不能再预留第二轮"
+    },
+    {
+      "id": "story-independent",
+      "script": "scripts/verify_story.cjs",
+      "flag": "--independent",
+      "evidence": "story-independent.json",
+      "fixtures": [
+        "home-water",
+        "home-story",
+        "home-question"
+      ],
+      "fixture_scenes": [
+        "home",
+        "home-story",
+        "home-switch"
+      ],
+      "checks": "故事和一加一作为两条缓存，关系 false，不合并、不丢失，分别回答各一次"
+    }
+  ]
+}

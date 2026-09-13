@@ -27,6 +27,11 @@ type InterruptionInput struct {
 // ClassifyInterruption uses a separate, short, non-thinking JSON-mode request.
 // The caller owns the deadline; only a validated boolean may authorize a stop.
 func (c *Client) ClassifyInterruption(ctx context.Context, input InterruptionInput) (bool, error) {
+	return c.classifyBoolean(ctx, interruptionPrompt, input, "interrupt", ErrInvalidIntentResult)
+}
+
+// Both decisions have the same transport and strict single-boolean contract.
+func (c *Client) classifyBoolean(ctx context.Context, prompt string, input any, field string, invalid error) (bool, error) {
 	if !c.config.Enabled() {
 		return false, errors.New("DeepSeek credentials are not configured")
 	}
@@ -42,7 +47,7 @@ func (c *Client) ClassifyInterruption(ctx context.Context, input InterruptionInp
 		Temperature    float64           `json:"temperature"`
 		Thinking       map[string]string `json:"thinking"`
 		ResponseFormat map[string]string `json:"response_format"`
-	}{c.config.Model, []Message{{Role: "system", Content: interruptionPrompt}, {Role: "user", Content: string(data)}},
+	}{c.config.Model, []Message{{Role: "system", Content: prompt}, {Role: "user", Content: string(data)}},
 		false, 32, 0, map[string]string{"type": "disabled"}, map[string]string{"type": "json_object"}})
 	if err != nil {
 		return false, errors.New("invalid interruption request")
@@ -73,30 +78,37 @@ func (c *Client) ClassifyInterruption(ctx context.Context, input InterruptionInp
 		return false, errors.New("DeepSeek intent response read failed")
 	}
 	if len(data) > 64*1024 {
-		return false, fmt.Errorf("%w: invalid response size", ErrInvalidIntentResult)
+		return false, fmt.Errorf("%w: invalid response size", invalid)
 	}
 	var response struct {
 		Choices []struct {
 			Message struct {
-				Content string `json:"content"`
+				Content string          `json:"content"`
+				Refusal json.RawMessage `json:"refusal"`
 			} `json:"message"`
 			FinishReason string `json:"finish_reason"`
 		} `json:"choices"`
 		Error json.RawMessage `json:"error"`
 	}
 	if json.Unmarshal(data, &response) != nil || len(response.Error) != 0 || len(response.Choices) != 1 || response.Choices[0].FinishReason != "stop" {
-		return false, fmt.Errorf("%w: incomplete provider response", ErrInvalidIntentResult)
+		return false, fmt.Errorf("%w: incomplete provider response", invalid)
 	}
-	return parseInterruption(response.Choices[0].Message.Content)
+	if refusal := string(response.Choices[0].Message.Refusal); refusal != "" && refusal != "null" && refusal != `""` {
+		return false, fmt.Errorf("%w: provider refusal", invalid)
+	}
+	return parseBoolean(response.Choices[0].Message.Content, field, invalid)
 }
 
 func parseInterruption(content string) (bool, error) {
-	invalid := ErrInvalidIntentResult
+	return parseBoolean(content, "interrupt", ErrInvalidIntentResult)
+}
+
+func parseBoolean(content, field string, invalid error) (bool, error) {
 	decoder := json.NewDecoder(bytes.NewBufferString(content))
 	if token, err := decoder.Token(); err != nil || token != json.Delim('{') {
 		return false, invalid
 	}
-	if key, err := decoder.Token(); err != nil || key != "interrupt" {
+	if key, err := decoder.Token(); err != nil || key != field {
 		return false, invalid
 	}
 	token, err := decoder.Token()

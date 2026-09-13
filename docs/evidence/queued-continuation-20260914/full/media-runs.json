@@ -1,0 +1,26 @@
+[
+  {
+    "id": "discard-old-buffer",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/discard-old-buffer-1/home-clear-buffer-voice.json"
+  },
+  {
+    "id": "cross-final-wait",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/cross-final-wait-1/plan-merge.json"
+  },
+  {
+    "id": "story-amendment",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/story-amendment-1/story-amendment.json"
+  },
+  {
+    "id": "story-independent",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/story-independent-1/story-independent.json"
+  }
+]
