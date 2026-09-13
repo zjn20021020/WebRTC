@@ -11,7 +11,7 @@ const fs = require('node:fs');
   try {
     await page.goto(process.env.DEMO_URL || 'http://localhost:8080');
     await page.evaluate(() => document.fonts.ready);
-    const ids = ['status', 'connect', 'disconnect', 'meter', 'waveform', 'remoteAudio', 'asrStatus', 'asrError', 'finalTranscript', 'partialTranscript', 'turnLabel', 'replyStatus', 'replyText', 'replyError', 'toolStatus', 'interruptionStatus', 'queuedStatus', 'stopResponse', 'latencyText', 'latencyAudio', 'latencyDuck', 'log'];
+    const ids = ['status', 'connect', 'disconnect', 'meter', 'waveform', 'remoteAudio', 'asrStatus', 'asrError', 'finalTranscript', 'partialTranscript', 'turnLabel', 'replyStatus', 'replyText', 'replyError', 'toolStatus', 'interruptionStatus', 'queuedStatus', 'stopResponse', 'latencyText', 'latencyAudio', 'latencyDuck', 'log', 'audioMode', 'audioModeStatus', 'audioModeAuto'];
     for (const id of ids) assert.equal(await page.locator(`#${id}`).count(), 1, `Missing or duplicated original control: ${id}`);
     assert.equal(await page.locator('#connect').isEnabled(), true);
     assert.equal(await page.locator('#disconnect').isEnabled(), false);
@@ -58,7 +58,7 @@ const fs = require('node:fs');
       await page.screenshot({ path: `bin/ui/home-active-${width}.png`, fullPage: true });
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `Overflow at ${width}`);
       assert.ok(await page.evaluate(() => {
-        const selectors = ['#connect', '#disconnect', '#stopResponse', '#transcriptHeading', '#replyHeading', '#latencyHeading', '#meter', '#status'];
+        const selectors = ['#connect', '#disconnect', '#stopResponse', '#transcriptHeading', '#replyHeading', '#latencyHeading', '#meter', '#status', '#audioMode', '#audioModeStatus', '#audioModeAuto'];
         return selectors.every(selector => {
           const element = document.querySelector(selector), bounds = element.getBoundingClientRect();
           return bounds.left >= 0 && bounds.right <= innerWidth && element.scrollWidth <= element.clientWidth + 1;

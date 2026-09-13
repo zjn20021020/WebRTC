@@ -5,6 +5,18 @@ const path = require('node:path');
 const modulePromise = import(pathToFileURL(path.resolve(__dirname, '../web/audio-route.js')));
 const output = (label, deviceId = 'default') => ({ kind: 'audiooutput', label, deviceId });
 
+test('manual mode overrides detection until automatic mode is restored', async () => {
+  const { resolveAudioRoute } = await modulePromise;
+  const detected = { kind: 'speakers', aec: true, source: 'browser', fingerprint: 'speaker' };
+  const manual = resolveAudioRoute(detected, 'headphones');
+  assert.equal(manual.kind, 'headphones');
+  assert.equal(manual.aec, false);
+  assert.equal(manual.source, 'manual');
+  assert.equal(resolveAudioRoute({ ...detected, fingerprint: 'changed' }, 'headphones').fingerprint, manual.fingerprint);
+  assert.equal(resolveAudioRoute(detected, null), detected);
+  assert.equal(resolveAudioRoute({ ...detected, kind: 'unknown', aec: false }, 'speakers').aec, true);
+});
+
 test('output route decisions prioritize headphones and ignore input names', async () => {
   const { selectAudioRoute } = await modulePromise;
   const cases = [

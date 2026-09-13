@@ -24,6 +24,15 @@
           </div>
           <p id="meter" class="meter">麦克风未启用</p>
         </div>
+        <div class="audio-settings">
+          <span id="audioModeLabel">播放设备</span>
+          <div id="audioMode" role="radiogroup" aria-labelledby="audioModeLabel">
+            <label><input type="radio" name="audioMode" value="headphones" checked />耳机</label>
+            <label><input type="radio" name="audioMode" value="speakers" />扬声器</label>
+          </div>
+          <span id="audioModeStatus" role="status">识别中</span>
+          <button id="audioModeAuto" type="button" title="恢复自动识别" aria-label="恢复自动识别"><img src="/assets/icons/rotate-ccw.svg" alt="" class="icon" /></button>
+        </div>
         <div class="audio-strip">
           <canvas id="waveform" width="720" height="96" aria-label="麦克风实时波形"></canvas>
           <audio id="remoteAudio" aria-label="语音播放" autoplay controls></audio>

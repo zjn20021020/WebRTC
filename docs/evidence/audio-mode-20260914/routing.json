@@ -1,0 +1,24 @@
+{
+  "headphones": {
+    "route": "headphones",
+    "aec": false,
+    "minimum_received_rms": 0.08587141350243944,
+    "waveform_rms": 0.08640494269141198,
+    "raw_sender": true
+  },
+  "speaker_aec_enabled": true,
+  "headphone_hot_switch_restores_raw": true,
+  "manual_override_survives_detection": true,
+  "manual_override_survives_reconnect": true,
+  "restore_automatic": true,
+  "unknown_preserves_raw": true,
+  "initial_speaker_connection": true,
+  "reconnected": true,
+  "acquisition_failure_keeps_raw": true,
+  "manual_headphone_fallback": true,
+  "errors": [],
+  "passed": true,
+  "physical_microphone": false,
+  "physical_echo_tested": false,
+  "cloud_calls": false
+}

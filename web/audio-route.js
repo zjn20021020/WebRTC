@@ -26,6 +26,12 @@ export function selectAudioRoute(devices, sinkID = '', system = null) {
   return result('unknown', 'output_type_unavailable');
 }
 
+export function resolveAudioRoute(detected, manualMode) {
+  if (!['headphones', 'speakers'].includes(manualMode)) return detected;
+  return { ...detected, kind: manualMode, aec: manualMode === 'speakers', source: 'manual', reason: 'manual_override',
+    fingerprint: `manual:${manualMode}` };
+}
+
 export async function detectAudioRoute(element, signal) {
   signal.throwIfAborted();
   const timeout = new AbortController();

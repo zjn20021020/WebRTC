@@ -15,7 +15,7 @@ body { margin: 0; min-width: 320px; }
 body::before { content: ""; position: fixed; inset: 0; z-index: -1; background: url("/assets/home-landscape.webp") center center / cover no-repeat; }
 button, audio { font: inherit; }
 button, canvas, audio { -webkit-tap-highlight-color: transparent; }
-button:focus-visible, audio:focus-visible, [tabindex]:focus-visible { outline: 3px solid #1683ab; outline-offset: 4px; }
+button:focus-visible, input:focus-visible, audio:focus-visible, [tabindex]:focus-visible { outline: 3px solid #1683ab; outline-offset: 4px; }
 ::selection { background: #d8edb2; color: #244d39; }
 .container { width: min(1160px, calc(100% - 64px)); margin: 24px auto 48px; }
 .masthead { min-height: 112px; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 0 8px 10px; }
@@ -44,6 +44,16 @@ button .icon { filter: invert(1); }
 #disconnect .icon { filter: none; opacity: .64; }
 #disconnect:hover:not(:disabled) { background: #e6efde; box-shadow: 0 4px 0 #b5c8ab; }
 .meter { margin: 0; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.audio-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 0 26px 16px; font-size: 12px; }
+#audioModeLabel { color: var(--muted); }
+#audioMode { display: flex; align-items: center; gap: 16px; }
+#audioMode label { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; cursor: pointer; white-space: nowrap; }
+#audioMode input { width: 16px; height: 16px; margin: 0; accent-color: var(--green); }
+#audioModeStatus { min-width: 72px; color: var(--muted); line-height: 20px; }
+#audioModeStatus[data-state="failed"] { color: #ae4350; }
+#audioModeAuto { width: 32px; height: 32px; min-height: 32px; padding: 6px; border-color: #bdd0b7; background: #f3f7ee; box-shadow: none; flex: 0 0 32px; }
+#audioModeAuto .icon { filter: none; opacity: .7; width: 16px; height: 16px; flex-basis: 16px; }
+#audioModeAuto:hover { background: #e6efde; transform: none; box-shadow: none; }
 .audio-strip { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 24px; align-items: center; padding: 0 26px 20px; border-bottom: 1px solid var(--line); }
 canvas { display: block; width: 100%; height: 80px; border: 1px solid #d4e6d9; border-radius: 6px; background: #edf5ef; }
 audio { display: block; width: 100%; height: 48px; min-width: 0; accent-color: #356d54; }
@@ -127,6 +137,8 @@ h2 .icon { opacity: .66; }
   .connection-actions { width: 100%; gap: 8px; }
   button { font-size: 12px; padding: 10px 12px; }
   .meter { font-size: 11px; }
+  .audio-settings { padding: 0 18px 14px; column-gap: 12px; }
+  #audioMode { gap: 12px; }
   .audio-strip { grid-template-columns: 1fr; gap: 14px; padding: 0 18px 20px; }
   canvas { height: 80px; }
   .conversation { grid-template-columns: 1fr; }

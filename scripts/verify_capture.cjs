@@ -56,7 +56,7 @@ const fs = require('node:fs');
     });
     for (const key of ['echoCancellation', 'noiseSuppression', 'autoGainControl']) assert.equal(settings[key], false, `${key} was not disabled by headphone mode`);
     await page.evaluate(() => disconnect());
-    assert.equal(await page.locator('#audioMode, input[name="audioMode"]').count(), 0, 'Listening mode selector should be removed');
+    assert.equal(await page.locator('input[name="audioMode"]').count(), 2, 'Missing manual audio mode fallback');
     const reconnectedSettings = await page.evaluate(async () => {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: microphoneConstraints() });
       const settings = stream.getAudioTracks()[0].getSettings();

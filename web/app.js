@@ -2,6 +2,9 @@ const connectButton = document.querySelector('#connect');
 const statusElement = document.querySelector('#status');
 const logElement = document.querySelector('#log');
 const remoteAudio = document.querySelector('#remoteAudio');
+const audioModeInputs = document.querySelectorAll('input[name="audioMode"]');
+const audioModeStatus = document.querySelector('#audioModeStatus');
+const audioModeAuto = document.querySelector('#audioModeAuto');
 const meterElement = document.querySelector('#meter');
 const waveform = document.querySelector('#waveform');
 const waveformContext = waveform.getContext('2d');
@@ -34,6 +37,39 @@ const turnLabel = document.querySelector('#turnLabel');
 let responseEpoch = -1;
 let responseFinished = false;
 let activeConnection = null;
+let manualAudioMode = null;
+let detectedAudioRoute = { kind: 'unknown', aec: false, source: 'browser', reason: 'output_type_unavailable', fingerprint: 'initial' };
+
+function renderAudioMode(state = 'ready') {
+  const selected = manualAudioMode || (detectedAudioRoute.kind === 'speakers' ? 'speakers' : 'headphones');
+  for (const input of audioModeInputs) input.checked = input.value === selected;
+  audioModeStatus.dataset.state = state;
+  audioModeStatus.textContent = state === 'pending' ? '切换中' : state === 'failed' ? '设置未生效' :
+    manualAudioMode ? '手动设置' : detectedAudioRoute.kind === 'unknown' ? '默认耳机' : '自动识别';
+}
+
+async function detectInitialAudioRoute() {
+  try {
+    const { detectAudioRoute } = await import('./audio-route.js');
+    const detected = await detectAudioRoute(remoteAudio, new AbortController().signal);
+    if (activeConnection) return;
+    detectedAudioRoute = detected;
+    renderAudioMode();
+  } catch { if (!activeConnection) renderAudioMode(); }
+}
+
+for (const input of audioModeInputs) input.addEventListener('change', () => {
+  manualAudioMode = input.value;
+  renderAudioMode(activeConnection ? 'pending' : 'ready');
+  activeConnection?.refreshAudioRoute?.({ type: 'modechange' });
+});
+audioModeAuto.addEventListener('click', () => {
+  manualAudioMode = null;
+  renderAudioMode(activeConnection ? 'pending' : 'ready');
+  if (activeConnection) activeConnection.refreshAudioRoute?.({ type: 'modechange' });
+  else detectInitialAudioRoute();
+});
+detectInitialAudioRoute();
 
 function microphoneConstraints() {
   return { echoCancellation: false, noiseSuppression: false, autoGainControl: false };
@@ -52,22 +88,28 @@ function observeMicrophone(connection, track) {
 }
 
 async function startAudioRouting(connection) {
-  const { detectAudioRoute, prepareAudioRoute } = await import('./audio-route.js');
+  const { detectAudioRoute, prepareAudioRoute, resolveAudioRoute } = await import('./audio-route.js');
   const signal = connection.abort.signal;
   signal.throwIfAborted();
   let checking = false, repeat = false, revision = 0;
   const refresh = async event => {
-    if (event?.type === 'devicechange') revision++;
+    if (['devicechange', 'modechange'].includes(event?.type)) revision++;
     if (checking) { repeat = true; return; }
     checking = true;
     try {
       do {
         repeat = false;
         const version = revision;
-        const route = await detectAudioRoute(remoteAudio, signal);
+        const detected = manualAudioMode ? detectedAudioRoute : await detectAudioRoute(remoteAudio, signal);
         signal.throwIfAborted();
         if (version !== revision) { repeat = true; continue; }
-        if (connection.audioRoute?.fingerprint === route.fingerprint) continue;
+        detectedAudioRoute = detected;
+        const route = resolveAudioRoute(detected, manualAudioMode);
+        if (connection.audioRoute?.fingerprint === route.fingerprint) {
+          renderAudioMode(connection.audioRoute.aec === route.aec ? 'ready' : 'failed');
+          continue;
+        }
+        renderAudioMode('pending');
         const prepared = await prepareAudioRoute(connection.stream, route, signal);
         const next = prepared.stream, previous = connection.stream;
         if (activeConnection !== connection || version !== revision) {
@@ -99,6 +141,7 @@ async function startAudioRouting(connection) {
         }
         const applied = prepared.route;
         connection.audioRoute = applied;
+        if (version === revision) renderAudioMode(applied.aec === route.aec ? 'ready' : 'failed');
         const mode = { headphones: '耳机', speakers: '扬声器', unknown: '输出类型不确定' }[applied.kind];
         log(`音频路由: ${mode}; AEC=${applied.aec}; reason=${applied.reason}; source=${applied.source}`);
         if (applied.kind === 'unknown' || ['aec_not_enabled', 'constraints_failed', 'raw_processing_not_disabled'].includes(applied.reason)) {
@@ -107,9 +150,10 @@ async function startAudioRouting(connection) {
         logMicrophoneSettings(connection.stream.getAudioTracks()[0]);
       } while (repeat && !signal.aborted);
     } catch (error) {
-      if (!signal.aborted && activeConnection === connection) log(`音频路由检测失败: ${error.name}`);
+      if (!signal.aborted && activeConnection === connection) { renderAudioMode('failed'); log(`音频路由检测失败: ${error.name}`); }
     } finally { checking = false; }
   };
+  connection.refreshAudioRoute = refresh;
   await refresh();
   signal.throwIfAborted();
   navigator.mediaDevices.addEventListener('devicechange', refresh, { signal });
@@ -316,6 +360,7 @@ function disconnect() {
   mergedInput.textContent = '';
   const connection = activeConnection;
   activeConnection = null;
+  renderAudioMode();
   if (connection) {
     if (connection.control?.readyState === 'open') {
       connection.control.send(JSON.stringify({ event: 'disconnect' }));
