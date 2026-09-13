@@ -33,7 +33,7 @@
 
 - Go 1.22 或以上、Git，以及支持 WebRTC 和麦克风权限的浏览器，建议 Chrome。
 - 可访问腾讯云和 DeepSeek 的网络。
-- 腾讯云实时语音识别 `8k_zh`、语音合成服务已开通，凭证具有调用权限且额度可用。
+- 腾讯云实时语音识别大模型 2.0（`16k_zh_en_2.0`）、语音合成服务已开通，凭证具有调用权限且对应额度可用。
 - 可调用 `deepseek-v4-pro` 的 DeepSeek API Key。
 
 ### 获取项目与配置
@@ -50,6 +50,7 @@ go mod download
 TENCENT_APP_ID=
 TENCENT_SECRET_ID=
 TENCENT_SECRET_KEY=
+TENCENT_ASR_MODEL=16k_zh_en_2.0
 TENCENT_TTS_VOICE_TYPE=101016
 DEEPSEEK_API_KEY=
 DEEPSEEK_URL=https://api.deepseek.com
@@ -57,6 +58,8 @@ DEEPSEEK_MODEL=deepseek-v4-pro
 ```
 
 AppID 在[腾讯云账号信息](https://console.cloud.tencent.com/developer)中查询；SecretId、SecretKey 在同账号的 [API 密钥管理](https://console.cloud.tencent.com/cam/capi)中获取。腾讯 ASR 与 TTS 复用这三个字段。`.env` 仅供服务端读取，已被 Git 忽略，不提交密钥；系统环境变量优先于 `.env`。
+
+识别资源包须与引擎匹配：上面的配置使用“大模型 2.0 实时语音识别”额度；使用普通实时识别资源包时改为 `TENCENT_ASR_MODEL=8k_zh`。两类资源包不能互相抵扣；省略该配置时保留旧版 `8k_zh` 默认值。
 
 ### 启动与使用
 

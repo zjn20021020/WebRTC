@@ -29,6 +29,9 @@ var secretID = regexp.MustCompile(`^[A-Za-z0-9]+$`)
 type Event struct {
 	Event           string    `json:"event"`
 	Status          string    `json:"status,omitempty"`
+	Code            int       `json:"code,omitempty"`
+	Model           string    `json:"model,omitempty"`
+	Detail          string    `json:"detail,omitempty"`
 	Text            string    `json:"text,omitempty"`
 	UtteranceID     string    `json:"utterance_id,omitempty"`
 	BeginTime       int64     `json:"begin_time,omitempty"`
@@ -38,10 +41,19 @@ type Event struct {
 }
 
 type providerEvent struct {
-	Code    *int   `json:"code"`
-	VoiceID string `json:"voice_id"`
-	Final   int    `json:"final"`
-	Result  *struct {
+	Code      *int   `json:"code"`
+	VoiceID   string `json:"voice_id"`
+	Final     int    `json:"final"`
+	Sentences *struct {
+		List []struct {
+			Text      string `json:"sentence"`
+			Type      *int   `json:"sentence_type"`
+			ID        *int   `json:"sentence_id"`
+			StartTime int64  `json:"start_time"`
+			EndTime   int64  `json:"end_time"`
+		} `json:"sentence_list"`
+	} `json:"sentences"`
+	Result *struct {
 		SliceType int    `json:"slice_type"`
 		Index     int    `json:"index"`
 		StartTime int64  `json:"start_time"`
@@ -54,8 +66,8 @@ func signedURL(config Config, baseURL, voiceID string, now time.Time, nonce stri
 	if !config.Enabled() || !numericID.MatchString(config.AppID) || !secretID.MatchString(config.SecretID) {
 		return "", errors.New("invalid Tencent ASR credentials")
 	}
-	if config.Model != "8k_zh" {
-		return "", errors.New("ASR engine must match the 8kHz PCM stream")
+	if config.Model != "8k_zh" && config.Model != ModelLargeV2 {
+		return "", errors.New("unsupported Tencent ASR model; use 8k_zh or 16k_zh_en_2.0")
 	}
 	target, err := url.Parse(baseURL)
 	if err != nil || target.Host == "" || (target.Scheme != "wss" && target.Scheme != "ws") {
@@ -71,6 +83,14 @@ func signedURL(config Config, baseURL, voiceID string, now time.Time, nonce stri
 		"needvad": {"1"}, "vad_silence_time": {"600"},
 		"filter_dirty": {"0"}, "filter_modal": {"0"}, "filter_punc": {"0"},
 		"convert_num_mode": {"1"},
+	}
+	if config.Model == ModelLargeV2 {
+		// V2 accepts our original 8kHz PCM and resamples it in the cloud.
+		parameters.Set("input_sample_rate", strconv.Itoa(SampleRate))
+		parameters.Set("result_mod", "1")
+		parameters.Set("sentence_strategy", "0")
+		parameters.Del("vad_silence_time")
+		parameters.Del("filter_punc")
 	}
 	// Tencent signs the sorted query without the scheme. All unsigned values
 	// here are ASCII identifiers/numbers, so encoding leaves the raw values intact.
@@ -128,7 +148,7 @@ func run(ctx context.Context, config Config, baseURL string, input <-chan []byte
 	}
 	if started.Code == nil || *started.Code != 0 {
 		if started.Code != nil {
-			return fmt.Errorf("Tencent ASR rejected the connection (code %d)", *started.Code)
+			return &ProviderError{Code: *started.Code}
 		}
 		return errors.New("invalid Tencent ASR acknowledgement")
 	}
@@ -136,7 +156,7 @@ func run(ctx context.Context, config Config, baseURL string, input <-chan []byte
 		return errors.New("Tencent ASR voice ID mismatch")
 	}
 	_ = connection.SetReadDeadline(time.Time{})
-	emit(Event{Event: "asr_status", Status: "listening"})
+	emit(Event{Event: "asr_status", Status: "listening", Model: config.Model})
 
 	readerDone := make(chan error, 1)
 	go func() { readerDone <- readResults(connection, voiceID, emit) }()
@@ -219,6 +239,7 @@ func run(ctx context.Context, config Config, baseURL string, input <-chan []byte
 }
 
 func readResults(connection *websocket.Conn, voiceID string, emit func(Event)) error {
+	lastFinalID := -1
 	for {
 		var message providerEvent
 		if err := connection.ReadJSON(&message); err != nil {
@@ -228,12 +249,33 @@ func readResults(connection *websocket.Conn, voiceID string, emit func(Event)) e
 			return errors.New("invalid Tencent ASR response")
 		}
 		if *message.Code != 0 {
-			return fmt.Errorf("Tencent ASR task failed (code %d)", *message.Code)
+			return &ProviderError{Code: *message.Code}
 		}
 		if message.VoiceID != voiceID {
 			continue
 		}
-		if sentence := message.Result; sentence != nil && sentence.Text != "" {
+		if message.Sentences != nil {
+			for _, sentence := range message.Sentences.List {
+				if sentence.Text == "" {
+					continue
+				}
+				if sentence.ID == nil || *sentence.ID < 0 || sentence.Type == nil || (*sentence.Type != 0 && *sentence.Type != 1) {
+					return errors.New("invalid Tencent ASR V2 sentence")
+				}
+				// V2 can repeat finalized sentences in subsequent snapshots.
+				if *sentence.ID <= lastFinalID {
+					continue
+				}
+				event := "asr_partial"
+				if *sentence.Type == 1 {
+					event = "asr_final"
+					lastFinalID = *sentence.ID
+				}
+				emit(Event{Event: event, Text: sentence.Text,
+					UtteranceID: voiceID + ":" + strconv.Itoa(*sentence.ID),
+					BeginTime:   sentence.StartTime, EndTime: sentence.EndTime})
+			}
+		} else if sentence := message.Result; sentence != nil && sentence.Text != "" {
 			event := "asr_partial"
 			if sentence.SliceType == 2 {
 				event = "asr_final"

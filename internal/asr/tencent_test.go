@@ -21,6 +21,7 @@ func testConfig() Config {
 }
 
 func TestConfigRequiresAllCredentials(t *testing.T) {
+	t.Setenv("TENCENT_ASR_MODEL", "")
 	t.Setenv("TENCENT_APP_ID", "1250000000")
 	t.Setenv("TENCENT_SECRET_ID", "AKIDexample")
 	t.Setenv("TENCENT_SECRET_KEY", "")
@@ -31,6 +32,10 @@ func TestConfigRequiresAllCredentials(t *testing.T) {
 	config := ConfigFromEnv()
 	if !config.Enabled() || config.Model != "8k_zh" {
 		t.Fatal("Tencent 8kHz engine was not selected")
+	}
+	t.Setenv("TENCENT_ASR_MODEL", " 16k_zh_en_2.0 ")
+	if ConfigFromEnv().Model != ModelLargeV2 {
+		t.Fatal("ASR engine environment setting was ignored")
 	}
 }
 

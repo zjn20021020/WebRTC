@@ -7,6 +7,7 @@ const waveform = document.querySelector('#waveform');
 const waveformContext = waveform.getContext('2d');
 const disconnectButton = document.querySelector('#disconnect');
 const asrStatusElement = document.querySelector('#asrStatus');
+const asrError = document.querySelector('#asrError');
 const partialTranscript = document.querySelector('#partialTranscript');
 const finalTranscript = document.querySelector('#finalTranscript');
 const finalized = new Map();
@@ -105,9 +106,14 @@ function setASRStatus(status) {
     disconnected: '未连接', waiting: '等待识别服务', unconfigured: '未配置凭证',
     connecting: '连接识别服务中', listening: '识别中', stopped: '识别已结束',
     failed: '识别连接失败', backlog: '识别网络拥堵',
+    quota_exhausted: '识别额度不可用', auth_failed: '识别鉴权失败',
+    service_unavailable: '识别服务未开通', account_overdue: '识别账号欠费',
+    concurrency_limit: '识别并发已满', invalid_request: '识别参数错误',
   };
   asrStatusElement.textContent = labels[status] || status;
   asrStatusElement.dataset.state = status;
+  asrError.hidden = true;
+  asrError.textContent = '';
 }
 
 function handleControl(data) {
@@ -130,7 +136,12 @@ function handleControl(data) {
   }
   if (message.event === 'asr_status' || message.event === 'asr_error') {
     setASRStatus(message.status);
-    if (message.event === 'asr_error') partialTranscript.textContent = '';
+    if (message.event === 'asr_error') {
+      partialTranscript.textContent = '';
+      asrError.textContent = typeof message.detail === 'string' ? message.detail : '识别服务不可用，请断开重连。';
+      asrError.hidden = false;
+      log(`识别错误: ${JSON.stringify(message)}`);
+    }
     return;
   }
   if (message.event === 'asr_partial' && typeof message.text === 'string') {

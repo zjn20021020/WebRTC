@@ -68,7 +68,9 @@ h2 .icon { opacity: .66; }
 #finalTranscript li::marker { color: #82977c; font-size: 12px; font-variant-numeric: tabular-nums; }
 #partialTranscript { min-height: 28px; margin: 10px 0 0; color: #378298; font-size: 14px; line-height: 1.8; overflow-wrap: anywhere; }
 #replyText { height: 108px; margin: 18px 0 12px; padding-right: 6px; overflow-y: auto; color: #2d4a3b; font-size: 15px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
-#replyError { font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+#replyError, #asrError { font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+#asrError { color: #ae4350; }
+#asrStatus[data-state="quota_exhausted"], #asrStatus[data-state="auth_failed"], #asrStatus[data-state="service_unavailable"], #asrStatus[data-state="account_overdue"], #asrStatus[data-state="concurrency_limit"], #asrStatus[data-state="invalid_request"] { color: #ae4350; }
 .reply-details { min-height: 76px; display: grid; align-content: start; gap: 3px; margin-bottom: 12px; }
 .reply-details p { margin: 0; min-height: 20px; font-size: 12px; line-height: 20px; overflow-wrap: anywhere; }
 #toolStatus { color: #2b7b51; font-weight: 600; }

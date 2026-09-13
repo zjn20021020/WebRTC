@@ -218,12 +218,9 @@ func (s *Session) runASR() {
 		return
 	}
 	if err != nil {
-		log.Printf("ASR stopped: %v", err)
-		status := "failed"
-		if errors.Is(err, asr.ErrAudioBacklog) {
-			status = "backlog"
-		}
-		s.sendEvent(asr.Event{Event: "asr_error", Status: status})
+		failure := asr.FailureEvent(err, s.asrConfig.Model)
+		log.Printf("ASR stopped: model=%s status=%s code=%d error=%v", failure.Model, failure.Status, failure.Code, err)
+		s.sendEvent(failure)
 		return
 	}
 	s.sendEvent(asr.Event{Event: "asr_status", Status: "stopped"})

@@ -11,7 +11,7 @@ const fs = require('node:fs');
   try {
     await page.goto(process.env.DEMO_URL || 'http://localhost:8080');
     await page.evaluate(() => document.fonts.ready);
-    const ids = ['status', 'connect', 'disconnect', 'meter', 'waveform', 'remoteAudio', 'asrStatus', 'finalTranscript', 'partialTranscript', 'turnLabel', 'replyStatus', 'replyText', 'replyError', 'toolStatus', 'interruptionStatus', 'queuedStatus', 'stopResponse', 'latencyText', 'latencyAudio', 'latencyDuck', 'log'];
+    const ids = ['status', 'connect', 'disconnect', 'meter', 'waveform', 'remoteAudio', 'asrStatus', 'asrError', 'finalTranscript', 'partialTranscript', 'turnLabel', 'replyStatus', 'replyText', 'replyError', 'toolStatus', 'interruptionStatus', 'queuedStatus', 'stopResponse', 'latencyText', 'latencyAudio', 'latencyDuck', 'log'];
     for (const id of ids) assert.equal(await page.locator(`#${id}`).count(), 1, `Missing or duplicated original control: ${id}`);
     assert.equal(await page.locator('#connect').isEnabled(), true);
     assert.equal(await page.locator('#disconnect').isEnabled(), false);
@@ -55,12 +55,17 @@ const fs = require('node:fs');
         });
       }), `Clipped labels at ${width}`);
       await page.evaluate(() => {
+        handleControl(JSON.stringify({ event: 'asr_error', status: 'quota_exhausted', code: 4004, model: '8k_zh', detail: '腾讯 ASR 4004（8k_zh）：当前引擎没有可用识别额度。普通实时识别、大模型 1.0 和 2.0 资源包分别计费，请核对资源包与引擎是否匹配。' }));
         setReplyStatus('ducking');
         replyError.hidden = false;
         replyError.textContent = '识别连接失败，请重新连接。'.repeat(12);
         partialTranscript.textContent = '等种完菜以后再去施肥，然后回答我刚刚的问题。'.repeat(4);
         replyText.textContent = '这是一条用于检查长文本换行的测试回答。'.repeat(40);
       });
+      assert.equal(await page.locator('#asrStatus').textContent(), '识别额度不可用');
+      assert.equal(await page.locator('#asrError').isVisible(), true);
+      assert.match(await page.locator('#asrError').textContent(), /4004.*8k_zh/);
+      assert.match(await page.locator('#log').textContent(), /识别错误:.*4004/);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `Long text overflow at ${width}`);
       assert.ok(await page.evaluate(() => {
         const reply = document.querySelector('.reply').getBoundingClientRect();
@@ -70,9 +75,11 @@ const fs = require('node:fs');
       }), `Overlapping content at ${width}`);
       await page.screenshot({ path: `bin/ui/home-long-${width}.png`, fullPage: true });
       await page.evaluate(() => {
+        handleControl(JSON.stringify({ event: 'asr_status', status: 'listening' }));
         replyError.hidden = true; partialTranscript.textContent = '';
         replyText.textContent = '我正在施肥。'.repeat(10); setReplyStatus('speaking');
       });
+      assert.equal(await page.locator('#asrError').isVisible(), false);
     }
     assert.equal(await page.locator('.dimo').evaluate(element => getComputedStyle(element).animationName), 'none');
     assert.deepEqual(errors, []);
