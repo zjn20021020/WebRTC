@@ -1,0 +1,44 @@
+{
+  "collected_at": "2026-09-13T03:58:48Z",
+  "source_commit": "be922833b98734cd9f8b52a1ea0988cafab8977e",
+  "source_state": "Application and test sources unchanged from this commit; pre-existing README edit excluded.",
+  "environment": {
+    "platform": "windows/amd64",
+    "go": "go1.27.1",
+    "node": "v24.16.0",
+    "browser": "Google Chrome (headless)",
+    "ui_url": "http://localhost:8080"
+  },
+  "boundaries": [
+    "No paid cloud requests in this regression run.",
+    "UI states are injected; the browser does not connect a microphone.",
+    "No race detector run.",
+    "This record contains command outputs, not per-test Go JSON events."
+  ],
+  "checks": [
+    {
+      "command": "& 'E:/go/bin/go.exe' test -count=1 ./...",
+      "layer": "go_regression",
+      "exit_code": 0,
+      "output": "?   \twebrtc-interrupt/cmd/demo-fixtures\t[no test files]\n?   \twebrtc-interrupt/cmd/server\t[no test files]\n?   \twebrtc-interrupt/cmd/tts-preview\t[no test files]\n?   \twebrtc-interrupt/cmd/verify-acceptance\t[no test files]\n?   \twebrtc-interrupt/cmd/verify-home\t[no test files]\n?   \twebrtc-interrupt/cmd/verify-intent\t[no test files]\nok  \twebrtc-interrupt/internal/asr\t1.355s\nok  \twebrtc-interrupt/internal/audio\t0.366s\nok  \twebrtc-interrupt/internal/dialogue\t0.960s\nok  \twebrtc-interrupt/internal/home\t0.364s\nok  \twebrtc-interrupt/internal/interrupt\t0.388s\nok  \twebrtc-interrupt/internal/llm\t0.907s\nok  \twebrtc-interrupt/internal/rtc\t0.595s\n?   \twebrtc-interrupt/internal/signaling\t[no test files]\nok  \twebrtc-interrupt/internal/tts\t0.900s\n"
+    },
+    {
+      "command": "& 'E:/go/bin/go.exe' vet ./...",
+      "layer": "go_static_analysis",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": "node --test scripts/acceptance_stats.test.cjs",
+      "layer": "statistics_regression",
+      "exit_code": 0,
+      "output": "✔ nearest-rank includes zero, excludes missing, and does not invent empty metrics (1.0699ms)\n✔ false fallback is a failure even when the expected label is false (0.8032ms)\n✔ false positives use negative cases as denominator and valid wrong labels remain failures (0.1712ms)\n✔ media snapshots count once per turn and deferred waits stay separate (1.0903ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 74.4213\n"
+    },
+    {
+      "command": "node scripts/verify_ui.cjs",
+      "layer": "browser_ui_regression",
+      "exit_code": 0,
+      "output": "{\"passed\":true,\"viewports\":[1440,1024,768,390,320],\"controls\":22,\"checks\":[\"local assets\",\"original controls\",\"idle canvas pixels\",\"long text\",\"error state\",\"reduced motion\",\"no overflow or overlap\"],\"screenshots\":\"bin/ui\"}\n"
+    }
+  ]
+}
