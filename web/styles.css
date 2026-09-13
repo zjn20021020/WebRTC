@@ -76,6 +76,16 @@ h2 .icon { opacity: .66; }
 #toolStatus { color: #2b7b51; font-weight: 600; }
 #interruptionStatus { color: #70816c; }
 #queuedStatus { color: #38869a; }
+.merged-input { min-height: 44px; max-height: 100px; overflow-y: auto; margin: 16px 0 0; border-top: 1px solid var(--line); padding-top: 10px; font-size: 12px; line-height: 1.8; color: #38798c; overflow-wrap: anywhere; }
+.task-plan { margin: 0 0 16px; border-top: 1px solid var(--line); padding-top: 10px; }
+#planStatus { margin: 0 0 6px; font-size: 12px; font-weight: 600; }
+#planSteps { max-height: 178px; overflow-y: auto; padding: 0; margin: 0; list-style: none; font-size: 12px; line-height: 1.7; }
+#planSteps li { display: grid; grid-template-columns: minmax(0, 1fr) 48px; gap: 10px; padding: 6px 0; border-bottom: 1px dashed var(--line); overflow-wrap: anywhere; }
+#planSteps li > span:last-child { text-align: right; color: var(--muted); }
+#planSteps li[data-state="running"] { color: #247ca0; font-weight: 600; }
+#planSteps li[data-state="completed"] { color: #31845e; }
+#planSteps li[data-state="cancelled"] { color: #7c8583; }
+#planSteps li[data-state="failed"] { color: #ae4350; }
 #stopResponse { min-height: 36px; padding: 7px 12px; border-color: #c98d87; color: #a24e4a; background: #fff5f0; box-shadow: 0 2px 0 #e0b8aa; font-size: 12px; }
 #stopResponse .icon { width: 14px; height: 14px; flex-basis: 14px; filter: none; opacity: .65; }
 #stopResponse:hover:not(:disabled) { background: #fbe5dc; box-shadow: 0 3px 0 #d6a397; }

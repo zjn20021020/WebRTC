@@ -1,0 +1,358 @@
+{
+  "recorded_at": "2026-09-13T15:35:49.924Z",
+  "passed": false,
+  "error": "page.waitForFunction: Timeout 20000ms exceeded.",
+  "events": [
+    {
+      "at": "2026-09-13T15:35:29.454Z",
+      "event": "response_status",
+      "response_epoch": 0,
+      "status": "ready"
+    },
+    {
+      "at": "2026-09-13T15:35:29.455Z",
+      "event": "asr_status",
+      "status": "connecting"
+    },
+    {
+      "at": "2026-09-13T15:35:29.887Z",
+      "event": "asr_status",
+      "status": "listening",
+      "model": "16k_zh_en_2.0"
+    },
+    {
+      "at": "2026-09-13T15:35:30.975Z",
+      "event": "asr_partial",
+      "text": "去",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "begin_time": 500,
+      "end_time": 1100
+    },
+    {
+      "at": "2026-09-13T15:35:30.975Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "去",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "source_utterance_ids": [
+        "522f850c-9e5b-4e19-bec0-c29491b649c3:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T15:35:31.143Z",
+      "event": "asr_partial",
+      "text": "去",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "begin_time": 500,
+      "end_time": 1260
+    },
+    {
+      "at": "2026-09-13T15:35:31.143Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "去",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "source_utterance_ids": [
+        "522f850c-9e5b-4e19-bec0-c29491b649c3:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T15:35:31.565Z",
+      "event": "asr_partial",
+      "text": "去胶水",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "begin_time": 500,
+      "end_time": 1660
+    },
+    {
+      "at": "2026-09-13T15:35:31.565Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "去胶水",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "source_utterance_ids": [
+        "522f850c-9e5b-4e19-bec0-c29491b649c3:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T15:35:31.959Z",
+      "event": "asr_final",
+      "text": "去胶水。",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "begin_time": 500,
+      "end_time": 1325
+    },
+    {
+      "at": "2026-09-13T15:35:31.960Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "去胶水。",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "source_utterance_ids": [
+        "522f850c-9e5b-4e19-bec0-c29491b649c3:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T15:35:32.768Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "committed",
+      "text": "去胶水。",
+      "reason": "window_elapsed",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1",
+      "source_utterance_ids": [
+        "522f850c-9e5b-4e19-bec0-c29491b649c3:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T15:35:32.768Z",
+      "event": "input_queue",
+      "response_epoch": 0,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T15:35:32.769Z",
+      "event": "input_dispatched",
+      "response_epoch": 0,
+      "text": "去胶水。",
+      "utterance_id": "522f850c-9e5b-4e19-bec0-c29491b649c3:1"
+    },
+    {
+      "at": "2026-09-13T15:35:32.769Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-13T15:35:32.770Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-13T15:35:33.842Z",
+      "event": "action_result",
+      "response_epoch": 1,
+      "status": "classified",
+      "latency_ms": 1073,
+      "tool_call": {
+        "id": "call_00_Z2NOSHXaS24mG6ZUVsgc7915",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T15:35:33.843Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_Z2NOSHXaS24mG6ZUVsgc7915",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T15:35:34.103Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 3327,
+        "asr_final_to_first_text_ms": 2140
+      }
+    },
+    {
+      "at": "2026-09-13T15:35:34.103Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也"
+    },
+    {
+      "at": "2026-09-13T15:35:34.210Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很"
+    },
+    {
+      "at": "2026-09-13T15:35:34.244Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚"
+    },
+    {
+      "at": "2026-09-13T15:35:34.276Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶"
+    },
+    {
+      "at": "2026-09-13T15:35:34.308Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水"
+    },
+    {
+      "at": "2026-09-13T15:35:34.308Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么"
+    },
+    {
+      "at": "2026-09-13T15:35:34.342Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去"
+    },
+    {
+      "at": "2026-09-13T15:35:34.375Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，"
+    },
+    {
+      "at": "2026-09-13T15:35:34.375Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道"
+    },
+    {
+      "at": "2026-09-13T15:35:34.409Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你"
+    },
+    {
+      "at": "2026-09-13T15:35:34.409Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问"
+    },
+    {
+      "at": "2026-09-13T15:35:34.445Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是"
+    },
+    {
+      "at": "2026-09-13T15:35:34.445Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是"
+    },
+    {
+      "at": "2026-09-13T15:35:34.445Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏"
+    },
+    {
+      "at": "2026-09-13T15:35:34.477Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的"
+    },
+    {
+      "at": "2026-09-13T15:35:34.477Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况"
+    },
+    {
+      "at": "2026-09-13T15:35:34.510Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。"
+    },
+    {
+      "at": "2026-09-13T15:35:34.510Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要"
+    },
+    {
+      "at": "2026-09-13T15:35:34.510Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-13T15:35:34.544Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要的话"
+    },
+    {
+      "at": "2026-09-13T15:35:34.580Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要的话，"
+    },
+    {
+      "at": "2026-09-13T15:35:34.580Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要的话，可以"
+    },
+    {
+      "at": "2026-09-13T15:35:34.613Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要的话，可以再说"
+    },
+    {
+      "at": "2026-09-13T15:35:34.657Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要的话，可以再说具体"
+    },
+    {
+      "at": "2026-09-13T15:35:34.681Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要的话，可以再说具体一点"
+    },
+    {
+      "at": "2026-09-13T15:35:34.681Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我也不是很清楚胶水该怎么去，也不知道你问的是不是游戏里的情况。需要的话，可以再说具体一点。"
+    },
+    {
+      "at": "2026-09-13T15:35:34.948Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-13T15:35:35.190Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 3327,
+        "speech_end_to_first_audio_ms": 4416,
+        "asr_final_to_first_text_ms": 2140,
+        "asr_final_to_first_audio_ms": 3229
+      }
+    },
+    {
+      "at": "2026-09-13T15:35:45.528Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_Z2NOSHXaS24mG6ZUVsgc7915",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T15:35:45.528Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "completed"
+    }
+  ],
+  "page_errors": [],
+  "input": "Pre-generated speech through WebAudio virtual microphone; physical output muted"
+}

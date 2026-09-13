@@ -7,6 +7,10 @@ function distribution(values) {
 }
 
 const rate = (count, total) => total ? count / total : null;
+const expectedValue = c => c.kind === 'action' ? (c.expected_plan ?? c.expected_action) : c.expected_interrupt;
+const label = value => Array.isArray(value) ? JSON.stringify(value) : String(value);
+const sameValue = (a, b) => Array.isArray(a) && Array.isArray(b)
+  ? a.length === b.length && a.every((item, i) => item === b[i]) : a === b;
 const matrix = () => ({ true_positive: 0, false_positive: 0, true_negative: 0, false_negative: 0 });
 function addDecision(m, expected, actual) {
   m[expected ? (actual ? 'true_positive' : 'false_negative') : (actual ? 'false_positive' : 'true_negative')]++;
@@ -29,10 +33,10 @@ function summarizeText(suite, repeat, records) {
       if (!r) { s.missing++; s.failures.push({ id: c.id, round, reason: 'not_run' }); continue; }
       s.attempted++;
       latencies.push(r.latency_ms);
-      const expected = c.kind === 'action' ? c.expected_action : c.expected_interrupt;
+      const expected = expectedValue(c);
       if (r.error || r.fallback) s.errors++;
       else validLatencies.push(r.latency_ms);
-      if (!r.error && !r.fallback && r.actual === expected) s.passed++;
+      if (!r.error && !r.fallback && sameValue(r.actual, expected)) s.passed++;
       else s.failures.push({ id: c.id, round, expected, actual: r.actual, reason: r.error || (r.fallback ? 'fallback' : 'wrong_label'), validation: r.validation });
     }
     s.pass_rate = rate(s.passed, s.planned);
@@ -47,9 +51,10 @@ function summarizeText(suite, repeat, records) {
   for (const c of suite.cases) for (let round = 1; round <= repeat; round++) {
     const r = byKey.get(`${c.id}/${round}`);
     if (c.kind === 'action') {
-      const actual = !r ? 'not_run' : r.error || r.fallback ? 'error' : r.actual;
-      confusion[c.expected_action] ||= {};
-      confusion[c.expected_action][actual] = (confusion[c.expected_action][actual] || 0) + 1;
+      const actual = !r ? 'not_run' : r.error || r.fallback ? 'error' : label(r.actual);
+      const expected = label(expectedValue(c));
+      confusion[expected] ||= {};
+      confusion[expected][actual] = (confusion[expected][actual] || 0) + 1;
     } else if (r) {
       const failed = !!(r.error || r.fallback);
       // Provider failures keep playback running, but never become successful labels.
@@ -63,7 +68,7 @@ function summarizeText(suite, repeat, records) {
   interruptions.false_interrupt_rate = rate(effective.false_positive, effective.false_positive + effective.true_negative);
   interruptions.missed_interrupt_rate = rate(effective.false_negative, effective.false_negative + effective.true_positive);
   const cases = suite.cases.map(c => ({ id: c.id, kind: c.kind, category: c.category, ...summarize([c]),
-    outcomes: [...new Set(records.filter(r => r.id === c.id).map(r => r.error || (r.fallback ? 'fallback' : String(r.actual))))] }));
+    outcomes: [...new Set(records.filter(r => r.id === c.id).map(r => r.error || (r.fallback ? 'fallback' : label(r.actual))))] }));
   return { version: suite.version, unique_cases: suite.cases.length, repeat, ...summarize(suite.cases), actions, interruptions,
     unstable_cases: cases.filter(c => c.outcomes.length > 1).map(c => c.id),
     categories: Object.fromEntries([...new Set(suite.cases.map(c => c.category))].map(category => [category, summarize(suite.cases.filter(c => c.category === category))])), cases };
@@ -78,6 +83,7 @@ function mediaObservations(evidence) {
     if (e.event === 'input_dispatched') nextGroup = buffered.has(e.utterance_id) ? 'deferred' : 'direct';
     if (e.event === 'response_status' && e.status === 'listening' && nextGroup) { groups.set(e.response_epoch, nextGroup); nextGroup = null; }
     if (e.event === 'turn_transition') groups.set(e.response_epoch, 'interrupted');
+    if (e.event === 'plan_step_transition') groups.set(e.response_epoch, 'planned');
     if (e.event === 'response_metrics') metrics.set(e.response_epoch, { ...metrics.get(e.response_epoch), ...e.metrics });
     if (e.event === 'intent_result' && e.interrupt === true && !e.fallback) confirmations.set(e.response_epoch, Date.parse(e.at));
     if (e.event === 'response_cancelled') {
@@ -153,10 +159,10 @@ function markdown(report) {
     '- 文本层直接调用实际分类客户端，每次只请求一次，不包含 ASR、partial 调度门槛或动作内部重试。媒体层运行完整应用和实际云服务。',
     '- P50/P95 使用 nearest-rank；请求耗时包含错误和超时。JSON 另列合法响应耗时、分类混淆矩阵、分类别和逐样例结果。',
     '- 重复输入用于检查回归和波动，不代表独立用户样本，也不承诺线上准确率。',
-    '- 响应指标在每次媒体运行中按轮次取最后一个已知值，避免累计快照重复计数；direct 为直接响应，interrupted 为打断后响应，deferred 为缓存派发，后者包含有意等待。speech_to_duck 每轮仅保留最后一次已知值。',
+    '- 响应指标在每次媒体运行中按轮次取最后一个已知值，避免累计快照重复计数；direct 为直接响应，interrupted 为打断后响应，deferred 为缓存派发，planned 为计划后续步骤，后两者包含有意等待。speech_to_duck 每轮仅保留最后一次已知值。',
     '- 首音频指服务端首个非静音 RTP 发送；确认到取消指浏览器收到控制事件的间隔。均不是物理耳机延迟。',
     '- 媒体输入为固定合成音频经 WebAudio 虚拟麦克风进入真实 WebRTC；物理输出静音。旧轮恢复检查不等于耳机尾音测量。',
-    '- 未覆盖真人噪声/回声、多说话人、跨 final 合并和长期弱网。', '');
+    '- 跨 final 合并仅在 cross-final-wait 场景通过且记录至少两个来源 final 时计为已测；文本分类测试不代表跨 final 调度已验证。未覆盖真人噪声/回声、多说话人和长期弱网。', '');
   return lines.join('\n');
 }
 

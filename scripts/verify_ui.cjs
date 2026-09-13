@@ -16,6 +16,13 @@ const fs = require('node:fs');
     assert.equal(await page.locator('#connect').isEnabled(), true);
     assert.equal(await page.locator('#disconnect').isEnabled(), false);
     assert.equal(await page.locator('#stopResponse').isEnabled(), false);
+    await page.evaluate(() => {
+      handleControl(JSON.stringify({ event: 'response_status', response_epoch: 0, status: 'ready' }));
+      handleControl(JSON.stringify({ event: 'input_merge', response_epoch: 0, status: 'collecting', text: '先浇水', source_utterance_ids: ['s:1'] }));
+    });
+    assert.equal(await page.locator('#stopResponse').isEnabled(), true, 'Cannot cancel a pending initial input');
+    await page.evaluate(() => handleControl(JSON.stringify({ event: 'input_merge', response_epoch: 0, status: 'discarded', text: '先浇水' })));
+    assert.equal(await page.locator('#stopResponse').isEnabled(), false);
     assert.equal(await page.locator('#remoteAudio').getAttribute('controls'), '');
     assert.ok(await page.evaluate(() => [...document.images].every(image => image.complete && image.naturalWidth > 0)), 'Missing image asset');
     assert.ok(await page.evaluate(async () => {
@@ -37,6 +44,9 @@ const fs = require('node:fs');
       send({ event: 'response_status', response_epoch: 2, status: 'speaking' });
       send({ event: 'response_text', response_epoch: 2, text: '我正在施肥。'.repeat(10) });
       send({ event: 'tool_status', response_epoch: 2, status: 'running', tool_call: { name: 'fertilize' } });
+      send({ event: 'input_merge', response_epoch: 2, status: 'committed', text: '先种菜。 再浇水，最后施肥。', source_utterance_ids: ['s:1', 's:2'] });
+      send({ event: 'plan_status', response_epoch: 2, plan_id: 'ui-plan', status: 'running', step_index: 2, step_count: 3,
+        steps: [{ action: 'plant', text: '种菜', status: 'completed' }, { action: 'water', text: '浇水', status: 'running' }, { action: 'fertilize', text: '施肥', status: 'pending' }] });
       send({ event: 'input_queue', response_epoch: 2, queue_size: 1 });
       send({ event: 'intent_result', response_epoch: 2, interrupt: false });
       send({ event: 'response_metrics', response_epoch: 2, metrics: { speech_end_to_first_text_ms: 986, speech_end_to_first_audio_ms: 1640, speech_to_duck_ms: 128 } });
@@ -61,6 +71,8 @@ const fs = require('node:fs');
         replyError.textContent = '识别连接失败，请重新连接。'.repeat(12);
         partialTranscript.textContent = '等种完菜以后再去施肥，然后回答我刚刚的问题。'.repeat(4);
         replyText.textContent = '这是一条用于检查长文本换行的测试回答。'.repeat(40);
+        handlePlan({ response_epoch: 2, plan_id: 'ui-plan', status: 'running', step_index: 2, step_count: 6,
+          steps: Array.from({ length: 6 }, (_, i) => ({ action: 'general_qa', text: '<script>长文本</script>'.repeat(10), status: i === 1 ? 'running' : 'pending' })) });
       });
       assert.equal(await page.locator('#asrStatus').textContent(), '识别额度不可用');
       assert.equal(await page.locator('#asrError').isVisible(), true);
@@ -82,6 +94,19 @@ const fs = require('node:fs');
       assert.equal(await page.locator('#asrError').isVisible(), false);
     }
     assert.equal(await page.locator('.dimo').evaluate(element => getComputedStyle(element).animationName), 'none');
+    assert.equal(await page.locator('#planSteps script').count(), 0, 'Plan text became markup');
+    await page.evaluate(() => {
+      handleControl(JSON.stringify({ event: 'response_status', response_epoch: 2, status: 'completed' }));
+      handleControl(JSON.stringify({ event: 'plan_status', response_epoch: 2, plan_id: 'ui-plan', status: 'completed', step_index: 1, step_count: 1,
+        steps: [{ action: 'water', text: '浇水', status: 'completed' }] }));
+    });
+    assert.match(await page.locator('#planStatus').textContent(), /已结束/);
+    await page.evaluate(() => {
+      handleControl(JSON.stringify({ event: 'response_status', response_epoch: 3, status: 'thinking' }));
+      handleControl(JSON.stringify({ event: 'action_result', response_epoch: 3, tool_call: { id: 'new', name: 'plant' } }));
+      handleControl(JSON.stringify({ event: 'plan_status', response_epoch: 2, plan_id: 'stale', steps: [] }));
+    });
+    assert.equal(await page.locator('#taskPlan').isVisible(), false, 'Old plan revived after a new request');
     assert.deepEqual(errors, []);
     console.log(JSON.stringify({ passed: true, viewports: [1440, 1024, 768, 390, 320], controls: ids.length, checks: ['local assets', 'original controls', 'idle canvas pixels', 'long text', 'error state', 'reduced motion', 'no overflow or overlap'], screenshots: 'bin/ui' }));
   } finally { await browser.close(); }

@@ -1,10 +1,13 @@
 {
-  "version": "home-media-v1",
+  "version": "home-media-v2-plan",
   "scenarios": [
     {"id":"deferred-wait","flag":"--wait","evidence":"home-wait-voice.json","fixtures":["home-water-direct","home-wait-plant"],"fixture_scenes":["home-wait"],"checks":"等一下再去种地进入缓存，浇水十次完成后种菜十次"},
     {"id":"first-praise","flag":"--praise","evidence":"home-praise-voice.json","fixtures":["home-plant","home-good-job"],"fixture_scenes":["home-praise"],"checks":"首次干得不错不打断、不重试、不报任务失败，种菜结束后贴贴十次"},
     {"id":"explicit-replacement","flag":"--replacement","evidence":"home-replacement-voice.json","fixtures":["home-water-direct","home-replace-fertilize","home-praise"],"fixture_scenes":["home-replacement"],"checks":"先别浇水了去施肥取消旧轮、清待播，新任务结束后处理夸赞"},
     {"id":"direct-switch","flag":"--switch","evidence":"home-switch-voice.json","fixtures":["home-plant-direct","home-fertilize-direct","home-question"],"fixture_scenes":["home-switch"],"checks":"去施肥无停止口令也切换，普通问题保持缓存并在施肥后回答"},
-    {"id":"discard-old-buffer","flag":"--clear-buffer","evidence":"home-clear-buffer-voice.json","fixtures":["home-plant-direct","home-fertilize-direct","home-question"],"fixture_scenes":["home-switch"],"checks":"确认打断清旧文本缓存，旧问题不复活，新问题仍能缓存并回答"}
+    {"id":"discard-old-buffer","flag":"--clear-buffer","evidence":"home-clear-buffer-voice.json","fixtures":["home-plant-direct","home-fertilize-direct","home-question"],"fixture_scenes":["home-switch"],"checks":"确认打断清旧文本缓存，旧问题不复活，新问题仍能缓存并回答"},
+    {"id":"ordered-plan","script":"scripts/verify_plan.cjs","flag":"--sequence","evidence":"plan-sequence.json","fixtures":["home-plan","home-question"],"fixture_scenes":["home-plan","home-switch"],"checks":"种菜、浇水、施肥依次播完，整份计划完成后才回答缓存问题"},
+    {"id":"cancel-plan","script":"scripts/verify_plan.cjs","flag":"--cancel","evidence":"plan-cancel.json","fixtures":["home-plan","home-question","home-harvest-direct"],"fixture_scenes":["home-plan","home-switch"],"checks":"收菜替换种菜，取消整份旧计划和缓存，剩余步骤不执行"},
+    {"id":"cross-final-wait","script":"scripts/verify_plan.cjs","flag":"--merge","evidence":"plan-merge.json","fixtures":["home-water","home-wait-prefix","home-wait-tail"],"fixture_scenes":["home-plan","home"],"checks":"等待真实 ASR 的等一下 final 后续说再去种地；必须记录至少两个 final 合并，整句 false，浇水后种菜"}
   ]
 }

@@ -209,7 +209,7 @@ func (s *Session) runASR() {
 			event.SpeechEndAt = s.inputClock.at(event.EndTime)
 		}
 		s.sendEvent(event)
-		s.response.Accept(event)
+		s.response.AcceptASR(event)
 	})
 	if cause := context.Cause(s.asrContext); cause != nil {
 		err = cause

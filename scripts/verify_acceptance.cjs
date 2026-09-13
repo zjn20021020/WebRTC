@@ -119,7 +119,7 @@ async function main() {
         const dir = path.join(out, 'media', `${scenario.id}-${round}`);
         fs.mkdirSync(dir, { recursive: true });
         console.log(`Media: ${scenario.id}, round ${round}/${o.mediaRepeat}`);
-        const result = await run(process.execPath, ['scripts/verify_home.cjs', scenario.flag], path.join(dir, 'run.log'),
+        const result = await run(process.execPath, [scenario.script || 'scripts/verify_home.cjs', scenario.flag], path.join(dir, 'run.log'),
           { ...process.env, DEMO_URL: url, EVIDENCE_DIR: dir, SCREENSHOT_DIR: dir }, 180000);
         mediaRuns.push({ id: scenario.id, round, ...result, evidence: path.join(dir, scenario.evidence), relative_evidence: `media/${scenario.id}-${round}/${scenario.evidence}` });
         writeJSON(path.join(out, 'media-runs.json'), mediaRuns.map(({ evidence, ...r }) => r));

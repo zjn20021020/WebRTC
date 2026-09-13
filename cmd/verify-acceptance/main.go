@@ -27,6 +27,7 @@ type testCase struct {
 	CurrentTool       string        `json:"current_tool,omitempty"`
 	IsFinal           *bool         `json:"is_final,omitempty"`
 	ExpectedAction    home.Action   `json:"expected_action,omitempty"`
+	ExpectedPlan      []home.Action `json:"expected_plan,omitempty"`
 	ExpectedInterrupt *bool         `json:"expected_interrupt,omitempty"`
 	RecentHistory     []llm.Message `json:"recent_history,omitempty"`
 	PreviousUserText  string        `json:"previous_user_text,omitempty"`
@@ -75,11 +76,11 @@ func readSuite(path string) (suite, error) {
 		seen[c.ID] = true
 		switch c.Kind {
 		case "action":
-			if !home.Valid(c.ExpectedAction) || c.ExpectedInterrupt != nil || c.IsFinal != nil {
+			if !validExpectedPlan(c) || c.ExpectedInterrupt != nil || c.IsFinal != nil {
 				return s, fmt.Errorf("invalid action case %s", c.ID)
 			}
 		case "interrupt":
-			if c.ExpectedInterrupt == nil || c.IsFinal == nil || !home.Valid(home.Action(c.CurrentTool)) || c.ExpectedAction != "" {
+			if c.ExpectedInterrupt == nil || c.IsFinal == nil || !home.Valid(home.Action(c.CurrentTool)) || c.ExpectedAction != "" || c.ExpectedPlan != nil {
 				return s, fmt.Errorf("invalid interruption case %s", c.ID)
 			}
 		default:
@@ -87,6 +88,44 @@ func readSuite(path string) (suite, error) {
 		}
 	}
 	return s, nil
+}
+
+func validExpectedPlan(c testCase) bool {
+	if c.ExpectedPlan == nil {
+		return home.Valid(c.ExpectedAction)
+	}
+	if c.ExpectedAction != "" || len(c.ExpectedPlan) == 0 || len(c.ExpectedPlan) > home.MaxPlanSteps {
+		return false
+	}
+	for _, action := range c.ExpectedPlan {
+		if !home.Valid(action) {
+			return false
+		}
+	}
+	return true
+}
+
+func planResult(plan home.Plan, c testCase) (any, bool) {
+	actual := make([]home.Action, 0, len(plan.Steps))
+	for _, step := range plan.Steps {
+		actual = append(actual, step.Action)
+	}
+	expected := c.ExpectedPlan
+	if expected == nil {
+		expected = []home.Action{c.ExpectedAction}
+	}
+	passed := len(actual) == len(expected)
+	if passed {
+		for i := range actual {
+			if actual[i] != expected[i] {
+				passed = false
+			}
+		}
+	}
+	if len(actual) == 1 && c.ExpectedPlan == nil {
+		return actual[0], passed
+	}
+	return actual, passed
 }
 
 func run() int {
@@ -154,10 +193,10 @@ func run() int {
 			// Single calls measure the classifier itself. Runtime retries and
 			// partial gating are measured separately by the media scenarios.
 			if c.Kind == "action" {
-				var call home.Call
-				call, err = client.ClassifyAction(requestCtx, llm.ActionInput{UserText: c.UserText, RecentHistory: c.RecentHistory})
+				var plan home.Plan
+				plan, err = client.PlanActions(requestCtx, llm.ActionInput{UserText: c.UserText, RecentHistory: c.RecentHistory})
 				if err == nil {
-					r.Actual, r.Passed = call.Name, call.Name == c.ExpectedAction
+					r.Actual, r.Passed = planResult(plan, c)
 				}
 			} else {
 				var decision bool

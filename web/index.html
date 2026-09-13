@@ -37,6 +37,7 @@
             <p id="asrError" role="alert" hidden></p>
             <ol id="finalTranscript" aria-live="polite"></ol>
             <p id="partialTranscript" aria-live="off"></p>
+            <p id="mergedInput" class="merged-input" role="status"></p>
           </section>
           <section class="reply" aria-labelledby="replyHeading">
             <div class="transcript-heading">
@@ -50,6 +51,10 @@
               <p id="toolStatus" role="status"></p>
               <p id="interruptionStatus" role="status"></p>
               <p id="queuedStatus" role="status"></p>
+            </div>
+            <div id="taskPlan" class="task-plan" hidden>
+              <p id="planStatus" role="status"></p>
+              <ol id="planSteps" aria-label="任务顺序"></ol>
             </div>
             <button id="stopResponse" type="button" disabled><img src="/assets/icons/square.svg" alt="" class="icon" />停止回答</button>
           </section>

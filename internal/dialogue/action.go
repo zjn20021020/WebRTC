@@ -13,18 +13,21 @@ import (
 const actionTimeout = 5 * time.Second
 
 func (m *Manager) respond(t *turn, messages []llm.Message, speak func(string) error) error {
+	if t.toolCall != nil {
+		return m.executeStep(t, messages, speak)
+	}
 	input := llm.ActionInput{UserText: messages[len(messages)-1].Content, RecentHistory: messages[1 : len(messages)-1]}
 	ctx, cancel := context.WithTimeout(t.ctx, actionTimeout)
 	started := time.Now()
-	var call home.Call
+	var plan home.Plan
 	var err error
 	var attempt int
 	for attempt = 1; attempt <= 2; attempt++ {
-		call, err = m.model.ClassifyAction(ctx, input)
+		plan, err = m.classifyPlan(ctx, input)
 		if ctx.Err() != nil {
 			err = ctx.Err()
 		}
-		if err == nil && (!home.Valid(call.Name) || call.ID == "") {
+		if err == nil && !validPlan(plan) {
 			err = llm.ErrInvalidActionResult
 		}
 		validation := llm.ActionValidationReason(err)
@@ -62,19 +65,40 @@ func (m *Manager) respond(t *turn, messages []llm.Message, speak func(string) er
 		m.mu.Unlock()
 		return speak("小洛克，这次任务没能启动，请再试一次。")
 	}
-	t.toolCall = &call
+	m.installPlanLocked(t, plan)
+	log.Printf("action epoch=%d tool=%s attempts=%d steps=%d fallback=false latency_ms=%d", t.epoch, t.toolCall.Name, attempt, len(plan.Steps), latency)
+	result := Event{Event: "action_result", Epoch: t.epoch, Status: "classified", ToolCall: t.toolCall, LatencyMS: &latency}
+	if t.plan != nil {
+		result.PlanID = t.plan.id
+	}
+	m.emit(result)
+	m.mu.Unlock()
+	return m.executeStep(t, messages, speak)
+}
+
+func (m *Manager) executeStep(t *turn, messages []llm.Message, speak func(string) error) error {
+	m.mu.Lock()
+	if m.current != t || t.ctx.Err() != nil {
+		m.mu.Unlock()
+		return context.Canceled
+	}
+	call := *t.toolCall
 	t.llmActive = call.Name == home.GeneralQA
-	log.Printf("action epoch=%d tool=%s attempts=%d fallback=false latency_ms=%d", t.epoch, call.Name, attempt, latency)
-	m.emit(Event{Event: "action_result", Epoch: t.epoch, Status: "classified", ToolCall: &call, LatencyMS: &latency})
+	if t.plan != nil {
+		t.plan.steps[t.plan.index].Status = "running"
+		m.planStatusLocked("running")
+	}
 	m.toolStatusLocked(t, "running")
 	m.mu.Unlock()
 	if call.Name == home.GeneralQA {
-		return m.model.Stream(t.ctx, messages, speak)
+		stepMessages := append([]llm.Message(nil), messages...)
+		stepMessages[len(stepMessages)-1].Content = t.stepText
+		return m.model.Stream(t.ctx, stepMessages, speak)
 	}
 	if m.executor == nil {
 		return errors.New("home executor is not configured")
 	}
-	return m.executor.Execute(t.ctx, home.Request{Call: call, Epoch: t.epoch, UserText: input.UserText}, speak)
+	return m.executor.Execute(t.ctx, home.Request{Call: call, Epoch: t.epoch, UserText: t.stepText}, speak)
 }
 
 func (m *Manager) toolStatusLocked(t *turn, status string) {
@@ -82,5 +106,9 @@ func (m *Manager) toolStatusLocked(t *turn, status string) {
 		return
 	}
 	log.Printf("tool epoch=%d name=%s status=%s", t.epoch, t.toolCall.Name, status)
-	m.emit(Event{Event: "tool_status", Epoch: t.epoch, Status: status, ToolCall: t.toolCall})
+	event := Event{Event: "tool_status", Epoch: t.epoch, Status: status, ToolCall: t.toolCall}
+	if t.plan != nil {
+		event.PlanID, event.StepIndex, event.StepCount = t.plan.id, t.plan.index+1, len(t.plan.steps)
+	}
+	m.emit(event)
 }

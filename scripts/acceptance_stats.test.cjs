@@ -2,6 +2,25 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { distribution, summarizeText, mediaObservations } = require('./acceptance_stats.cjs');
 
+test('plans require every step in order, including duplicate actions', () => {
+  const suite = { version: 'plan', cases: [{ id: 'p', kind: 'action', category: 'plan', expected_plan: ['water', 'fertilize', 'water'] }] };
+  const records = [['water', 'fertilize', 'water'], ['fertilize', 'water', 'water'], ['water', 'fertilize'], 'water']
+    .map((actual, i) => ({ id: 'p', round: i + 1, actual, latency_ms: 100 }));
+  const result = summarizeText(suite, 4, records);
+  assert.equal(result.passed, 1);
+  assert.equal(result.failures.length, 3);
+  assert.equal(result.actions.confusion_matrix['["water","fertilize","water"]']['["water","fertilize","water"]'], 1);
+});
+
+test('planned steps do not pollute direct response latency', () => {
+  const result = mediaObservations({ events: [
+    { event: 'plan_step_transition', response_epoch: 2 },
+    { event: 'response_metrics', response_epoch: 2, metrics: { asr_final_to_first_audio_ms: 12000 } },
+  ] });
+  assert.deepEqual(result.metrics.planned.asr_final_to_first_audio_ms, [12000]);
+  assert.equal(result.metrics.direct, undefined);
+});
+
 test('nearest-rank includes zero, excludes missing, and does not invent empty metrics', () => {
   assert.deepEqual(distribution([null, undefined, NaN, -1]), { n: 0, p50: null, p95: null, max: null });
   assert.deepEqual(distribution([0, 30, 10, 20]), { n: 4, p50: 10, p95: 30, max: 30 });

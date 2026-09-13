@@ -38,6 +38,7 @@ type Event struct {
 	EndTime         int64     `json:"end_time,omitempty"`
 	SpeechEndAt     time.Time `json:"-"`
 	FinalReceivedAt time.Time `json:"-"`
+	Provisional     bool      `json:"-"`
 }
 
 type providerEvent struct {

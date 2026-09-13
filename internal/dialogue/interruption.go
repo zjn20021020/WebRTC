@@ -70,6 +70,8 @@ func (m *Manager) SetASRListening(listening bool) {
 	}
 	m.asrListening = listening
 	if !listening {
+		// A broken stream may have lost a continuation after its last final.
+		m.clearMergeLocked("asr_stopped")
 		m.dropUnfinishedInterjectionsLocked()
 	}
 	if !listening && m.current != nil && m.current.duck != nil {
@@ -140,6 +142,7 @@ func (m *Manager) confirmLocked(t *turn) {
 	oldEpoch := t.epoch
 	// Preserve the triggering utterance so its final can complete the new turn.
 	m.removeInterjectionLocked(d.utteranceID)
+	m.clearMergeLocked("interrupted")
 	droppedInputs := len(m.interjections)
 	m.clearInterjectionsLocked()
 	log.Printf("input_queue epoch=%d cleared=true reason=interrupted inputs_dropped=%d", oldEpoch, droppedInputs)

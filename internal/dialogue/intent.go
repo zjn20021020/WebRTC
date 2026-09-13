@@ -71,7 +71,7 @@ func (m *Manager) acceptInterjectionLocked(event asr.Event) {
 		log.Printf("intent epoch=%d utterance_id=%q status=waiting_final reason=ambiguous_wait", m.epoch, event.UtteranceID)
 		m.emit(Event{Event: "intent_status", Epoch: m.epoch, UtteranceID: event.UtteranceID, Status: "waiting_final", Reason: "ambiguous_wait"})
 	}
-	c.eligible = c.final() || (!c.waitForFinal && (explicitStop(text) || stable))
+	c.eligible = !event.Provisional && (c.final() || (!c.waitForFinal && (explicitStop(text) || stable)))
 	// Appending words can reverse intent just as a rewritten prefix can.
 	if (c.running || c.approved) && (c.final() || text != c.checkedText) {
 		m.cancelIntentLocked(c)
@@ -221,6 +221,11 @@ func (m *Manager) cancelIntentLocked(c *interjection) {
 func (m *Manager) cancelIntentRequestsLocked(epoch uint64) {
 	for _, c := range m.interjections {
 		if c.ownerEpoch == epoch {
+			if c.running {
+				// A planned next step must reconsider a decision cancelled with
+				// the previous step, using its own current action as context.
+				c.checkedText = ""
+			}
 			m.cancelIntentLocked(c)
 		}
 	}

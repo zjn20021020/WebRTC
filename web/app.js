@@ -18,6 +18,14 @@ const stopResponseButton = document.querySelector('#stopResponse');
 const interruptionStatus = document.querySelector('#interruptionStatus');
 const queuedStatus = document.querySelector('#queuedStatus');
 const toolStatus = document.querySelector('#toolStatus');
+const mergedInput = document.querySelector('#mergedInput');
+const taskPlan = document.querySelector('#taskPlan');
+const planStatus = document.querySelector('#planStatus');
+const planSteps = document.querySelector('#planSteps');
+const actionNames = { water: '浇水', plant: '种菜', harvest: '收菜', fertilize: '施肥', affection: '贴贴', general_qa: '问答' };
+const taskStates = { pending: '待执行', running: '进行中', completed: '已结束', cancelled: '已取消', failed: '失败' };
+let currentPlanID = '';
+let mergeCollecting = false;
 const latencyText = document.querySelector('#latencyText');
 const latencyAudio = document.querySelector('#latencyAudio');
 const latencyDuck = document.querySelector('#latencyDuck');
@@ -36,7 +44,35 @@ function setReplyStatus(status) {
   };
   replyStatus.textContent = labels[status] || status;
   replyStatus.dataset.state = status;
-  stopResponseButton.disabled = !['thinking', 'synthesizing', 'speaking', 'ducking', 'listening'].includes(status);
+  updateStopButton();
+}
+
+function updateStopButton() {
+  stopResponseButton.disabled = !mergeCollecting && !['thinking', 'synthesizing', 'speaking', 'ducking', 'listening'].includes(replyStatus.dataset.state);
+}
+
+function resetPlan() {
+  currentPlanID = '';
+  taskPlan.hidden = true;
+  planStatus.textContent = '';
+  planSteps.replaceChildren();
+}
+
+function handlePlan(message) {
+  if (!Number.isSafeInteger(message.response_epoch) || message.response_epoch < responseEpoch || typeof message.plan_id !== 'string' || !Array.isArray(message.steps) || message.steps.length > 6) return;
+  currentPlanID = message.plan_id;
+  taskPlan.hidden = false;
+  planStatus.textContent = `任务计划 · ${taskStates[message.status] || message.status} · ${message.step_index}/${message.step_count}`;
+  planSteps.replaceChildren(...message.steps.map((step, index) => {
+    const item = document.createElement('li');
+    item.dataset.state = Object.hasOwn(taskStates, step.status) ? step.status : 'pending';
+    const label = document.createElement('span');
+    label.textContent = `${index + 1}. ${actionNames[step.action] || '任务'} · ${step.text}`;
+    const state = document.createElement('span');
+    state.textContent = taskStates[step.status] || '待执行';
+    item.append(label, state);
+    return item;
+  }));
 }
 
 function handleResponse(message) {
@@ -56,10 +92,9 @@ function handleResponse(message) {
     latencyDuck.textContent = '--';
   }
   if (responseFinished) return;
+  if (message.event === 'action_result' && message.plan_id !== currentPlanID) resetPlan();
   if (message.event === 'tool_status' && message.tool_call) {
-    const names = { water: '浇水', plant: '种菜', harvest: '收菜', fertilize: '施肥', affection: '贴贴', general_qa: '问答' };
-    const states = { running: '进行中', completed: '已结束', cancelled: '已取消', failed: '失败' };
-    toolStatus.textContent = `${names[message.tool_call.name] || '任务'} · ${states[message.status] || message.status}`;
+    toolStatus.textContent = `${actionNames[message.tool_call.name] || '任务'} · ${taskStates[message.status] || message.status}`;
   } else if (message.event === 'action_retry') {
     toolStatus.textContent = '正在重新确认任务';
   } else if (message.event === 'action_result' && message.fallback) {
@@ -120,10 +155,21 @@ function handleControl(data) {
   let message;
   try { message = JSON.parse(data); } catch { log('收到无效服务端事件'); return; }
   if (!message || typeof message !== 'object') return;
+  if (message.event === 'plan_status') { handlePlan(message); return; }
+  if (message.event === 'input_merge') {
+    if (!Number.isSafeInteger(message.response_epoch) || message.response_epoch < responseEpoch) return;
+    mergeCollecting = message.status === 'collecting';
+    const states = { collecting: '等你说完', committed: '本次输入', discarded: '本句已取消' };
+    const count = Array.isArray(message.source_utterance_ids) ? message.source_utterance_ids.length : 1;
+    mergedInput.textContent = `${states[message.status] || '本次输入'}${count > 1 ? ` · ${count} 段合并` : ''}：${message.text || ''}`;
+    updateStopButton();
+    return;
+  }
   if (message.event === 'input_queue' && Number.isSafeInteger(message.queue_size) && message.queue_size >= 0) {
     queuedStatus.textContent = message.queue_size ? `待回答 ${message.queue_size} 条` : '';
   } else if (message.event === 'input_rejected') {
-    queuedStatus.textContent = message.reason === 'queue_full' ? '待回答队列已满，本句未收录' : '识别未完成，本句未收录';
+    const reasons = { queue_full: '待回答队列已满，本句未收录', merge_limit: '本次输入过长，请分次说', input_too_long: '本次输入过长，请分次说' };
+    queuedStatus.textContent = reasons[message.reason] || '识别未完成，本句未收录';
   } else if (message.response_epoch === responseEpoch && !responseFinished) {
     if (message.event === 'intent_status') interruptionStatus.textContent = message.status === 'waiting_final'
       ? '等待这句话说完' : '正在判断插话意图';
@@ -169,6 +215,9 @@ function handleControl(data) {
 }
 
 function disconnect() {
+  resetPlan();
+  mergeCollecting = false;
+  mergedInput.textContent = '';
   const connection = activeConnection;
   activeConnection = null;
   if (connection) {
@@ -287,6 +336,9 @@ function waitForIceGatheringComplete(peerConnection, signal) {
 }
 
 connectButton.addEventListener('click', async () => {
+  resetPlan();
+  mergeCollecting = false;
+  mergedInput.textContent = '';
   connectButton.disabled = true;
   disconnectButton.disabled = false;
   finalTranscript.replaceChildren();

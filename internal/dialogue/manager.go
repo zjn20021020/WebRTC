@@ -27,23 +27,28 @@ type SpeechSynthesizer interface {
 }
 
 type Event struct {
-	Event         string     `json:"event"`
-	Epoch         uint64     `json:"response_epoch"`
-	Status        string     `json:"status,omitempty"`
-	Text          string     `json:"text,omitempty"`
-	Detail        string     `json:"detail,omitempty"`
-	Reason        string     `json:"reason,omitempty"`
-	Metrics       *Metrics   `json:"metrics,omitempty"`
-	PreviousEpoch uint64     `json:"previous_epoch,omitempty"`
-	UtteranceID   string     `json:"utterance_id,omitempty"`
-	QueueDropped  int        `json:"queue_dropped,omitempty"`
-	LLMActive     bool       `json:"llm_active,omitempty"`
-	TTSActive     bool       `json:"tts_active,omitempty"`
-	Interrupt     *bool      `json:"interrupt,omitempty"`
-	Fallback      bool       `json:"fallback,omitempty"`
-	LatencyMS     *int64     `json:"latency_ms,omitempty"`
-	QueueSize     *int       `json:"queue_size,omitempty"`
-	ToolCall      *home.Call `json:"tool_call,omitempty"`
+	Event         string           `json:"event"`
+	Epoch         uint64           `json:"response_epoch"`
+	Status        string           `json:"status,omitempty"`
+	Text          string           `json:"text,omitempty"`
+	Detail        string           `json:"detail,omitempty"`
+	Reason        string           `json:"reason,omitempty"`
+	Metrics       *Metrics         `json:"metrics,omitempty"`
+	PreviousEpoch uint64           `json:"previous_epoch,omitempty"`
+	UtteranceID   string           `json:"utterance_id,omitempty"`
+	QueueDropped  int              `json:"queue_dropped,omitempty"`
+	LLMActive     bool             `json:"llm_active,omitempty"`
+	TTSActive     bool             `json:"tts_active,omitempty"`
+	Interrupt     *bool            `json:"interrupt,omitempty"`
+	Fallback      bool             `json:"fallback,omitempty"`
+	LatencyMS     *int64           `json:"latency_ms,omitempty"`
+	QueueSize     *int             `json:"queue_size,omitempty"`
+	ToolCall      *home.Call       `json:"tool_call,omitempty"`
+	PlanID        string           `json:"plan_id,omitempty"`
+	StepIndex     int              `json:"step_index,omitempty"`
+	StepCount     int              `json:"step_count,omitempty"`
+	PlanSteps     []PlanStepStatus `json:"steps,omitempty"`
+	SourceIDs     []string         `json:"source_utterance_ids,omitempty"`
 }
 
 type turn struct {
@@ -66,6 +71,9 @@ type turn struct {
 	firstText, firstAudio bool
 	metrics               Metrics
 	toolCall              *home.Call
+	plan                  *taskPlan
+	stepText              string
+	input                 asr.Event
 }
 
 // Manager serializes response events and audio writes. Each epoch owns its
@@ -86,6 +94,8 @@ type Manager struct {
 	inSpeech      bool
 	asrListening  bool
 	interjections []*interjection
+	plan          *taskPlan
+	merge         *mergeGroup
 }
 
 func New(model LanguageModel, speech SpeechSynthesizer, emit func(Event)) *Manager {
@@ -129,6 +139,10 @@ func (m *Manager) Accept(event asr.Event) {
 	if event.Event == "asr_final" {
 		event.FinalReceivedAt = m.now()
 	}
+	m.acceptLocked(event)
+}
+
+func (m *Manager) acceptLocked(event asr.Event) {
 	t := m.current
 	if t != nil && t.utteranceID == event.UtteranceID {
 		if t.waitingFinal && event.Event == "asr_final" {
@@ -163,6 +177,7 @@ func (m *Manager) reserveLocked(utteranceID string) *turn {
 }
 
 func (m *Manager) startFinalLocked(t *turn, event asr.Event) {
+	t.input = event
 	m.rememberLocked(event.UtteranceID)
 	if state := m.readyStatus(); state != "ready" {
 		m.statusLocked(t, state, "")
@@ -192,7 +207,8 @@ func (m *Manager) startFinalLocked(t *turn, event asr.Event) {
 func (m *Manager) Stop(epoch uint64) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	if m.current != nil && m.current.epoch == epoch {
+	if m.epoch == epoch {
+		m.clearMergeLocked("manual_stop")
 		m.clearInterjectionsLocked()
 		m.stopLocked("interrupted")
 	}
@@ -202,6 +218,8 @@ func (m *Manager) Close() {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	m.closed = true
+	m.clearMergeLocked("closed")
+	m.cancelPlanLocked("cancelled")
 	m.clearInterjectionsLocked()
 	if m.current != nil {
 		m.toolStatusLocked(m.current, "cancelled")
@@ -215,6 +233,7 @@ func (m *Manager) stopLocked(status string) {
 		return
 	}
 	t := m.current
+	m.cancelPlanLocked("cancelled")
 	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()
 	m.rememberLocked(t.utteranceID)
@@ -247,6 +266,7 @@ func (m *Manager) failLocked(t *turn, err error) {
 		return
 	}
 	m.cancelIntentRequestsLocked(t.epoch)
+	m.cancelPlanLocked("failed")
 	t.cancel()
 	log.Printf("response epoch=%d failed: %v", t.epoch, err)
 	m.toolStatusLocked(t, "failed")
@@ -430,6 +450,7 @@ func silenceFrame() []byte {
 func (m *Manager) WriteFrame(write func([]byte) error) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
+	m.pumpMergeLocked()
 	m.pumpInterjectionsLocked()
 	t := m.current
 	if t != nil && t.ctx.Err() != nil {
@@ -502,6 +523,9 @@ func (m *Manager) completeLocked(t *turn) {
 	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()
 	m.current = nil
+	if m.advancePlanLocked(t) {
+		return
+	}
 	m.drainInterjectionsLocked()
 }
 
