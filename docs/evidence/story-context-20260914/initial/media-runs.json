@@ -1,0 +1,62 @@
+[
+  {
+    "id": "deferred-wait",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/deferred-wait-1/home-wait-voice.json"
+  },
+  {
+    "id": "first-praise",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/first-praise-1/home-praise-voice.json"
+  },
+  {
+    "id": "explicit-replacement",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/explicit-replacement-1/home-replacement-voice.json"
+  },
+  {
+    "id": "direct-switch",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/direct-switch-1/home-switch-voice.json"
+  },
+  {
+    "id": "discard-old-buffer",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/discard-old-buffer-1/home-clear-buffer-voice.json"
+  },
+  {
+    "id": "ordered-plan",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/ordered-plan-1/plan-sequence.json"
+  },
+  {
+    "id": "cancel-plan",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/cancel-plan-1/plan-cancel.json"
+  },
+  {
+    "id": "cross-final-wait",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/cross-final-wait-1/plan-merge.json"
+  },
+  {
+    "id": "story-deferred",
+    "round": 1,
+    "exit_code": 1,
+    "relative_evidence": "media/story-deferred-1/story-deferred.json"
+  },
+  {
+    "id": "story-interrupted",
+    "round": 1,
+    "exit_code": 0,
+    "relative_evidence": "media/story-interrupted-1/story-interrupted.json"
+  }
+]

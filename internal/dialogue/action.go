@@ -17,6 +17,13 @@ func (m *Manager) respond(t *turn, messages []llm.Message, speak func(string) er
 		return m.executeStep(t, messages, speak)
 	}
 	input := llm.ActionInput{UserText: messages[len(messages)-1].Content, RecentHistory: messages[1 : len(messages)-1]}
+	m.mu.Lock()
+	if m.current != t || t.ctx.Err() != nil {
+		m.mu.Unlock()
+		return context.Canceled
+	}
+	input.RecentHistory = append([]llm.Message{m.executionContextLocked(t, false)}, input.RecentHistory...)
+	m.mu.Unlock()
 	ctx, cancel := context.WithTimeout(t.ctx, actionTimeout)
 	started := time.Now()
 	var plan home.Plan
@@ -89,12 +96,15 @@ func (m *Manager) executeStep(t *turn, messages []llm.Message, speak func(string
 		m.planStatusLocked("running")
 	}
 	m.toolStatusLocked(t, "running")
-	m.mu.Unlock()
 	if call.Name == home.GeneralQA {
-		stepMessages := append([]llm.Message(nil), messages...)
-		stepMessages[len(stepMessages)-1].Content = t.stepText
+		stepMessages := append([]llm.Message(nil), messages[:len(messages)-1]...)
+		state := m.executionContextLocked(t, true)
+		stepMessages = append(stepMessages, state, llm.Message{Role: "user", Content: t.stepText})
+		m.emit(Event{Event: "response_context", Epoch: t.epoch, Reason: "answer_current_step_now", Detail: state.Content})
+		m.mu.Unlock()
 		return m.model.Stream(t.ctx, stepMessages, speak)
 	}
+	m.mu.Unlock()
 	if m.executor == nil {
 		return errors.New("home executor is not configured")
 	}

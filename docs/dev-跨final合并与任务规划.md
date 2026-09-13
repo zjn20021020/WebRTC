@@ -148,3 +148,64 @@ node scripts/verify_ui.cjs
 2. 中间一轮媒体 6/8。两次初始“去浇水”被识别成“去胶水”，规划进入普通问答，测试按原期望失败。保留 [延后场景](evidence/dev-plan-20260913/asr-wait-before-fix.json)和 [替换场景](evidence/dev-plan-20260913/asr-replacement-before-fix.json)。补充农务命令语境的同音理解及普通胶水问题反例后，最终使用相同旧音频复测通过。
 
 以上为固定合成语音和有限文本样本，不能当作真人噪声、外放回声、所有停顿时长或物理耳机尾音的测量。用户录制的正式打断过程仍独立维护，本次未加入任何视频。
+
+## 7. 故事请求误打断与历史状态修复（2026-09-14）
+
+### 7.1 失败原因
+
+用户在浇水播放中说“给我讲个故事吧”，界面随后回答“我先去给植物浇水啦……故事……再慢慢讲”。本机 2026-09-13 23:55:30 的[日志摘录](evidence/story-context-20260914/user-failure-excerpt.txt)显示，意图模型返回合法 true，`fallback=false`、耗时 460ms，取消了浇水 epoch 2，当时 `tts_active=true`，清除了 250 帧待播音频。新 epoch 3 进入 `general_qa`，但正文又安排浇水、推迟故事。摘录仅保留必要状态事件，隐藏会话标识；截图中的回答不冒充日志中未记录的正文。
+
+这是两处问题叠加：普通内容请求被误当成即时动作切换；聊天历史又只保存“去浇水”等自然语言，没有同步已取消或已完成的执行事实。模型据此自行推测旧任务仍需完成。旧版 73/73 文本与 8/8 媒体结果没有覆盖这个祈使句式和回答正文，不能据此判定此场景已验收通过。
+
+### 7.2 修复方案
+
+1. 意图 prompt 明确区分能力与语气。“给我讲个故事吧”“讲个笑话”“帮我解释……”属于通用问答；“给我”“帮我”和新话题本身不表示立即停止。没有独立停止/优先指令时返回 false；“先别浇水了，给我讲个故事吧”返回 true。现有直接切换农务动作的规则仍适用。
+2. [context.go](../internal/dialogue/context.go)单独维护最近 12 次响应的执行事实：epoch、动作、completed/cancelled/failed、取消的剩余计划动作。事实在实际生命周期终点记录，提供给规划器和问答模型，不依赖助手历史台词推断状态。
+3. `general_qa` 真正开始时，追加实时 system 上下文，再将当前步骤的问题作为最后一个 user 消息。服务端已经决定此刻派发问答，模型应直接回答；排队和后续工具调度由服务端负责，不能再次承诺“忙完再讲”或重启历史农务。
+4. 结构化执行事实仅含服务端字段，不将用户话语或模型生成正文拼接成高优先级指令。`completed` 仍只表示语音发送完成，不代表真实游戏操作完成。
+5. 新增 `response_context` 控制事件，记录实际提供给问答模型的状态，便于关联 `intent_result → input_buffered/response_cancelled → tool_status → response_context → response_text`。状态消息不作为 TTS 正文。
+
+这仍是 LLM 语义判定，不是关键词硬拦截。JSON mode 与严格解析保证非法响应不能授权硬打断；合法 true 的语义错误仍需通过规则和回归降低，不能保证未来永不误判。
+
+### 7.3 回归方法
+
+- `context_test.go` 使用可控时钟和模型替身，分别验证水任务完成、取消、失败后，规划器和问答模型拿到正确状态；检查普通故事等待旧音频发送完，取消/失败清剩余计划，状态不进入正文且历史有界。
+- 固定文本集升级为 `home-acceptance-v3-story`：83 例，其中 31 个动作/规划和 52 个意图用例。新增普通故事、笑话、解释、翻译，明确停止和优先回答反例，以及完成/取消历史下只规划当前故事。
+- 媒体集升级为 `home-media-v3-story`：10 场景。新增 [verify_story.cjs](../scripts/verify_story.cjs)两条真实链路，分别检查普通请求排队、明确停止取消，并核对模型收到的状态及最终回答正文。
+- 正文自动断言检查最小长度、旧农务重启/延期承诺和状态泄漏；保留完整回答供人工阅读。正则和长度不能证明任意输出的故事质量，不能用仅有 `general_qa completed` 代替内容验收。
+
+单独复测需先生成 `home`、`home-story` 固定音频并启动最新 dev 服务：
+
+```powershell
+E:/go/bin/go.exe run ./cmd/demo-fixtures -scene home
+E:/go/bin/go.exe run ./cmd/demo-fixtures -scene home-story
+$env:DEMO_URL = 'http://localhost:8081'
+$env:EVIDENCE_DIR = 'bin/story-evidence'
+node scripts/verify_story.cjs --deferred
+node scripts/verify_story.cjs --interrupt
+```
+
+浏览器依赖和完整验收命令同第 5 节。每次真实调用都会消耗 ASR、LLM、TTS 额度；固定输入不等于真人麦克风或物理耳机录制。
+
+### 7.4 本次结果
+
+首轮[完整报告](evidence/story-context-20260914/initial/report.md)为文本 82/83、媒体 9/10，保留原始失败，未覆盖或改写历史报告：
+
+- 旧用例 `action-praise-de` 的“干的不错”被规划成 `general_qa`，应为 `affection`。补清夸赞是支持的亲密操作、否定亲密才转问答的边界后复测。
+- 普通故事媒体的调度已经正确：false 入缓存、water completed 后讲出了完整短故事。但测试初版要求至少 60 字，误判这个短故事为失败。将短确认过滤阈值改为 20 字，保留旧任务重启、延期承诺和状态泄漏检查；故事质量仍通过阅读实际正文确认。初版失败记录保持原样，不事后改成通过。
+
+补充夸赞规则后的[文本报告](evidence/story-context-20260914/final-text/report.md)连续三轮全部通过：83 × 3 = **249/249**，其中动作/规划 93/93、打断意图 156/156；错误与兜底均为 0，重复标签无波动。本次原始结果与首轮分开，不把重复样例当作独立用户样本。
+
+[本地回归](evidence/story-context-20260914/local-regression.json)中 `go test ./...`、`go vet ./...`、6 个统计测试均通过；Go JSON 中有 137 个测试通过事件，含子测试与缓存命中，不作为云端样本量。race 未新增执行，仍受当前 cgo 配置限制。
+
+最终运行版本的[语音专项报告](evidence/story-context-20260914/final-media/report.md)为 **3/3**：普通故事、明确停止后讲故事、首次夸赞。三条链路均无分类兜底，取消后的旧 epoch 恢复事件为 0。表中时间均为 UTC，换算北京时间需加 8 小时。
+
+| 场景 | 关键证据与正文 |
+| --- | --- |
+| [普通故事](evidence/story-context-20260914/final-media/story-deferred.json) | `16:18:52.869 false → 52.870 input_buffered → 16:19:07.806 water completed → 07.807 input_dispatched → 08.741 general_qa running`。状态为 water completed；回答讲述寻找星星的实际短故事，没有再安排浇水或延期。故事期间接收音频能量增量约 1.852。 |
+| [明确停止](evidence/story-context-20260914/final-media/story-interrupted.json) | `16:20:19.530 true → 19.666 response_cancelled，丢弃 250 帧 → 20.342 general_qa running`。状态为 water cancelled；随后输出伙伴相遇的实际故事，能量增量约 1.549。开头“我这就浇不了啦”措辞不够自然，仍保留完整正文；功能正确不等于风格已经完善。 |
+| [首次夸赞](evidence/story-context-20260914/final-media/home-praise-voice.json) | `plant → false/缓存 → plant completed → affection`，无需重试，十次亲密台词完成。 |
+
+最终媒体与 249 次文本使用相同运行代码和 prompt。两份报告的源码摘要不同，仅因为媒体脚本将误伤短故事的 60 字门槛改为 20 字及相应诊断文字；生成媒体摘要时恢复这三处文本后，摘要与文本报告完全一致，`runtime_matches_text_snapshot=true`。首轮另外八个既有媒体场景通过，但它们发生在补充夸赞规则之前，保留在首轮报告中，不与最终三条专项拼成“同一版本完整 10/10”。
+
+本次服务运行在 `http://localhost:8081/`，更新服务后须刷新并重新连接。源码、prompt、测试、文档与合成语音产生的事件可提交；本机 `.env` 和用户视频不进入仓库。

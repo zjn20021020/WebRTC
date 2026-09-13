@@ -1,0 +1,150 @@
+{
+  "version": "home-media-v3-story",
+  "scenarios": [
+    {
+      "id": "deferred-wait",
+      "flag": "--wait",
+      "evidence": "home-wait-voice.json",
+      "fixtures": [
+        "home-water-direct",
+        "home-wait-plant"
+      ],
+      "fixture_scenes": [
+        "home-wait"
+      ],
+      "checks": "等一下再去种地进入缓存，浇水十次完成后种菜十次"
+    },
+    {
+      "id": "first-praise",
+      "flag": "--praise",
+      "evidence": "home-praise-voice.json",
+      "fixtures": [
+        "home-plant",
+        "home-good-job"
+      ],
+      "fixture_scenes": [
+        "home-praise"
+      ],
+      "checks": "首次干得不错不打断、不重试、不报任务失败，种菜结束后贴贴十次"
+    },
+    {
+      "id": "explicit-replacement",
+      "flag": "--replacement",
+      "evidence": "home-replacement-voice.json",
+      "fixtures": [
+        "home-water-direct",
+        "home-replace-fertilize",
+        "home-praise"
+      ],
+      "fixture_scenes": [
+        "home-replacement"
+      ],
+      "checks": "先别浇水了去施肥取消旧轮、清待播，新任务结束后处理夸赞"
+    },
+    {
+      "id": "direct-switch",
+      "flag": "--switch",
+      "evidence": "home-switch-voice.json",
+      "fixtures": [
+        "home-plant-direct",
+        "home-fertilize-direct",
+        "home-question"
+      ],
+      "fixture_scenes": [
+        "home-switch"
+      ],
+      "checks": "去施肥无停止口令也切换，普通问题保持缓存并在施肥后回答"
+    },
+    {
+      "id": "discard-old-buffer",
+      "flag": "--clear-buffer",
+      "evidence": "home-clear-buffer-voice.json",
+      "fixtures": [
+        "home-plant-direct",
+        "home-fertilize-direct",
+        "home-question"
+      ],
+      "fixture_scenes": [
+        "home-switch"
+      ],
+      "checks": "确认打断清旧文本缓存，旧问题不复活，新问题仍能缓存并回答"
+    },
+    {
+      "id": "ordered-plan",
+      "script": "scripts/verify_plan.cjs",
+      "flag": "--sequence",
+      "evidence": "plan-sequence.json",
+      "fixtures": [
+        "home-plan",
+        "home-question"
+      ],
+      "fixture_scenes": [
+        "home-plan",
+        "home-switch"
+      ],
+      "checks": "种菜、浇水、施肥依次播完，整份计划完成后才回答缓存问题"
+    },
+    {
+      "id": "cancel-plan",
+      "script": "scripts/verify_plan.cjs",
+      "flag": "--cancel",
+      "evidence": "plan-cancel.json",
+      "fixtures": [
+        "home-plan",
+        "home-question",
+        "home-harvest-direct"
+      ],
+      "fixture_scenes": [
+        "home-plan",
+        "home-switch"
+      ],
+      "checks": "收菜替换种菜，取消整份旧计划和缓存，剩余步骤不执行"
+    },
+    {
+      "id": "cross-final-wait",
+      "script": "scripts/verify_plan.cjs",
+      "flag": "--merge",
+      "evidence": "plan-merge.json",
+      "fixtures": [
+        "home-water",
+        "home-wait-prefix",
+        "home-wait-tail"
+      ],
+      "fixture_scenes": [
+        "home-plan",
+        "home"
+      ],
+      "checks": "等待真实 ASR 的等一下 final 后续说再去种地；必须记录至少两个 final 合并，整句 false，浇水后种菜"
+    },
+    {
+      "id": "story-deferred",
+      "script": "scripts/verify_story.cjs",
+      "flag": "--deferred",
+      "evidence": "story-deferred.json",
+      "fixtures": [
+        "home-water",
+        "home-story"
+      ],
+      "fixture_scenes": [
+        "home",
+        "home-story"
+      ],
+      "checks": "普通故事请求 false 入缓存，浇水完成后实际讲故事；模型状态含 water completed；不重启旧动作、不再次承诺以后回答"
+    },
+    {
+      "id": "story-interrupted",
+      "script": "scripts/verify_story.cjs",
+      "flag": "--interrupt",
+      "evidence": "story-interrupted.json",
+      "fixtures": [
+        "home-water",
+        "home-stop-story"
+      ],
+      "fixture_scenes": [
+        "home",
+        "home-story"
+      ],
+      "checks": "明确停止浇水并讲故事 true，取消旧轮并清待播；模型状态含 water cancelled；回答实际故事而非再排期"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+Source: bin/dev-8081-v2.err.log, local development service before this fix.
+Times: Asia/Shanghai. This is a minimal excerpt, not a full session transcript.
+The session UUID in utterance_id has been replaced with <session>.
+
+2026/09/13 23:55:30 intent epoch=2 utterance_id="<session>:3" is_final=true interrupt=true fallback=false latency_ms=460
+2026/09/13 23:55:30 response epoch=2 cancel llm_active=false tts_active=true queue_dropped=250
+2026/09/13 23:55:30 tool epoch=2 name=water status=cancelled
+2026/09/13 23:55:31 action epoch=3 tool=general_qa attempts=1 steps=1 fallback=false latency_ms=1152
+2026/09/13 23:55:31 tool epoch=3 name=general_qa status=running

@@ -1,0 +1,691 @@
+{
+  "version": "home-acceptance-v3-story",
+  "model": "deepseek-v4-pro",
+  "started_at": "2026-09-13T16:09:13.3454998Z",
+  "repeat": 1,
+  "completed": true,
+  "records": [
+    {
+      "id": "action-water",
+      "round": 1,
+      "actual": "water",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1336
+    },
+    {
+      "id": "action-plant",
+      "round": 1,
+      "actual": "plant",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 940
+    },
+    {
+      "id": "action-plant-synonym",
+      "round": 1,
+      "actual": "plant",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1155
+    },
+    {
+      "id": "action-harvest",
+      "round": 1,
+      "actual": "harvest",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 906
+    },
+    {
+      "id": "action-fertilize",
+      "round": 1,
+      "actual": "fertilize",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1086
+    },
+    {
+      "id": "action-replace",
+      "round": 1,
+      "actual": "fertilize",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1116
+    },
+    {
+      "id": "action-deferred",
+      "round": 1,
+      "actual": "plant",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1035
+    },
+    {
+      "id": "action-praise-de",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": false,
+      "fallback": false,
+      "latency_ms": 1088
+    },
+    {
+      "id": "action-praise-de2",
+      "round": 1,
+      "actual": "affection",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 948
+    },
+    {
+      "id": "action-affection",
+      "round": 1,
+      "actual": "affection",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 765
+    },
+    {
+      "id": "action-qa",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1171
+    },
+    {
+      "id": "action-how",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1183
+    },
+    {
+      "id": "action-stop",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1119
+    },
+    {
+      "id": "action-reject-affection",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1102
+    },
+    {
+      "id": "action-quote",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 724
+    },
+    {
+      "id": "action-multi",
+      "round": 1,
+      "actual": [
+        "water",
+        "fertilize"
+      ],
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1148
+    },
+    {
+      "id": "plan-three",
+      "round": 1,
+      "actual": [
+        "plant",
+        "water",
+        "fertilize"
+      ],
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1240
+    },
+    {
+      "id": "plan-mixed",
+      "round": 1,
+      "actual": [
+        "water",
+        "general_qa",
+        "affection"
+      ],
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 858
+    },
+    {
+      "id": "plan-repeat",
+      "round": 1,
+      "actual": [
+        "water",
+        "fertilize",
+        "water"
+      ],
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1182
+    },
+    {
+      "id": "plan-negated",
+      "round": 1,
+      "actual": [
+        "water",
+        "fertilize"
+      ],
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 762
+    },
+    {
+      "id": "plan-unsupported-step",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 692
+    },
+    {
+      "id": "plan-condition",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1212
+    },
+    {
+      "id": "plan-alternative",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1199
+    },
+    {
+      "id": "plan-limit",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 819
+    },
+    {
+      "id": "plan-cross-final-wait",
+      "round": 1,
+      "actual": "plant",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 856
+    },
+    {
+      "id": "asr-homophone-water",
+      "round": 1,
+      "actual": "water",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 726
+    },
+    {
+      "id": "asr-literal-glue",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1041
+    },
+    {
+      "id": "asr-homophone-switch",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1259
+    },
+    {
+      "id": "asr-glue-question",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 869
+    },
+    {
+      "id": "action-unsupported",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1145
+    },
+    {
+      "id": "action-priority-qa",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1202
+    },
+    {
+      "id": "switch-water-plant",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 841
+    },
+    {
+      "id": "switch-water-harvest",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 822
+    },
+    {
+      "id": "switch-water-fertilize",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 494
+    },
+    {
+      "id": "switch-plant-water",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 679
+    },
+    {
+      "id": "switch-plant-harvest",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 789
+    },
+    {
+      "id": "switch-plant-fertilize",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 807
+    },
+    {
+      "id": "switch-harvest-water",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 589
+    },
+    {
+      "id": "switch-harvest-plant",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 638
+    },
+    {
+      "id": "switch-harvest-fertilize",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 799
+    },
+    {
+      "id": "switch-fertilize-water",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 695
+    },
+    {
+      "id": "switch-fertilize-plant",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 456
+    },
+    {
+      "id": "switch-fertilize-harvest",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 818
+    },
+    {
+      "id": "same-water",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 411
+    },
+    {
+      "id": "same-plant",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 604
+    },
+    {
+      "id": "same-harvest",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 830
+    },
+    {
+      "id": "same-fertilize",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 862
+    },
+    {
+      "id": "deferred-wait",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 884
+    },
+    {
+      "id": "deferred-after",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1019
+    },
+    {
+      "id": "deferred-suffix",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 655
+    },
+    {
+      "id": "deferred-continue",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 689
+    },
+    {
+      "id": "praise-during-plant",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 841
+    },
+    {
+      "id": "affection-during-plant",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 435
+    },
+    {
+      "id": "question-during-plant",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 793
+    },
+    {
+      "id": "how-during-plant",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 768
+    },
+    {
+      "id": "priority-question",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 520
+    },
+    {
+      "id": "priority-answer",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 649
+    },
+    {
+      "id": "stop-and-replace",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 661
+    },
+    {
+      "id": "stop-one-word",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 804
+    },
+    {
+      "id": "stop-wait-final",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 788
+    },
+    {
+      "id": "stop-before-deferred",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 868
+    },
+    {
+      "id": "negate-switch",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 429
+    },
+    {
+      "id": "negate-stop",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 799
+    },
+    {
+      "id": "quote-switch",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 426
+    },
+    {
+      "id": "quote-stop",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 490
+    },
+    {
+      "id": "filler-en",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 803
+    },
+    {
+      "id": "filler-ah",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 765
+    },
+    {
+      "id": "partial-complete",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 432
+    },
+    {
+      "id": "partial-incomplete",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 461
+    },
+    {
+      "id": "qa-to-action",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 491
+    },
+    {
+      "id": "affection-to-action",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 668
+    },
+    {
+      "id": "story-deferred",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 795
+    },
+    {
+      "id": "story-stop",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 623
+    },
+    {
+      "id": "story-during-water",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 715
+    },
+    {
+      "id": "story-during-qa",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 850
+    },
+    {
+      "id": "joke-during-water",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 887
+    },
+    {
+      "id": "explain-during-plant",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 429
+    },
+    {
+      "id": "translate-during-water",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 853
+    },
+    {
+      "id": "story-explicit-stop",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 819
+    },
+    {
+      "id": "story-priority",
+      "round": 1,
+      "actual": true,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 779
+    },
+    {
+      "id": "story-after-water",
+      "round": 1,
+      "actual": false,
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 889
+    },
+    {
+      "id": "story-plan-completed",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1071
+    },
+    {
+      "id": "story-plan-cancelled",
+      "round": 1,
+      "actual": "general_qa",
+      "passed": true,
+      "fallback": false,
+      "latency_ms": 1114
+    }
+  ]
+}

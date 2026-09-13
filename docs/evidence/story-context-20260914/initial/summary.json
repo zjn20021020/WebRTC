@@ -1,0 +1,3108 @@
+{
+  "recorded_at": "2026-09-13T16:09:09.498Z",
+  "git_commit": "5cbe65291dc0840eb4c5103610fe433f771a8f68",
+  "source_sha256": "3c283d8468efc8df90d464f2b7c0ae8177c2503cbb7be48f62e02da01ec9aff2",
+  "suite_sha256": "4c4530cf11863d23153c36f86d9a403617cd850eea7fec39e53773a6e920019e",
+  "options": {
+    "repeat": 1,
+    "mediaRepeat": 1,
+    "textOnly": false
+  },
+  "fixture_sha256": {
+    "home-water-direct": "d425bfb23b1bb0f942b0cb4526c15d7ebc3c913f69b6d5749b8f976c5d31326a",
+    "home-wait-plant": "bc06d243ac759816c6d488b1b9dbeff41c8be42ddf2caa9c3ceeff15eefe8abe",
+    "home-plant": "54d620fe02d2e467922c39cd7004500e5ea862a37a5da594ab5f9ade5d945de4",
+    "home-good-job": "9891a68093cc573efe5e4e8f4c77d6c9e76b183c549d4ef923ab69e28b1be6f2",
+    "home-replace-fertilize": "9ee3dec29e05a5df9a7a3b846284f02328659cdbfc8a456e491877e268e29c81",
+    "home-praise": "fd0e0b2465e0b57b1c8c84a79afe1f8e5e2407f82c82d604b899baf5e8c316ea",
+    "home-plant-direct": "f2db99da9af37b2d3b82cf8ce095330df69846c8cae324a5d3fcee292debfe4a",
+    "home-fertilize-direct": "eefdafc53ebb48c510d0254715b77fdc527e9f77ffc9cca0df1ff3e2fcd27903",
+    "home-question": "fc344df653e42f7969496f9f7b920c75199bb8981f8023b16b83aa70aeae48c9",
+    "home-plan": "357233029930d4256404391b2bc972cb90c2098d12112a4d185435c8d5afe987",
+    "home-harvest-direct": "906d42d2fb49212bfe0df23c14b1b20bbdaf1bef391f33545e59d8afb8a1094e",
+    "home-water": "e7db8b85f4034290b0eeaa0fec0b0e981ffd91cc4be6269c4e0123e688a99d43",
+    "home-wait-prefix": "81657b1c846f266f8a32f494f03b8fee620a3ac55fc147e133294f57a9bb6ea3",
+    "home-wait-tail": "d84490f2cab10071f55ad2af15c03b4d431472d32582069dacdab575f9806797",
+    "home-story": "04d48bff5705fe3d4b848c9f50a3e46a0751b05437c852201fd4df6e17b4cfb4",
+    "home-stop-story": "439480c29f0018cf99ef8969742077a176703eae041b2bfc89ffca3ca3f382b5"
+  },
+  "media_version": "home-media-v3-story",
+  "text_process": {
+    "exit_code": 1
+  },
+  "media_server": "Isolated local process built from this source snapshot",
+  "audio_config": {
+    "tts_voice_type": 101016,
+    "sample_rate": 8000
+  },
+  "model": "deepseek-v4-pro",
+  "text": {
+    "version": "home-acceptance-v3-story",
+    "unique_cases": 83,
+    "repeat": 1,
+    "planned": 83,
+    "attempted": 83,
+    "passed": 82,
+    "errors": 0,
+    "missing": 0,
+    "failures": [
+      {
+        "id": "action-praise-de",
+        "round": 1,
+        "expected": "affection",
+        "actual": "general_qa",
+        "reason": "wrong_label"
+      }
+    ],
+    "latency_ms": {
+      "n": 83,
+      "p50": 818,
+      "p95": 1202,
+      "max": 1336
+    },
+    "pass_rate": 0.9879518072289156,
+    "error_rate": 0,
+    "valid_response_latency_ms": {
+      "n": 83,
+      "p50": 818,
+      "p95": 1202,
+      "max": 1336
+    },
+    "actions": {
+      "planned": 31,
+      "attempted": 31,
+      "passed": 30,
+      "errors": 0,
+      "missing": 0,
+      "failures": [
+        {
+          "id": "action-praise-de",
+          "round": 1,
+          "expected": "affection",
+          "actual": "general_qa",
+          "reason": "wrong_label"
+        }
+      ],
+      "latency_ms": {
+        "n": 31,
+        "p50": 1088,
+        "p95": 1240,
+        "max": 1336
+      },
+      "pass_rate": 0.967741935483871,
+      "error_rate": 0,
+      "valid_response_latency_ms": {
+        "n": 31,
+        "p50": 1088,
+        "p95": 1240,
+        "max": 1336
+      },
+      "confusion_matrix": {
+        "water": {
+          "water": 2
+        },
+        "plant": {
+          "plant": 4
+        },
+        "harvest": {
+          "harvest": 1
+        },
+        "fertilize": {
+          "fertilize": 2
+        },
+        "affection": {
+          "general_qa": 1,
+          "affection": 2
+        },
+        "general_qa": {
+          "general_qa": 14
+        },
+        "[\"water\",\"fertilize\"]": {
+          "[\"water\",\"fertilize\"]": 2
+        },
+        "[\"plant\",\"water\",\"fertilize\"]": {
+          "[\"plant\",\"water\",\"fertilize\"]": 1
+        },
+        "[\"water\",\"general_qa\",\"affection\"]": {
+          "[\"water\",\"general_qa\",\"affection\"]": 1
+        },
+        "[\"water\",\"fertilize\",\"water\"]": {
+          "[\"water\",\"fertilize\",\"water\"]": 1
+        }
+      }
+    },
+    "interruptions": {
+      "planned": 52,
+      "attempted": 52,
+      "passed": 52,
+      "errors": 0,
+      "missing": 0,
+      "failures": [],
+      "latency_ms": {
+        "n": 52,
+        "p50": 768,
+        "p95": 889,
+        "max": 1259
+      },
+      "pass_rate": 1,
+      "error_rate": 0,
+      "valid_response_latency_ms": {
+        "n": 52,
+        "p50": 768,
+        "p95": 889,
+        "max": 1259
+      },
+      "valid_response_confusion": {
+        "true_positive": 25,
+        "false_positive": 0,
+        "true_negative": 27,
+        "false_negative": 0
+      },
+      "effective_confusion_with_false_fallback": {
+        "true_positive": 25,
+        "false_positive": 0,
+        "true_negative": 27,
+        "false_negative": 0
+      },
+      "false_interrupt_rate": 0,
+      "missed_interrupt_rate": 0
+    },
+    "unstable_cases": [],
+    "categories": {
+      "basic_action": {
+        "planned": 6,
+        "attempted": 6,
+        "passed": 6,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 6,
+          "p50": 940,
+          "p95": 1336,
+          "max": 1336
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 6,
+          "p50": 940,
+          "p95": 1336,
+          "max": 1336
+        }
+      },
+      "reported_regression": {
+        "planned": 9,
+        "attempted": 9,
+        "passed": 8,
+        "errors": 0,
+        "missing": 0,
+        "failures": [
+          {
+            "id": "action-praise-de",
+            "round": 1,
+            "expected": "affection",
+            "actual": "general_qa",
+            "reason": "wrong_label"
+          }
+        ],
+        "latency_ms": {
+          "n": 9,
+          "p50": 884,
+          "p95": 1116,
+          "max": 1116
+        },
+        "pass_rate": 0.8888888888888888,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 9,
+          "p50": 884,
+          "p95": 1116,
+          "max": 1116
+        }
+      },
+      "qa_boundary": {
+        "planned": 8,
+        "attempted": 8,
+        "passed": 8,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 8,
+          "p50": 768,
+          "p95": 1202,
+          "max": 1202
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 8,
+          "p50": 768,
+          "p95": 1202,
+          "max": 1202
+        }
+      },
+      "negation": {
+        "planned": 4,
+        "attempted": 4,
+        "passed": 4,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 4,
+          "p50": 799,
+          "p95": 1119,
+          "max": 1119
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 4,
+          "p50": 799,
+          "p95": 1119,
+          "max": 1119
+        }
+      },
+      "quoted_instruction": {
+        "planned": 3,
+        "attempted": 3,
+        "passed": 3,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 3,
+          "p50": 490,
+          "p95": 724,
+          "max": 724
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 3,
+          "p50": 490,
+          "p95": 724,
+          "max": 724
+        }
+      },
+      "composite_plan": {
+        "planned": 5,
+        "attempted": 5,
+        "passed": 5,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 5,
+          "p50": 1148,
+          "p95": 1240,
+          "max": 1240
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 5,
+          "p50": 1148,
+          "p95": 1240,
+          "max": 1240
+        }
+      },
+      "plan_boundary": {
+        "planned": 4,
+        "attempted": 4,
+        "passed": 4,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 4,
+          "p50": 819,
+          "p95": 1212,
+          "max": 1212
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 4,
+          "p50": 819,
+          "p95": 1212,
+          "max": 1212
+        }
+      },
+      "asr_homophone": {
+        "planned": 4,
+        "attempted": 4,
+        "passed": 4,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 4,
+          "p50": 869,
+          "p95": 1259,
+          "max": 1259
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 4,
+          "p50": 869,
+          "p95": 1259,
+          "max": 1259
+        }
+      },
+      "unsupported": {
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1145,
+          "p95": 1145,
+          "max": 1145
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1145,
+          "p95": 1145,
+          "max": 1145
+        }
+      },
+      "direct_switch": {
+        "planned": 13,
+        "attempted": 13,
+        "passed": 13,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 13,
+          "p50": 679,
+          "p95": 841,
+          "max": 841
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 13,
+          "p50": 679,
+          "p95": 841,
+          "max": 841
+        }
+      },
+      "same_action": {
+        "planned": 4,
+        "attempted": 4,
+        "passed": 4,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 4,
+          "p50": 604,
+          "p95": 862,
+          "max": 862
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 4,
+          "p50": 604,
+          "p95": 862,
+          "max": 862
+        }
+      },
+      "deferred": {
+        "planned": 4,
+        "attempted": 4,
+        "passed": 4,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 4,
+          "p50": 689,
+          "p95": 1019,
+          "max": 1019
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 4,
+          "p50": 689,
+          "p95": 1019,
+          "max": 1019
+        }
+      },
+      "explicit_stop": {
+        "planned": 4,
+        "attempted": 4,
+        "passed": 4,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 4,
+          "p50": 788,
+          "p95": 868,
+          "max": 868
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 4,
+          "p50": 788,
+          "p95": 868,
+          "max": 868
+        }
+      },
+      "filler": {
+        "planned": 2,
+        "attempted": 2,
+        "passed": 2,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 2,
+          "p50": 765,
+          "p95": 803,
+          "max": 803
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 2,
+          "p50": 765,
+          "p95": 803,
+          "max": 803
+        }
+      },
+      "partial": {
+        "planned": 2,
+        "attempted": 2,
+        "passed": 2,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 2,
+          "p50": 432,
+          "p95": 461,
+          "max": 461
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 2,
+          "p50": 432,
+          "p95": 461,
+          "max": 461
+        }
+      },
+      "story_context": {
+        "planned": 10,
+        "attempted": 10,
+        "passed": 10,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 10,
+          "p50": 850,
+          "p95": 1114,
+          "max": 1114
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 10,
+          "p50": 850,
+          "p95": 1114,
+          "max": 1114
+        }
+      }
+    },
+    "cases": [
+      {
+        "id": "action-water",
+        "kind": "action",
+        "category": "basic_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1336,
+          "p95": 1336,
+          "max": 1336
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1336,
+          "p95": 1336,
+          "max": 1336
+        },
+        "outcomes": [
+          "water"
+        ]
+      },
+      {
+        "id": "action-plant",
+        "kind": "action",
+        "category": "basic_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 940,
+          "p95": 940,
+          "max": 940
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 940,
+          "p95": 940,
+          "max": 940
+        },
+        "outcomes": [
+          "plant"
+        ]
+      },
+      {
+        "id": "action-plant-synonym",
+        "kind": "action",
+        "category": "basic_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1155,
+          "p95": 1155,
+          "max": 1155
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1155,
+          "p95": 1155,
+          "max": 1155
+        },
+        "outcomes": [
+          "plant"
+        ]
+      },
+      {
+        "id": "action-harvest",
+        "kind": "action",
+        "category": "basic_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 906,
+          "p95": 906,
+          "max": 906
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 906,
+          "p95": 906,
+          "max": 906
+        },
+        "outcomes": [
+          "harvest"
+        ]
+      },
+      {
+        "id": "action-fertilize",
+        "kind": "action",
+        "category": "basic_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1086,
+          "p95": 1086,
+          "max": 1086
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1086,
+          "p95": 1086,
+          "max": 1086
+        },
+        "outcomes": [
+          "fertilize"
+        ]
+      },
+      {
+        "id": "action-replace",
+        "kind": "action",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1116,
+          "p95": 1116,
+          "max": 1116
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1116,
+          "p95": 1116,
+          "max": 1116
+        },
+        "outcomes": [
+          "fertilize"
+        ]
+      },
+      {
+        "id": "action-deferred",
+        "kind": "action",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1035,
+          "p95": 1035,
+          "max": 1035
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1035,
+          "p95": 1035,
+          "max": 1035
+        },
+        "outcomes": [
+          "plant"
+        ]
+      },
+      {
+        "id": "action-praise-de",
+        "kind": "action",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 0,
+        "errors": 0,
+        "missing": 0,
+        "failures": [
+          {
+            "id": "action-praise-de",
+            "round": 1,
+            "expected": "affection",
+            "actual": "general_qa",
+            "reason": "wrong_label"
+          }
+        ],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1088,
+          "p95": 1088,
+          "max": 1088
+        },
+        "pass_rate": 0,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1088,
+          "p95": 1088,
+          "max": 1088
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "action-praise-de2",
+        "kind": "action",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 948,
+          "p95": 948,
+          "max": 948
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 948,
+          "p95": 948,
+          "max": 948
+        },
+        "outcomes": [
+          "affection"
+        ]
+      },
+      {
+        "id": "action-affection",
+        "kind": "action",
+        "category": "basic_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 765,
+          "p95": 765,
+          "max": 765
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 765,
+          "p95": 765,
+          "max": 765
+        },
+        "outcomes": [
+          "affection"
+        ]
+      },
+      {
+        "id": "action-qa",
+        "kind": "action",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1171,
+          "p95": 1171,
+          "max": 1171
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1171,
+          "p95": 1171,
+          "max": 1171
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "action-how",
+        "kind": "action",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1183,
+          "p95": 1183,
+          "max": 1183
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1183,
+          "p95": 1183,
+          "max": 1183
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "action-stop",
+        "kind": "action",
+        "category": "negation",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1119,
+          "p95": 1119,
+          "max": 1119
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1119,
+          "p95": 1119,
+          "max": 1119
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "action-reject-affection",
+        "kind": "action",
+        "category": "negation",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1102,
+          "p95": 1102,
+          "max": 1102
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1102,
+          "p95": 1102,
+          "max": 1102
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "action-quote",
+        "kind": "action",
+        "category": "quoted_instruction",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 724,
+          "p95": 724,
+          "max": 724
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 724,
+          "p95": 724,
+          "max": 724
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "action-multi",
+        "kind": "action",
+        "category": "composite_plan",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1148,
+          "p95": 1148,
+          "max": 1148
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1148,
+          "p95": 1148,
+          "max": 1148
+        },
+        "outcomes": [
+          "[\"water\",\"fertilize\"]"
+        ]
+      },
+      {
+        "id": "plan-three",
+        "kind": "action",
+        "category": "composite_plan",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1240,
+          "p95": 1240,
+          "max": 1240
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1240,
+          "p95": 1240,
+          "max": 1240
+        },
+        "outcomes": [
+          "[\"plant\",\"water\",\"fertilize\"]"
+        ]
+      },
+      {
+        "id": "plan-mixed",
+        "kind": "action",
+        "category": "composite_plan",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 858,
+          "p95": 858,
+          "max": 858
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 858,
+          "p95": 858,
+          "max": 858
+        },
+        "outcomes": [
+          "[\"water\",\"general_qa\",\"affection\"]"
+        ]
+      },
+      {
+        "id": "plan-repeat",
+        "kind": "action",
+        "category": "composite_plan",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1182,
+          "p95": 1182,
+          "max": 1182
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1182,
+          "p95": 1182,
+          "max": 1182
+        },
+        "outcomes": [
+          "[\"water\",\"fertilize\",\"water\"]"
+        ]
+      },
+      {
+        "id": "plan-negated",
+        "kind": "action",
+        "category": "composite_plan",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 762,
+          "p95": 762,
+          "max": 762
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 762,
+          "p95": 762,
+          "max": 762
+        },
+        "outcomes": [
+          "[\"water\",\"fertilize\"]"
+        ]
+      },
+      {
+        "id": "plan-unsupported-step",
+        "kind": "action",
+        "category": "plan_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 692,
+          "p95": 692,
+          "max": 692
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 692,
+          "p95": 692,
+          "max": 692
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "plan-condition",
+        "kind": "action",
+        "category": "plan_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1212,
+          "p95": 1212,
+          "max": 1212
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1212,
+          "p95": 1212,
+          "max": 1212
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "plan-alternative",
+        "kind": "action",
+        "category": "plan_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1199,
+          "p95": 1199,
+          "max": 1199
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1199,
+          "p95": 1199,
+          "max": 1199
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "plan-limit",
+        "kind": "action",
+        "category": "plan_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 819,
+          "p95": 819,
+          "max": 819
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 819,
+          "p95": 819,
+          "max": 819
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "plan-cross-final-wait",
+        "kind": "action",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 856,
+          "p95": 856,
+          "max": 856
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 856,
+          "p95": 856,
+          "max": 856
+        },
+        "outcomes": [
+          "plant"
+        ]
+      },
+      {
+        "id": "asr-homophone-water",
+        "kind": "action",
+        "category": "asr_homophone",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 726,
+          "p95": 726,
+          "max": 726
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 726,
+          "p95": 726,
+          "max": 726
+        },
+        "outcomes": [
+          "water"
+        ]
+      },
+      {
+        "id": "asr-literal-glue",
+        "kind": "action",
+        "category": "asr_homophone",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1041,
+          "p95": 1041,
+          "max": 1041
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1041,
+          "p95": 1041,
+          "max": 1041
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "asr-homophone-switch",
+        "kind": "interrupt",
+        "category": "asr_homophone",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1259,
+          "p95": 1259,
+          "max": 1259
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1259,
+          "p95": 1259,
+          "max": 1259
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "asr-glue-question",
+        "kind": "interrupt",
+        "category": "asr_homophone",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 869,
+          "p95": 869,
+          "max": 869
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 869,
+          "p95": 869,
+          "max": 869
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "action-unsupported",
+        "kind": "action",
+        "category": "unsupported",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1145,
+          "p95": 1145,
+          "max": 1145
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1145,
+          "p95": 1145,
+          "max": 1145
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "action-priority-qa",
+        "kind": "action",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1202,
+          "p95": 1202,
+          "max": 1202
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1202,
+          "p95": 1202,
+          "max": 1202
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "switch-water-plant",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 841,
+          "p95": 841,
+          "max": 841
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 841,
+          "p95": 841,
+          "max": 841
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-water-harvest",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 822,
+          "p95": 822,
+          "max": 822
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 822,
+          "p95": 822,
+          "max": 822
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-water-fertilize",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 494,
+          "p95": 494,
+          "max": 494
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 494,
+          "p95": 494,
+          "max": 494
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-plant-water",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 679,
+          "p95": 679,
+          "max": 679
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 679,
+          "p95": 679,
+          "max": 679
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-plant-harvest",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 789,
+          "p95": 789,
+          "max": 789
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 789,
+          "p95": 789,
+          "max": 789
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-plant-fertilize",
+        "kind": "interrupt",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 807,
+          "p95": 807,
+          "max": 807
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 807,
+          "p95": 807,
+          "max": 807
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-harvest-water",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 589,
+          "p95": 589,
+          "max": 589
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 589,
+          "p95": 589,
+          "max": 589
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-harvest-plant",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 638,
+          "p95": 638,
+          "max": 638
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 638,
+          "p95": 638,
+          "max": 638
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-harvest-fertilize",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 799,
+          "p95": 799,
+          "max": 799
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 799,
+          "p95": 799,
+          "max": 799
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-fertilize-water",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 695,
+          "p95": 695,
+          "max": 695
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 695,
+          "p95": 695,
+          "max": 695
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-fertilize-plant",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 456,
+          "p95": 456,
+          "max": 456
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 456,
+          "p95": 456,
+          "max": 456
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "switch-fertilize-harvest",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 818,
+          "p95": 818,
+          "max": 818
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 818,
+          "p95": 818,
+          "max": 818
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "same-water",
+        "kind": "interrupt",
+        "category": "same_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 411,
+          "p95": 411,
+          "max": 411
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 411,
+          "p95": 411,
+          "max": 411
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "same-plant",
+        "kind": "interrupt",
+        "category": "same_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 604,
+          "p95": 604,
+          "max": 604
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 604,
+          "p95": 604,
+          "max": 604
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "same-harvest",
+        "kind": "interrupt",
+        "category": "same_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 830,
+          "p95": 830,
+          "max": 830
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 830,
+          "p95": 830,
+          "max": 830
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "same-fertilize",
+        "kind": "interrupt",
+        "category": "same_action",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 862,
+          "p95": 862,
+          "max": 862
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 862,
+          "p95": 862,
+          "max": 862
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "deferred-wait",
+        "kind": "interrupt",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 884,
+          "p95": 884,
+          "max": 884
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 884,
+          "p95": 884,
+          "max": 884
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "deferred-after",
+        "kind": "interrupt",
+        "category": "deferred",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1019,
+          "p95": 1019,
+          "max": 1019
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1019,
+          "p95": 1019,
+          "max": 1019
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "deferred-suffix",
+        "kind": "interrupt",
+        "category": "deferred",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 655,
+          "p95": 655,
+          "max": 655
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 655,
+          "p95": 655,
+          "max": 655
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "deferred-continue",
+        "kind": "interrupt",
+        "category": "deferred",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 689,
+          "p95": 689,
+          "max": 689
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 689,
+          "p95": 689,
+          "max": 689
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "praise-during-plant",
+        "kind": "interrupt",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 841,
+          "p95": 841,
+          "max": 841
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 841,
+          "p95": 841,
+          "max": 841
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "affection-during-plant",
+        "kind": "interrupt",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 435,
+          "p95": 435,
+          "max": 435
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 435,
+          "p95": 435,
+          "max": 435
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "question-during-plant",
+        "kind": "interrupt",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 793,
+          "p95": 793,
+          "max": 793
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 793,
+          "p95": 793,
+          "max": 793
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "how-during-plant",
+        "kind": "interrupt",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 768,
+          "p95": 768,
+          "max": 768
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 768,
+          "p95": 768,
+          "max": 768
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "priority-question",
+        "kind": "interrupt",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 520,
+          "p95": 520,
+          "max": 520
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 520,
+          "p95": 520,
+          "max": 520
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "priority-answer",
+        "kind": "interrupt",
+        "category": "qa_boundary",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 649,
+          "p95": 649,
+          "max": 649
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 649,
+          "p95": 649,
+          "max": 649
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "stop-and-replace",
+        "kind": "interrupt",
+        "category": "reported_regression",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 661,
+          "p95": 661,
+          "max": 661
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 661,
+          "p95": 661,
+          "max": 661
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "stop-one-word",
+        "kind": "interrupt",
+        "category": "explicit_stop",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 804,
+          "p95": 804,
+          "max": 804
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 804,
+          "p95": 804,
+          "max": 804
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "stop-wait-final",
+        "kind": "interrupt",
+        "category": "explicit_stop",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 788,
+          "p95": 788,
+          "max": 788
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 788,
+          "p95": 788,
+          "max": 788
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "stop-before-deferred",
+        "kind": "interrupt",
+        "category": "explicit_stop",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 868,
+          "p95": 868,
+          "max": 868
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 868,
+          "p95": 868,
+          "max": 868
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "negate-switch",
+        "kind": "interrupt",
+        "category": "negation",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 429,
+          "p95": 429,
+          "max": 429
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 429,
+          "p95": 429,
+          "max": 429
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "negate-stop",
+        "kind": "interrupt",
+        "category": "negation",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 799,
+          "p95": 799,
+          "max": 799
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 799,
+          "p95": 799,
+          "max": 799
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "quote-switch",
+        "kind": "interrupt",
+        "category": "quoted_instruction",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 426,
+          "p95": 426,
+          "max": 426
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 426,
+          "p95": 426,
+          "max": 426
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "quote-stop",
+        "kind": "interrupt",
+        "category": "quoted_instruction",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 490,
+          "p95": 490,
+          "max": 490
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 490,
+          "p95": 490,
+          "max": 490
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "filler-en",
+        "kind": "interrupt",
+        "category": "filler",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 803,
+          "p95": 803,
+          "max": 803
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 803,
+          "p95": 803,
+          "max": 803
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "filler-ah",
+        "kind": "interrupt",
+        "category": "filler",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 765,
+          "p95": 765,
+          "max": 765
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 765,
+          "p95": 765,
+          "max": 765
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "partial-complete",
+        "kind": "interrupt",
+        "category": "partial",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 432,
+          "p95": 432,
+          "max": 432
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 432,
+          "p95": 432,
+          "max": 432
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "partial-incomplete",
+        "kind": "interrupt",
+        "category": "partial",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 461,
+          "p95": 461,
+          "max": 461
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 461,
+          "p95": 461,
+          "max": 461
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "qa-to-action",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 491,
+          "p95": 491,
+          "max": 491
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 491,
+          "p95": 491,
+          "max": 491
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "affection-to-action",
+        "kind": "interrupt",
+        "category": "direct_switch",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 668,
+          "p95": 668,
+          "max": 668
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 668,
+          "p95": 668,
+          "max": 668
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "story-deferred",
+        "kind": "interrupt",
+        "category": "deferred",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 795,
+          "p95": 795,
+          "max": 795
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 795,
+          "p95": 795,
+          "max": 795
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "story-stop",
+        "kind": "interrupt",
+        "category": "explicit_stop",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 623,
+          "p95": 623,
+          "max": 623
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 623,
+          "p95": 623,
+          "max": 623
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "story-during-water",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 715,
+          "p95": 715,
+          "max": 715
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 715,
+          "p95": 715,
+          "max": 715
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "story-during-qa",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 850,
+          "p95": 850,
+          "max": 850
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 850,
+          "p95": 850,
+          "max": 850
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "joke-during-water",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 887,
+          "p95": 887,
+          "max": 887
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 887,
+          "p95": 887,
+          "max": 887
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "explain-during-plant",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 429,
+          "p95": 429,
+          "max": 429
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 429,
+          "p95": 429,
+          "max": 429
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "translate-during-water",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 853,
+          "p95": 853,
+          "max": 853
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 853,
+          "p95": 853,
+          "max": 853
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "story-explicit-stop",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 819,
+          "p95": 819,
+          "max": 819
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 819,
+          "p95": 819,
+          "max": 819
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "story-priority",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 779,
+          "p95": 779,
+          "max": 779
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 779,
+          "p95": 779,
+          "max": 779
+        },
+        "outcomes": [
+          "true"
+        ]
+      },
+      {
+        "id": "story-after-water",
+        "kind": "interrupt",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 889,
+          "p95": 889,
+          "max": 889
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 889,
+          "p95": 889,
+          "max": 889
+        },
+        "outcomes": [
+          "false"
+        ]
+      },
+      {
+        "id": "story-plan-completed",
+        "kind": "action",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1071,
+          "p95": 1071,
+          "max": 1071
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1071,
+          "p95": 1071,
+          "max": 1071
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      },
+      {
+        "id": "story-plan-cancelled",
+        "kind": "action",
+        "category": "story_context",
+        "planned": 1,
+        "attempted": 1,
+        "passed": 1,
+        "errors": 0,
+        "missing": 0,
+        "failures": [],
+        "latency_ms": {
+          "n": 1,
+          "p50": 1114,
+          "p95": 1114,
+          "max": 1114
+        },
+        "pass_rate": 1,
+        "error_rate": 0,
+        "valid_response_latency_ms": {
+          "n": 1,
+          "p50": 1114,
+          "p95": 1114,
+          "max": 1114
+        },
+        "outcomes": [
+          "general_qa"
+        ]
+      }
+    ]
+  },
+  "media": {
+    "planned": 10,
+    "passed": 9,
+    "pass_rate": 0.9,
+    "old_turn_resumed_events": 0,
+    "physical_audio_residual": "not_measured",
+    "action_fallbacks": 0,
+    "intent_fallbacks": 0,
+    "action_retries": 0,
+    "confirm_to_cancel_ms": {
+      "n": 5,
+      "p50": 1,
+      "p95": 139,
+      "max": 139
+    },
+    "action_latency_ms": {
+      "n": 23,
+      "p50": 989,
+      "p95": 1133,
+      "max": 1252
+    },
+    "intent_latency_ms": {
+      "n": 15,
+      "p50": 727,
+      "p95": 926,
+      "max": 926
+    },
+    "response_metrics_ms": {
+      "direct": {
+        "speech_end_to_first_text_ms": {
+          "n": 10,
+          "p50": 2770,
+          "p95": 3052,
+          "max": 3052
+        },
+        "asr_final_to_first_text_ms": {
+          "n": 10,
+          "p50": 1801,
+          "p95": 1876,
+          "max": 1876
+        },
+        "speech_end_to_first_audio_ms": {
+          "n": 10,
+          "p50": 3430,
+          "p95": 3780,
+          "max": 3780
+        },
+        "asr_final_to_first_audio_ms": {
+          "n": 10,
+          "p50": 2402,
+          "p95": 2540,
+          "max": 2540
+        },
+        "speech_to_duck_ms": {
+          "n": 10,
+          "p50": 0,
+          "p95": 220,
+          "max": 220
+        }
+      },
+      "deferred": {
+        "speech_end_to_first_text_ms": {
+          "n": 8,
+          "p50": 18857,
+          "p95": 57756,
+          "max": 57756
+        },
+        "asr_final_to_first_text_ms": {
+          "n": 8,
+          "p50": 17867,
+          "p95": 56712,
+          "max": 56712
+        },
+        "speech_end_to_first_audio_ms": {
+          "n": 8,
+          "p50": 19605,
+          "p95": 58609,
+          "max": 58609
+        },
+        "asr_final_to_first_audio_ms": {
+          "n": 8,
+          "p50": 18473,
+          "p95": 57565,
+          "max": 57565
+        }
+      },
+      "interrupted": {
+        "speech_end_to_first_text_ms": {
+          "n": 5,
+          "p50": 3503,
+          "p95": 3756,
+          "max": 3756
+        },
+        "asr_final_to_first_text_ms": {
+          "n": 5,
+          "p50": 2424,
+          "p95": 2569,
+          "max": 2569
+        },
+        "speech_end_to_first_audio_ms": {
+          "n": 5,
+          "p50": 4239,
+          "p95": 4422,
+          "max": 4422
+        },
+        "asr_final_to_first_audio_ms": {
+          "n": 5,
+          "p50": 3081,
+          "p95": 3457,
+          "max": 3457
+        },
+        "speech_to_duck_ms": {
+          "n": 3,
+          "p50": 0,
+          "p95": 0,
+          "max": 0
+        }
+      },
+      "planned": {
+        "speech_end_to_first_text_ms": {
+          "n": 2,
+          "p50": 21469,
+          "p95": 41049,
+          "max": 41049
+        },
+        "asr_final_to_first_text_ms": {
+          "n": 2,
+          "p50": 20381,
+          "p95": 39961,
+          "max": 39961
+        },
+        "speech_end_to_first_audio_ms": {
+          "n": 2,
+          "p50": 22109,
+          "p95": 41669,
+          "max": 41669
+        },
+        "asr_final_to_first_audio_ms": {
+          "n": 2,
+          "p50": 21021,
+          "p95": 40581,
+          "max": 40581
+        }
+      }
+    },
+    "runs": [
+      {
+        "id": "deferred-wait",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/deferred-wait-1/home-wait-voice.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "first-praise",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/first-praise-1/home-praise-voice.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "explicit-replacement",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/explicit-replacement-1/home-replacement-voice.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "direct-switch",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/direct-switch-1/home-switch-voice.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "discard-old-buffer",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/discard-old-buffer-1/home-clear-buffer-voice.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "ordered-plan",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/ordered-plan-1/plan-sequence.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "cancel-plan",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/cancel-plan-1/plan-cancel.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "cross-final-wait",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/cross-final-wait-1/plan-merge.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "story-deferred",
+        "round": 1,
+        "passed": false,
+        "exit_code": 1,
+        "error": "No substantive story: 有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮堂堂的家园门口。",
+        "evidence": "media/story-deferred-1/story-deferred.json",
+        "audio_received": false,
+        "old_turn_resumed_events": 0
+      },
+      {
+        "id": "story-interrupted",
+        "round": 1,
+        "passed": true,
+        "exit_code": 0,
+        "evidence": "media/story-interrupted-1/story-interrupted.json",
+        "audio_received": true,
+        "old_turn_resumed_events": 0
+      }
+    ]
+  },
+  "passed": false
+}

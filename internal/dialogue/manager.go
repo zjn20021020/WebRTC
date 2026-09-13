@@ -90,6 +90,7 @@ type Manager struct {
 	seen          map[string]bool
 	seenOrder     []string
 	history       []llm.Message
+	executions    []executionResult
 	now           func() time.Time
 	inSpeech      bool
 	asrListening  bool
@@ -234,6 +235,7 @@ func (m *Manager) stopLocked(status string) {
 	}
 	t := m.current
 	m.cancelPlanLocked("cancelled")
+	m.recordExecutionLocked(t, "cancelled")
 	m.cancelIntentRequestsLocked(t.epoch)
 	t.cancel()
 	m.rememberLocked(t.utteranceID)
@@ -267,6 +269,7 @@ func (m *Manager) failLocked(t *turn, err error) {
 	}
 	m.cancelIntentRequestsLocked(t.epoch)
 	m.cancelPlanLocked("failed")
+	m.recordExecutionLocked(t, "failed")
 	t.cancel()
 	log.Printf("response epoch=%d failed: %v", t.epoch, err)
 	m.toolStatusLocked(t, "failed")
@@ -517,6 +520,7 @@ func (m *Manager) WriteFrame(write func([]byte) error) error {
 }
 
 func (m *Manager) completeLocked(t *turn) {
+	m.recordExecutionLocked(t, "completed")
 	m.history = append(m.history, llm.Message{Role: "assistant", Content: t.text})
 	m.toolStatusLocked(t, "completed")
 	m.statusLocked(t, "completed", "")

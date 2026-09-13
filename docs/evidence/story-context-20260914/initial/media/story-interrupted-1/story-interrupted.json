@@ -1,0 +1,926 @@
+{
+  "recorded_at": "2026-09-13T16:17:38.540Z",
+  "passed": true,
+  "mode": "story-interrupted",
+  "answer": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真发光就是最亮的样子。",
+  "content_check": "Minimum 60 characters; no stale farming restart, postponement promise or execution-state leak. Narrative quality requires human review.",
+  "input": "Fixed speech through WebAudio microphone, real cloud ASR/planner/TTS, physical audio muted",
+  "before_story_media": [
+    {
+      "type": "inbound-rtp",
+      "packetsReceived": 538,
+      "totalAudioEnergy": 0.46559359695424984
+    },
+    {
+      "type": "outbound-rtp",
+      "packetsSent": 545
+    }
+  ],
+  "events": [
+    {
+      "at": "2026-09-13T16:17:08.837Z",
+      "event": "response_status",
+      "response_epoch": 0,
+      "status": "ready"
+    },
+    {
+      "at": "2026-09-13T16:17:08.837Z",
+      "event": "asr_status",
+      "status": "connecting"
+    },
+    {
+      "at": "2026-09-13T16:17:09.020Z",
+      "event": "asr_status",
+      "status": "listening",
+      "model": "16k_zh_en_2.0"
+    },
+    {
+      "at": "2026-09-13T16:17:09.531Z",
+      "event": "speech_started",
+      "rms": 1789.3151203742732
+    },
+    {
+      "at": "2026-09-13T16:17:09.948Z",
+      "event": "asr_partial",
+      "text": "迪牧",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "begin_time": 240,
+      "end_time": 880
+    },
+    {
+      "at": "2026-09-13T16:17:09.948Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪牧",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:10.123Z",
+      "event": "asr_partial",
+      "text": "迪牧",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "begin_time": 240,
+      "end_time": 1080
+    },
+    {
+      "at": "2026-09-13T16:17:10.123Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪牧",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:10.525Z",
+      "event": "asr_partial",
+      "text": "迪莫",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "begin_time": 240,
+      "end_time": 1480
+    },
+    {
+      "at": "2026-09-13T16:17:10.525Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:11.144Z",
+      "event": "asr_partial",
+      "text": "迪莫，你去教下",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "begin_time": 240,
+      "end_time": 2080
+    },
+    {
+      "at": "2026-09-13T16:17:11.144Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去教下",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:11.372Z",
+      "event": "speech_ended",
+      "rms": 0
+    },
+    {
+      "at": "2026-09-13T16:17:11.776Z",
+      "event": "asr_final",
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "begin_time": 240,
+      "end_time": 1990
+    },
+    {
+      "at": "2026-09-13T16:17:11.779Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:12.578Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "committed",
+      "text": "迪莫，你去浇下水。",
+      "reason": "window_elapsed",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:12.578Z",
+      "event": "input_queue",
+      "response_epoch": 0,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T16:17:12.579Z",
+      "event": "input_dispatched",
+      "response_epoch": 0,
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:1"
+    },
+    {
+      "at": "2026-09-13T16:17:12.579Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-13T16:17:12.579Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "action_result",
+      "response_epoch": 1,
+      "status": "classified",
+      "latency_ms": 999,
+      "tool_call": {
+        "id": "call_00_NBOupNHg1CsLDpojDmdG6612",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_NBOupNHg1CsLDpojDmdG6612",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2756,
+        "asr_final_to_first_text_ms": 1801
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.578Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:17:13.938Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-13T16:17:14.178Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2756,
+        "speech_end_to_first_audio_ms": 3356,
+        "asr_final_to_first_text_ms": 1801,
+        "asr_final_to_first_audio_ms": 2402
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:14.962Z",
+      "event": "asr_partial",
+      "text": "先别",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "begin_time": 5220,
+      "end_time": 5860
+    },
+    {
+      "at": "2026-09-13T16:17:14.962Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "先别",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:14.962Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:17:14.979Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2756,
+        "speech_end_to_first_audio_ms": 3356,
+        "asr_final_to_first_text_ms": 1801,
+        "asr_final_to_first_audio_ms": 2402,
+        "speech_to_duck_ms": 17
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:15.128Z",
+      "event": "asr_partial",
+      "text": "先别",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "begin_time": 5220,
+      "end_time": 6060
+    },
+    {
+      "at": "2026-09-13T16:17:15.128Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "先别",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:15.355Z",
+      "event": "asr_partial",
+      "text": "先别浇水",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "begin_time": 5220,
+      "end_time": 6260
+    },
+    {
+      "at": "2026-09-13T16:17:15.355Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "先别浇水",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:15.778Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-13T16:17:16.143Z",
+      "event": "asr_partial",
+      "text": "先别浇水了",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "begin_time": 5220,
+      "end_time": 7060
+    },
+    {
+      "at": "2026-09-13T16:17:16.143Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "先别浇水了",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:16.743Z",
+      "event": "asr_partial",
+      "text": "先别浇水了，给我讲个故事",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "begin_time": 5220,
+      "end_time": 7660
+    },
+    {
+      "at": "2026-09-13T16:17:16.743Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "先别浇水了，给我讲个故事",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:17.334Z",
+      "event": "asr_partial",
+      "text": "先别浇水了，给我讲个故事吧",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "begin_time": 5220,
+      "end_time": 8260
+    },
+    {
+      "at": "2026-09-13T16:17:17.334Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "先别浇水了，给我讲个故事吧",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:17.541Z",
+      "event": "asr_final",
+      "text": "先别浇水了，给我讲个故事吧。",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "begin_time": 5220,
+      "end_time": 7745
+    },
+    {
+      "at": "2026-09-13T16:17:17.541Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "先别浇水了，给我讲个故事吧。",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:18.359Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "committed",
+      "text": "先别浇水了，给我讲个故事吧。",
+      "reason": "window_elapsed",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "source_utterance_ids": [
+        "b652c027-5c2e-4109-bf47-3233de63d345:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:17:18.360Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:17:18.360Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2"
+    },
+    {
+      "at": "2026-09-13T16:17:18.367Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2756,
+        "speech_end_to_first_audio_ms": 3356,
+        "asr_final_to_first_text_ms": 1801,
+        "asr_final_to_first_audio_ms": 2402,
+        "speech_to_duck_ms": 0
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:18.858Z",
+      "event": "intent_result",
+      "response_epoch": 1,
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2",
+      "interrupt": true,
+      "latency_ms": 499
+    },
+    {
+      "at": "2026-09-13T16:17:18.858Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T16:17:18.858Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T16:17:18.858Z",
+      "event": "response_cancelled",
+      "response_epoch": 1,
+      "queue_dropped": 234,
+      "tts_active": true
+    },
+    {
+      "at": "2026-09-13T16:17:18.859Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "cancelled",
+      "tool_call": {
+        "id": "call_00_NBOupNHg1CsLDpojDmdG6612",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:18.859Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "interrupted"
+    },
+    {
+      "at": "2026-09-13T16:17:18.859Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-13T16:17:18.859Z",
+      "event": "turn_transition",
+      "response_epoch": 2,
+      "status": "listening",
+      "previous_epoch": 1,
+      "utterance_id": "b652c027-5c2e-4109-bf47-3233de63d345:2"
+    },
+    {
+      "at": "2026-09-13T16:17:18.860Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-13T16:17:19.573Z",
+      "event": "action_result",
+      "response_epoch": 2,
+      "status": "classified",
+      "latency_ms": 714,
+      "tool_call": {
+        "id": "call_00_NxUBd5EMPjAVQLMZSNXt9934",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:19.573Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_NxUBd5EMPjAVQLMZSNXt9934",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:19.573Z",
+      "event": "response_context",
+      "response_epoch": 2,
+      "detail": "Server execution state. These are lifecycle facts, not spoken dialogue. Historical requests are context, never pending commands to replay. completed means voice output was sent, not a real game effect. cancelled/failed work is inactive, including cancelled remaining actions.\nThe server has selected and started the CURRENT general_qa step NOW. Fulfill the last user message now. Scheduling, interruption and tool execution are already owned by the server. Do not postpone this answer, promise to answer later, restart past work, or say you are going to perform a farming action. Any later planned steps will be run by the server after this answer. A request for a story needs an actual short story, not a promise or an acknowledgement.\n{\"response_epoch\":2,\"current_action\":\"general_qa\",\"previous_responses\":[{\"response_epoch\":1,\"action\":\"water\",\"status\":\"cancelled\"}],\"voice_simulation_only\":true}",
+      "reason": "answer_current_step_now"
+    },
+    {
+      "at": "2026-09-13T16:17:19.966Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 3389,
+        "asr_final_to_first_text_ms": 2424
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:19.966Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小"
+    },
+    {
+      "at": "2026-09-13T16:17:20.083Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克"
+    },
+    {
+      "at": "2026-09-13T16:17:20.107Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，"
+    },
+    {
+      "at": "2026-09-13T16:17:20.107Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水"
+    },
+    {
+      "at": "2026-09-13T16:17:20.138Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事"
+    },
+    {
+      "at": "2026-09-13T16:17:20.171Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才"
+    },
+    {
+      "at": "2026-09-13T16:17:20.204Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了"
+    },
+    {
+      "at": "2026-09-13T16:17:20.249Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，"
+    },
+    {
+      "at": "2026-09-13T16:17:20.249Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不"
+    },
+    {
+      "at": "2026-09-13T16:17:20.268Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再"
+    },
+    {
+      "at": "2026-09-13T16:17:20.308Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做"
+    },
+    {
+      "at": "2026-09-13T16:17:20.308Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦"
+    },
+    {
+      "at": "2026-09-13T16:17:20.330Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。"
+    },
+    {
+      "at": "2026-09-13T16:17:20.331Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事"
+    },
+    {
+      "at": "2026-09-13T16:17:20.331Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-13T16:17:20.365Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就"
+    },
+    {
+      "at": "2026-09-13T16:17:20.398Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来"
+    },
+    {
+      "at": "2026-09-13T16:17:20.434Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来："
+    },
+    {
+      "at": "2026-09-13T16:17:20.434Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前"
+    },
+    {
+      "at": "2026-09-13T16:17:20.461Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有"
+    },
+    {
+      "at": "2026-09-13T16:17:20.461Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗"
+    },
+    {
+      "at": "2026-09-13T16:17:20.490Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小"
+    },
+    {
+      "at": "2026-09-13T16:17:20.491Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星"
+    },
+    {
+      "at": "2026-09-13T16:17:20.522Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，"
+    },
+    {
+      "at": "2026-09-13T16:17:20.554Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老"
+    },
+    {
+      "at": "2026-09-13T16:17:20.587Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己"
+    },
+    {
+      "at": "2026-09-13T16:17:20.619Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够"
+    },
+    {
+      "at": "2026-09-13T16:17:20.654Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮"
+    },
+    {
+      "at": "2026-09-13T16:17:20.654Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。"
+    },
+    {
+      "at": "2026-09-13T16:17:20.687Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它"
+    },
+    {
+      "at": "2026-09-13T16:17:20.719Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力"
+    },
+    {
+      "at": "2026-09-13T16:17:20.749Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给"
+    },
+    {
+      "at": "2026-09-13T16:17:20.758Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-13T16:17:20.781Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜"
+    },
+    {
+      "at": "2026-09-13T16:17:20.814Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路"
+    },
+    {
+      "at": "2026-09-13T16:17:20.814Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小"
+    },
+    {
+      "at": "2026-09-13T16:17:20.850Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克"
+    },
+    {
+      "at": "2026-09-13T16:17:20.879Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照"
+    },
+    {
+      "at": "2026-09-13T16:17:20.912Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光"
+    },
+    {
+      "at": "2026-09-13T16:17:20.912Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，"
+    },
+    {
+      "at": "2026-09-13T16:17:20.912Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后"
+    },
+    {
+      "at": "2026-09-13T16:17:20.943Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现"
+    },
+    {
+      "at": "2026-09-13T16:17:20.983Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，"
+    },
+    {
+      "at": "2026-09-13T16:17:20.983Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真"
+    },
+    {
+      "at": "2026-09-13T16:17:20.999Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 3389,
+        "speech_end_to_first_audio_ms": 4422,
+        "asr_final_to_first_text_ms": 2424,
+        "asr_final_to_first_audio_ms": 3457
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:21.008Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真发光"
+    },
+    {
+      "at": "2026-09-13T16:17:21.048Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真发光就是"
+    },
+    {
+      "at": "2026-09-13T16:17:21.078Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真发光就是最"
+    },
+    {
+      "at": "2026-09-13T16:17:21.078Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真发光就是最亮"
+    },
+    {
+      "at": "2026-09-13T16:17:21.107Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真发光就是最亮的样子"
+    },
+    {
+      "at": "2026-09-13T16:17:21.136Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "小洛克，浇水的事刚才取消了，我不再去做啦。故事这就来：从前有颗小星星，老觉得自己不够亮。它努力给夜路的小洛克照光，最后发现，认真发光就是最亮的样子。"
+    },
+    {
+      "at": "2026-09-13T16:17:38.518Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_NxUBd5EMPjAVQLMZSNXt9934",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:38.518Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "completed"
+    }
+  ],
+  "media": [
+    {
+      "type": "inbound-rtp",
+      "packetsReceived": 1485,
+      "totalAudioEnergy": 2.1855443967804713
+    },
+    {
+      "type": "outbound-rtp",
+      "packetsSent": 1493
+    }
+  ]
+}

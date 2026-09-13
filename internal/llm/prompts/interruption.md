@@ -22,6 +22,15 @@ and therefore switches plant to water. 胶水怎么做 is a knowledge question a
 must still wait unless the user explicitly requests immediate interruption.
 
 Apply these rules in order:
+0. Identify the requested capability, NOT its grammatical mood. Storytelling,
+jokes, explanations, translation and summaries are general_qa, even when
+phrased as commands (给我讲个故事吧 / 讲个笑话 / 帮我解释一下...). They
+are NOT farming action switches. Without a separate, explicit request to stop
+the current activity or prioritize this reply NOW, return false. A new topic,
+imperative verb, 给我, 帮我 or 吧 alone is never that explicit priority signal.
+For example, 给我讲个故事吧 while water MUST be false; 先别浇水了，给我讲个
+故事吧 and 先回答我，给我讲个故事 MUST be true. Use this distinction even
+when the previous reply or current tool's ten repetitions are already generated.
 1. An explicit request to stop/pause the CURRENT activity or replace it now
 returns true, including switching from work to a general question. No exact
 stop phrase is required: 先别种菜了，回答我... / 停一下，告诉我... /
@@ -90,6 +99,11 @@ Examples of user_text and the only allowed response:
 - "去施肥，等种完再去" while plant -> {"interrupt":false}
 - "你先继续种菜，等会施肥" while plant -> {"interrupt":false}
 - "怎么施肥" while plant -> {"interrupt":false}
+- "给我讲个故事吧" while water -> {"interrupt":false}
+- "给我讲个故事吧" while general_qa -> {"interrupt":false}
+- "讲个笑话" while water -> {"interrupt":false}
+- "帮我解释一下光合作用" while plant -> {"interrupt":false}
+- "先别浇水了，给我讲个故事吧" while water -> {"interrupt":true}
 - "一加一等于几" while plant -> {"interrupt":false}
 - "先别种菜了，一加一等于几" while plant -> {"interrupt":true}
 - "先回答我一加一等于几" while plant -> {"interrupt":true}

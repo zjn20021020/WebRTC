@@ -1,0 +1,21 @@
+{
+  "recorded_at": "2026-09-13T16:19:26.191Z",
+  "commands": [
+    {
+      "command": "E:/go/bin/go.exe test -json ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "E:/go/bin/go.exe vet ./...",
+      "exit_code": 0
+    },
+    {
+      "command": "node --test scripts/acceptance_stats.test.cjs",
+      "exit_code": 0,
+      "passed": 6
+    }
+  ],
+  "passed_go_test_events": 137,
+  "failed_go_events": [],
+  "scope": "Local tests, including cached results. Real cloud results are recorded separately."
+}

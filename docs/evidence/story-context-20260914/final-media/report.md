@@ -1,0 +1,64 @@
+# 固定验收报告
+
+- 时间：2026-09-13T16:23:33.671Z
+- 结果：通过
+- 验收集：home-acceptance-v3-story；83 个样例，每例 3 次
+- 模型：deepseek-v4-pro
+- 提交：5cbe65291dc0840eb4c5103610fe433f771a8f68；实现摘要：08a50ecf0bd08f32afa146f943030cf2638cc2f6a6a07a60d83aae29ac077874
+- TTS 音色：101016；采样率：8000
+
+## 文本分类
+
+| 项目 | 通过 / 计划 | 严格通过率 | 请求错误 | 未执行 | 延迟 P50 / P95（ms） |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 动作分类 | 93 / 93 | 100.00% | 0 | 0 | 1073 / 1383 |
+| 打断分类 | 156 / 156 | 100.00% | 0 | 0 | 706 / 918 |
+
+误打断：0 / 81（0.00%）；漏打断：0 / 75（0.00%）。
+
+分母分别为已执行的预期 false / true 样本。请求异常按运行时 false 兜底计入有效决策，但严格通过率始终将异常计为失败。未执行样本另列，不进入误/漏率分母。
+
+## 真实语音闭环
+
+通过 3 / 3；旧轮取消后恢复事件 0；动作兜底 0；打断兜底 0；动作重试 0。
+
+| 场景 | 轮次 | 结果 | 证据 |
+| --- | ---: | --- | --- |
+| story-deferred | 1 | 通过 | [JSON](story-deferred.json) |
+| story-interrupted | 1 | 通过 | [JSON](story-interrupted.json) |
+| home-praise-voice | 1 | 通过 | [JSON](home-praise-voice.json) |
+
+## 延迟
+
+| 指标 | 样本数 | P50（ms） | P95（ms） | 最大值（ms） |
+| --- | ---: | ---: | ---: | ---: |
+| 浏览器确认事件到取消事件 | 1 | 136 | 136 | 136 |
+| 媒体链路动作分类（含内部重试） | 6 | 930 | 1054 | 1054 |
+| 媒体链路打断分类请求 | 3 | 859 | 883 | 883 |
+| direct: speech_end_to_first_text_ms | 3 | 2885 | 2893 | 2893 |
+| direct: asr_final_to_first_text_ms | 3 | 1807 | 1831 | 1831 |
+| direct: speech_end_to_first_audio_ms | 3 | 3583 | 3658 | 3658 |
+| direct: asr_final_to_first_audio_ms | 3 | 2497 | 2604 | 2604 |
+| direct: speech_to_duck_ms | 3 | 0 | 12 | 12 |
+| deferred: speech_end_to_first_text_ms | 2 | 18475 | 19303 | 19303 |
+| deferred: asr_final_to_first_text_ms | 2 | 17382 | 18125 | 18125 |
+| deferred: speech_end_to_first_audio_ms | 2 | 19118 | 20290 | 20290 |
+| deferred: asr_final_to_first_audio_ms | 2 | 18025 | 19112 | 19112 |
+| interrupted: speech_end_to_first_text_ms | 1 | 4335 | 4335 | 4335 |
+| interrupted: asr_final_to_first_text_ms | 1 | 3236 | 3236 | 3236 |
+| interrupted: speech_end_to_first_audio_ms | 1 | 5593 | 5593 | 5593 |
+| interrupted: asr_final_to_first_audio_ms | 1 | 4493 | 4493 | 4493 |
+
+## 未通过样例
+
+无。
+
+## 测量边界
+
+- 文本层直接调用实际分类客户端，每次只请求一次，不包含 ASR、partial 调度门槛或动作内部重试。媒体层运行完整应用和实际云服务。
+- P50/P95 使用 nearest-rank；请求耗时包含错误和超时。JSON 另列合法响应耗时、分类混淆矩阵、分类别和逐样例结果。
+- 重复输入用于检查回归和波动，不代表独立用户样本，也不承诺线上准确率。
+- 响应指标在每次媒体运行中按轮次取最后一个已知值，避免累计快照重复计数；direct 为直接响应，interrupted 为打断后响应，deferred 为缓存派发，planned 为计划后续步骤，后两者包含有意等待。speech_to_duck 每轮仅保留最后一次已知值。
+- 首音频指服务端首个非静音 RTP 发送；确认到取消指浏览器收到控制事件的间隔。均不是物理耳机延迟。
+- 媒体输入为固定合成音频经 WebAudio 虚拟麦克风进入真实 WebRTC；物理输出静音。旧轮恢复检查不等于耳机尾音测量。
+- 跨 final 合并仅在 cross-final-wait 场景通过且记录至少两个来源 final 时计为已测；文本分类测试不代表跨 final 调度已验证。未覆盖真人噪声/回声、多说话人和长期弱网。

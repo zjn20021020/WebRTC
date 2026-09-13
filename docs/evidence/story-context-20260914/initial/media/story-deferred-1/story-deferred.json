@@ -1,0 +1,792 @@
+{
+  "recorded_at": "2026-09-13T16:17:06.305Z",
+  "passed": false,
+  "mode": "story-deferred",
+  "error": "No substantive story: 有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮堂堂的家园门口。",
+  "events": [
+    {
+      "at": "2026-09-13T16:16:29.463Z",
+      "event": "response_status",
+      "response_epoch": 0,
+      "status": "ready"
+    },
+    {
+      "at": "2026-09-13T16:16:29.464Z",
+      "event": "asr_status",
+      "status": "connecting"
+    },
+    {
+      "at": "2026-09-13T16:16:29.716Z",
+      "event": "asr_status",
+      "status": "listening",
+      "model": "16k_zh_en_2.0"
+    },
+    {
+      "at": "2026-09-13T16:16:30.230Z",
+      "event": "speech_started",
+      "rms": 1964.2486858847583
+    },
+    {
+      "at": "2026-09-13T16:16:30.579Z",
+      "event": "asr_partial",
+      "text": "迪",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "begin_time": 300,
+      "end_time": 900
+    },
+    {
+      "at": "2026-09-13T16:16:30.580Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:30.746Z",
+      "event": "asr_partial",
+      "text": "迪",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "begin_time": 300,
+      "end_time": 1060
+    },
+    {
+      "at": "2026-09-13T16:16:30.746Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:31.176Z",
+      "event": "asr_partial",
+      "text": "迪莫",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "begin_time": 300,
+      "end_time": 1460
+    },
+    {
+      "at": "2026-09-13T16:16:31.176Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:31.766Z",
+      "event": "asr_partial",
+      "text": "迪莫，你去焦下",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "begin_time": 300,
+      "end_time": 2060
+    },
+    {
+      "at": "2026-09-13T16:16:31.767Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去焦下",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:32.052Z",
+      "event": "speech_ended",
+      "rms": 0
+    },
+    {
+      "at": "2026-09-13T16:16:32.362Z",
+      "event": "asr_partial",
+      "text": "迪莫，你去浇下水",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "begin_time": 300,
+      "end_time": 2660
+    },
+    {
+      "at": "2026-09-13T16:16:32.362Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去浇下水",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:32.577Z",
+      "event": "asr_final",
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "begin_time": 300,
+      "end_time": 2075
+    },
+    {
+      "at": "2026-09-13T16:16:32.579Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "collecting",
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:33.394Z",
+      "event": "input_merge",
+      "response_epoch": 0,
+      "status": "committed",
+      "text": "迪莫，你去浇下水。",
+      "reason": "window_elapsed",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:33.394Z",
+      "event": "input_queue",
+      "response_epoch": 0,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T16:16:33.394Z",
+      "event": "input_dispatched",
+      "response_epoch": 0,
+      "text": "迪莫，你去浇下水。",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:1"
+    },
+    {
+      "at": "2026-09-13T16:16:33.394Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-13T16:16:33.394Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "action_result",
+      "response_epoch": 1,
+      "status": "classified",
+      "latency_ms": 881,
+      "tool_call": {
+        "id": "call_00_3h0MqUK1iaeQFJ45rvw70791",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_3h0MqUK1iaeQFJ45rvw70791",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2745,
+        "asr_final_to_first_text_ms": 1695
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.271Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-13T16:16:34.273Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.273Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.273Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.273Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.273Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.273Z",
+      "event": "response_text",
+      "response_epoch": 1,
+      "text": "我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。我正在浇水。"
+    },
+    {
+      "at": "2026-09-13T16:16:34.610Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-13T16:16:34.850Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2745,
+        "speech_end_to_first_audio_ms": 3323,
+        "asr_final_to_first_text_ms": 1695,
+        "asr_final_to_first_audio_ms": 2273
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:35.150Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:16:35.150Z",
+      "event": "speech_started",
+      "rms": 3350.2083666542294
+    },
+    {
+      "at": "2026-09-13T16:16:35.169Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2745,
+        "speech_end_to_first_audio_ms": 3323,
+        "asr_final_to_first_text_ms": 1695,
+        "asr_final_to_first_audio_ms": 2273,
+        "speech_to_duck_ms": 217
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:35.565Z",
+      "event": "asr_partial",
+      "text": "给我",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "begin_time": 5220,
+      "end_time": 5860
+    },
+    {
+      "at": "2026-09-13T16:16:35.565Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:35.745Z",
+      "event": "asr_partial",
+      "text": "给我",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "begin_time": 5220,
+      "end_time": 6060
+    },
+    {
+      "at": "2026-09-13T16:16:35.745Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:35.991Z",
+      "event": "asr_partial",
+      "text": "给我讲个故",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "begin_time": 5220,
+      "end_time": 6260
+    },
+    {
+      "at": "2026-09-13T16:16:35.991Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我讲个故",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:36.412Z",
+      "event": "speech_ended",
+      "rms": 0
+    },
+    {
+      "at": "2026-09-13T16:16:36.758Z",
+      "event": "asr_partial",
+      "text": "给我讲个故事吧",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "begin_time": 5220,
+      "end_time": 7060
+    },
+    {
+      "at": "2026-09-13T16:16:36.762Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我讲个故事吧",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:36.974Z",
+      "event": "asr_final",
+      "text": "给我讲个故事吧。",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "begin_time": 5220,
+      "end_time": 6570
+    },
+    {
+      "at": "2026-09-13T16:16:36.975Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "collecting",
+      "text": "给我讲个故事吧。",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:37.229Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "unconfirmed"
+    },
+    {
+      "at": "2026-09-13T16:16:37.788Z",
+      "event": "input_merge",
+      "response_epoch": 1,
+      "status": "committed",
+      "text": "给我讲个故事吧。",
+      "reason": "window_elapsed",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "source_utterance_ids": [
+        "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+      ]
+    },
+    {
+      "at": "2026-09-13T16:16:37.788Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "ducking"
+    },
+    {
+      "at": "2026-09-13T16:16:37.789Z",
+      "event": "intent_status",
+      "response_epoch": 1,
+      "status": "checking",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+    },
+    {
+      "at": "2026-09-13T16:16:37.789Z",
+      "event": "response_metrics",
+      "response_epoch": 1,
+      "metrics": {
+        "speech_end_to_first_text_ms": 2745,
+        "speech_end_to_first_audio_ms": 3323,
+        "asr_final_to_first_text_ms": 1695,
+        "asr_final_to_first_audio_ms": 2273,
+        "speech_to_duck_ms": 0
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:38.222Z",
+      "event": "intent_result",
+      "response_epoch": 1,
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2",
+      "interrupt": false,
+      "latency_ms": 433
+    },
+    {
+      "at": "2026-09-13T16:16:38.222Z",
+      "event": "input_buffered",
+      "response_epoch": 1,
+      "text": "给我讲个故事吧。",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+    },
+    {
+      "at": "2026-09-13T16:16:38.222Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 1
+    },
+    {
+      "at": "2026-09-13T16:16:38.222Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "speaking",
+      "reason": "intent_deferred"
+    },
+    {
+      "at": "2026-09-13T16:16:53.788Z",
+      "event": "tool_status",
+      "response_epoch": 1,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_3h0MqUK1iaeQFJ45rvw70791",
+        "name": "water"
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:53.788Z",
+      "event": "response_status",
+      "response_epoch": 1,
+      "status": "completed"
+    },
+    {
+      "at": "2026-09-13T16:16:53.788Z",
+      "event": "input_queue",
+      "response_epoch": 1,
+      "queue_size": 0
+    },
+    {
+      "at": "2026-09-13T16:16:53.789Z",
+      "event": "input_dispatched",
+      "response_epoch": 1,
+      "text": "给我讲个故事吧。",
+      "utterance_id": "d6d85990-5342-4244-a8bb-12e3bc7c275e:2"
+    },
+    {
+      "at": "2026-09-13T16:16:53.789Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "listening"
+    },
+    {
+      "at": "2026-09-13T16:16:53.789Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "thinking"
+    },
+    {
+      "at": "2026-09-13T16:16:54.600Z",
+      "event": "action_result",
+      "response_epoch": 2,
+      "status": "classified",
+      "latency_ms": 810,
+      "tool_call": {
+        "id": "call_00_lSAWseKGrjCGc4FBDyeS9538",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:54.600Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "running",
+      "tool_call": {
+        "id": "call_00_lSAWseKGrjCGc4FBDyeS9538",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:54.600Z",
+      "event": "response_context",
+      "response_epoch": 2,
+      "detail": "Server execution state. These are lifecycle facts, not spoken dialogue. Historical requests are context, never pending commands to replay. completed means voice output was sent, not a real game effect. cancelled/failed work is inactive, including cancelled remaining actions.\nThe server has selected and started the CURRENT general_qa step NOW. Fulfill the last user message now. Scheduling, interruption and tool execution are already owned by the server. Do not postpone this answer, promise to answer later, restart past work, or say you are going to perform a farming action. Any later planned steps will be run by the server after this answer. A request for a story needs an actual short story, not a promise or an acknowledgement.\n{\"response_epoch\":2,\"current_action\":\"general_qa\",\"previous_responses\":[{\"response_epoch\":1,\"action\":\"water\",\"status\":\"completed\"}],\"voice_simulation_only\":true}",
+      "reason": "answer_current_step_now"
+    },
+    {
+      "at": "2026-09-13T16:16:54.880Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 18857,
+        "asr_final_to_first_text_ms": 17905
+      }
+    },
+    {
+      "at": "2026-09-13T16:16:54.880Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只"
+    },
+    {
+      "at": "2026-09-13T16:16:54.973Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小"
+    },
+    {
+      "at": "2026-09-13T16:16:55.005Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克"
+    },
+    {
+      "at": "2026-09-13T16:16:55.006Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在"
+    },
+    {
+      "at": "2026-09-13T16:16:55.037Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾"
+    },
+    {
+      "at": "2026-09-13T16:16:55.068Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天"
+    },
+    {
+      "at": "2026-09-13T16:16:55.101Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走"
+    },
+    {
+      "at": "2026-09-13T16:16:55.138Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了"
+    },
+    {
+      "at": "2026-09-13T16:16:55.139Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，"
+    },
+    {
+      "at": "2026-09-13T16:16:55.165Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟"
+    },
+    {
+      "at": "2026-09-13T16:16:55.198Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴"
+    },
+    {
+      "at": "2026-09-13T16:16:55.231Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们"
+    },
+    {
+      "at": "2026-09-13T16:16:55.266Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬"
+    },
+    {
+      "at": "2026-09-13T16:16:55.266Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住"
+    },
+    {
+      "at": "2026-09-13T16:16:55.296Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的"
+    },
+    {
+      "at": "2026-09-13T16:16:55.329Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子"
+    },
+    {
+      "at": "2026-09-13T16:16:55.360Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，"
+    },
+    {
+      "at": "2026-09-13T16:16:55.360Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路"
+    },
+    {
+      "at": "2026-09-13T16:16:55.360Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "synthesizing"
+    },
+    {
+      "at": "2026-09-13T16:16:55.396Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着"
+    },
+    {
+      "at": "2026-09-13T16:16:55.425Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银"
+    },
+    {
+      "at": "2026-09-13T16:16:55.463Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光"
+    },
+    {
+      "at": "2026-09-13T16:16:55.487Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，"
+    },
+    {
+      "at": "2026-09-13T16:16:55.487Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他"
+    },
+    {
+      "at": "2026-09-13T16:16:55.516Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回"
+    },
+    {
+      "at": "2026-09-13T16:16:55.516Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮"
+    },
+    {
+      "at": "2026-09-13T16:16:55.550Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮堂堂"
+    },
+    {
+      "at": "2026-09-13T16:16:55.584Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮堂堂的家"
+    },
+    {
+      "at": "2026-09-13T16:16:55.619Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮堂堂的家园"
+    },
+    {
+      "at": "2026-09-13T16:16:55.619Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮堂堂的家园门口"
+    },
+    {
+      "at": "2026-09-13T16:16:55.646Z",
+      "event": "response_text",
+      "response_epoch": 2,
+      "text": "有一只小洛克在雾天走丢了，我跟伙伴们咬住他的影子，一路拉着银光，把他带回亮堂堂的家园门口。"
+    },
+    {
+      "at": "2026-09-13T16:16:55.828Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "speaking"
+    },
+    {
+      "at": "2026-09-13T16:16:56.088Z",
+      "event": "response_metrics",
+      "response_epoch": 2,
+      "metrics": {
+        "speech_end_to_first_text_ms": 18857,
+        "speech_end_to_first_audio_ms": 20066,
+        "asr_final_to_first_text_ms": 17905,
+        "asr_final_to_first_audio_ms": 19114
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:06.269Z",
+      "event": "tool_status",
+      "response_epoch": 2,
+      "status": "completed",
+      "tool_call": {
+        "id": "call_00_lSAWseKGrjCGc4FBDyeS9538",
+        "name": "general_qa"
+      }
+    },
+    {
+      "at": "2026-09-13T16:17:06.269Z",
+      "event": "response_status",
+      "response_epoch": 2,
+      "status": "completed"
+    }
+  ],
+  "page_errors": []
+}
