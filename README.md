@@ -61,7 +61,7 @@
 ```bash
 git clone https://github.com/zjn20021020/WebRTC.git
 cd WebRTC
-git switch dev
+git switch master
 go mod download
 ```
 
