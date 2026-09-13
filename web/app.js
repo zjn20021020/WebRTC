@@ -8,6 +8,8 @@ const waveformContext = waveform.getContext('2d');
 const disconnectButton = document.querySelector('#disconnect');
 const asrStatusElement = document.querySelector('#asrStatus');
 const asrError = document.querySelector('#asrError');
+const audioMode = document.querySelector('#audioMode');
+const audioModeStatus = document.querySelector('#audioModeStatus');
 const partialTranscript = document.querySelector('#partialTranscript');
 const finalTranscript = document.querySelector('#finalTranscript');
 const finalized = new Map();
@@ -34,6 +36,19 @@ const turnLabel = document.querySelector('#turnLabel');
 let responseEpoch = -1;
 let responseFinished = false;
 let activeConnection = null;
+
+function microphoneConstraints() {
+  const speakers = audioMode.querySelector('input:checked').value === 'speakers';
+  return { echoCancellation: speakers, noiseSuppression: speakers, autoGainControl: speakers };
+}
+
+function logMicrophoneSettings(track) {
+  const settings = track?.getSettings() || {};
+  const mode = audioMode.querySelector('input:checked').value;
+  audioModeStatus.textContent = mode === 'speakers' ? '回声消除已开启' : '麦克风直通';
+  if (mode === 'headphones' && [settings.echoCancellation, settings.noiseSuppression, settings.autoGainControl].some(value => value === true)) audioModeStatus.textContent = '浏览器未关闭音频处理';
+  log(`麦克风: ${JSON.stringify({ label: track?.label, mode, sampleRate: settings.sampleRate, channelCount: settings.channelCount, echoCancellation: settings.echoCancellation, noiseSuppression: settings.noiseSuppression, autoGainControl: settings.autoGainControl })}`);
+}
 
 function setReplyStatus(status) {
   const labels = {
@@ -156,6 +171,13 @@ function handleControl(data) {
   let message;
   try { message = JSON.parse(data); } catch { log('收到无效服务端事件'); return; }
   if (!message || typeof message !== 'object') return;
+  if (activeConnection) activeConnection.controlEvents = (activeConnection.controlEvents || 0) + 1;
+  if (message.event === 'asr_warning') {
+    asrError.textContent = message.detail || '尚未收到完整识别结果';
+    asrError.hidden = false;
+    log(`识别诊断: ${JSON.stringify(message)}`);
+    return;
+  }
   if (message.event === 'plan_status') { handlePlan(message); return; }
   if (message.event === 'input_merge') {
     if (!Number.isSafeInteger(message.response_epoch) || message.response_epoch < responseEpoch) return;
@@ -195,10 +217,13 @@ function handleControl(data) {
     return;
   }
   if (message.event === 'asr_partial' && typeof message.text === 'string') {
+    asrError.hidden = true;
     if (!finalized.has(message.utterance_id)) partialTranscript.textContent = message.text;
     return;
   }
   if (message.event === 'asr_final' && typeof message.text === 'string') {
+    asrError.hidden = true;
+    log(`ASR 原文: ${message.text}`);
     let line = finalized.get(message.utterance_id);
     if (!line) {
       line = document.createElement('li');
@@ -219,6 +244,8 @@ function handleControl(data) {
 }
 
 function disconnect() {
+  audioMode.disabled = false;
+  audioModeStatus.textContent = '';
   resetPlan();
   mergeCollecting = false;
   queuedInputCount = 0;
@@ -230,6 +257,8 @@ function disconnect() {
       connection.control.send(JSON.stringify({ event: 'disconnect' }));
     }
     connection.abort.abort();
+    clearInterval(connection.healthTimer);
+    connection.longTaskObserver?.disconnect();
     connection.stream?.getTracks().forEach((track) => track.stop());
     cancelAnimationFrame(connection.animationFrame);
     connection.audioContext?.close().catch(() => {});
@@ -283,7 +312,10 @@ function paintWaveformBackground(width, height) {
 
 function drawWaveform(analyser, data, connection) {
   if (activeConnection !== connection) return;
-  analyser.getByteTimeDomainData(data);
+  const now = performance.now();
+  connection.frameGapMS = Math.max(connection.frameGapMS || 0, connection.lastFrame ? now - connection.lastFrame : 0);
+  connection.lastFrame = now;
+  analyser.getFloatTimeDomainData(data);
   const width = waveform.clientWidth || 720;
   const height = waveform.clientHeight || 180;
   waveformContext.clearRect(0, 0, width, height);
@@ -294,7 +326,7 @@ function drawWaveform(analyser, data, connection) {
   const slice = width / data.length;
   let sum = 0;
   for (let i = 0; i < data.length; i += 1) {
-    const normalized = data[i] / 128 - 1;
+    const normalized = data[i];
     sum += normalized * normalized;
     const x = i * slice;
     const y = height / 2 + normalized * height * 0.42;
@@ -303,7 +335,8 @@ function drawWaveform(analyser, data, connection) {
   }
   waveformContext.stroke();
   const rms = Math.sqrt(sum / data.length);
-  meterElement.textContent = `麦克风 RMS: ${(rms * 100).toFixed(1)}%`;
+  connection.localRMS = rms;
+  meterElement.textContent = `麦克风 RMS: ${(rms * 100).toFixed(2)}%`;
   connection.animationFrame = requestAnimationFrame(() => drawWaveform(analyser, data, connection));
 }
 
@@ -341,6 +374,7 @@ function waitForIceGatheringComplete(peerConnection, signal) {
 }
 
 connectButton.addEventListener('click', async () => {
+  audioMode.disabled = true;
   resetPlan();
   mergeCollecting = false;
   queuedInputCount = 0;
@@ -367,12 +401,19 @@ connectButton.addEventListener('click', async () => {
   const connection = { abort: new AbortController() };
   activeConnection = connection;
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: microphoneConstraints() });
     if (activeConnection !== connection) {
       stream.getTracks().forEach((track) => track.stop());
       return;
     }
     connection.stream = stream;
+    const microphoneTrack = stream.getAudioTracks()[0];
+    logMicrophoneSettings(microphoneTrack);
+    if (microphoneTrack) {
+      microphoneTrack.onmute = () => { if (activeConnection === connection) log('麦克风音轨暂时无数据'); };
+      microphoneTrack.onunmute = () => { if (activeConnection === connection) log('麦克风音轨恢复'); };
+      microphoneTrack.onended = () => { if (activeConnection === connection) { log('麦克风已被系统停止'); disconnect(); } };
+    }
     const audioContext = new AudioContext();
     connection.audioContext = audioContext;
     await audioContext.resume();
@@ -381,7 +422,14 @@ connectButton.addEventListener('click', async () => {
     analyser.fftSize = 1024;
     const source = audioContext.createMediaStreamSource(stream);
     source.connect(analyser);
-    drawWaveform(analyser, new Uint8Array(analyser.fftSize), connection);
+    connection.source = source;
+    connection.analyser = analyser;
+    audioContext.onstatechange = () => {
+      if (activeConnection !== connection) return;
+      log(`麦克风音频上下文: ${audioContext.state}`);
+      if (audioContext.state === 'suspended') audioContext.resume().catch(() => log('麦克风波形暂停，音频上下文未恢复'));
+    };
+    drawWaveform(analyser, new Float32Array(analyser.fftSize), connection);
     const peerConnection = new RTCPeerConnection();
     connection.peerConnection = peerConnection;
     peerConnection.onconnectionstatechange = () => {
@@ -417,6 +465,7 @@ connectButton.addEventListener('click', async () => {
     });
     if (!response.ok) throw new Error(await response.text());
     await peerConnection.setRemoteDescription(await response.json());
+    startAudioDiagnostics(connection);
     log('SDP offer/answer 完成');
   } catch (error) {
     if (activeConnection !== connection) return;
@@ -427,3 +476,39 @@ connectButton.addEventListener('click', async () => {
     connectButton.disabled = false;
   }
 });
+
+function startAudioDiagnostics(connection) {
+  connection.diagnosticSession = crypto.randomUUID();
+  if (typeof PerformanceObserver !== 'undefined' && PerformanceObserver.supportedEntryTypes?.includes('longtask')) {
+    connection.longTaskObserver = new PerformanceObserver(list => {
+      for (const entry of list.getEntries()) connection.longTaskMS = Math.max(connection.longTaskMS || 0, entry.duration);
+    });
+    connection.longTaskObserver.observe({ type: 'longtask' });
+  }
+  connection.healthTimer = setInterval(async () => {
+    if (activeConnection !== connection || connection.healthPending) return;
+    connection.healthPending = true;
+    try {
+      const reports = [...(await connection.peerConnection.getStats()).values()];
+      if (activeConnection !== connection) return;
+      const track = connection.stream.getAudioTracks()[0];
+      const media = reports.find(r => r.type === 'media-source' && r.kind === 'audio');
+      const outbound = reports.find(r => r.type === 'outbound-rtp' && r.kind === 'audio');
+      const settings = track?.getSettings() || {};
+      connection.healthData ||= new Float32Array(connection.analyser.fftSize);
+      connection.analyser.getFloatTimeDomainData(connection.healthData);
+      const measuredRMS = Math.sqrt(connection.healthData.reduce((sum, value) => sum + value * value, 0) / connection.healthData.length);
+      const sample = { session: connection.diagnosticSession, context: connection.audioContext.state, track: track?.readyState || 'missing', muted: !!track?.muted, enabled: !!track?.enabled,
+        echo_cancellation: settings.echoCancellation ?? null, noise_suppression: settings.noiseSuppression ?? null, auto_gain_control: settings.autoGainControl ?? null,
+        playback: !remoteAudio.paused && !!remoteAudio.srcObject, response_state: replyStatus.dataset.state || '', page_visible: document.visibilityState === 'visible', frame_age_ms: connection.lastFrame ? performance.now() - connection.lastFrame : 0,
+        rms: measuredRMS, energy: media?.totalAudioEnergy || 0, packets: outbound?.packetsSent || 0, bytes: outbound?.bytesSent || 0,
+        frame_gap_ms: connection.frameGapMS || 0, long_task_ms: connection.longTaskMS || 0, control_events: connection.controlEvents || 0 };
+      connection.frameGapMS = 0;
+      connection.longTaskMS = 0;
+      connection.lastAudioDiagnostic = sample;
+      const response = await fetch('/api/diagnostics', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sample), signal: connection.abort.signal });
+      if (response.status === 404 || response.status === 405 || response.status === 403) clearInterval(connection.healthTimer);
+    } catch { /* Connection shutdown or a diagnostics-disabled server. */ }
+    finally { connection.healthPending = false; }
+  }, 1000);
+}

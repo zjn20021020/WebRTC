@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"log"
 	"math/big"
 	"net/http"
 	"net/url"
@@ -174,6 +175,8 @@ func run(ctx context.Context, config Config, baseURL string, input <-chan []byte
 	const chunkDuration = 200 * time.Millisecond
 	const chunkBytes = SampleRate * 2 / 5
 	nextWrite := time.Now()
+	var sentBytes int64
+	lastAudioLog := time.Time{}
 	writeAudio := func(data []byte) error {
 		timer := time.NewTimer(time.Until(nextWrite))
 		defer timer.Stop()
@@ -183,8 +186,14 @@ func run(ctx context.Context, config Config, baseURL string, input <-chan []byte
 		case <-timer.C:
 		}
 		_ = connection.SetWriteDeadline(time.Now().Add(5 * time.Second))
+		startedWrite := time.Now()
 		if err := connection.WriteMessage(websocket.BinaryMessage, data); err != nil {
 			return errors.New("Tencent ASR audio send failed")
+		}
+		sentBytes += int64(len(data))
+		if time.Since(lastAudioLog) >= 5*time.Second || time.Since(startedWrite) >= 500*time.Millisecond {
+			log.Printf("asr_audio voice=%s sent_ms=%d queue_frames=%d write_ms=%d", voiceID, sentBytes*1000/(SampleRate*2), len(input), time.Since(startedWrite).Milliseconds())
+			lastAudioLog = time.Now()
 		}
 		if nextWrite.Before(time.Now().Add(-chunkDuration)) {
 			nextWrite = time.Now()
@@ -242,6 +251,7 @@ func run(ctx context.Context, config Config, baseURL string, input <-chan []byte
 
 func readResults(connection *websocket.Conn, voiceID string, emit func(Event)) error {
 	lastFinalID := -1
+	lastPartial := ""
 	for {
 		var message providerEvent
 		if err := connection.ReadJSON(&message); err != nil {
@@ -273,6 +283,10 @@ func readResults(connection *websocket.Conn, voiceID string, emit func(Event)) e
 					event = "asr_final"
 					lastFinalID = *sentence.ID
 				}
+				if event == "asr_final" || sentence.Text != lastPartial {
+					log.Printf("asr_result voice=%s sentence=%d event=%s begin_ms=%d end_ms=%d text=%q", voiceID, *sentence.ID, event, sentence.StartTime, sentence.EndTime, sentence.Text)
+					lastPartial = sentence.Text
+				}
 				emit(Event{Event: event, Text: sentence.Text,
 					UtteranceID: voiceID + ":" + strconv.Itoa(*sentence.ID),
 					BeginTime:   sentence.StartTime, EndTime: sentence.EndTime})
@@ -281,6 +295,10 @@ func readResults(connection *websocket.Conn, voiceID string, emit func(Event)) e
 			event := "asr_partial"
 			if sentence.SliceType == 2 {
 				event = "asr_final"
+			}
+			if event == "asr_final" || sentence.Text != lastPartial {
+				log.Printf("asr_result voice=%s sentence=%d event=%s begin_ms=%d end_ms=%d text=%q", voiceID, sentence.Index, event, sentence.StartTime, sentence.EndTime, sentence.Text)
+				lastPartial = sentence.Text
 			}
 			emit(Event{
 				Event: event, Text: sentence.Text,

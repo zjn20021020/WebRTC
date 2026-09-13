@@ -6,6 +6,7 @@ import (
 	"errors"
 	"log"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/pion/rtp"
@@ -43,6 +44,7 @@ type Session struct {
 	asrDone         chan struct{}
 	asrStarted      sync.Once
 	inputClock      inputClock
+	lastASRFinal    atomic.Int64
 }
 
 func NewSession(api *webrtc.API, asrConfig asr.Config, model dialogue.LanguageModel, speech dialogue.SpeechSynthesizer) (*Session, error) {
@@ -142,6 +144,11 @@ func NewSession(api *webrtc.API, asrConfig asr.Config, model dialogue.LanguageMo
 func (s *Session) readInbound(track *webrtc.TrackRemote) {
 	defer close(s.asrInput)
 	var packets uint64
+	var previousSequence uint16
+	var missing, reordered uint64
+	var peak, windowRMS float64
+	var speechStart, speechEnd time.Time
+	warned := false
 	for {
 		packet, _, err := track.ReadRTP()
 		if err != nil {
@@ -149,21 +156,51 @@ func (s *Session) readInbound(track *webrtc.TrackRemote) {
 			return
 		}
 		packets++
+		if packets > 1 {
+			delta := int16(packet.SequenceNumber - previousSequence)
+			if delta > 1 {
+				missing += uint64(delta - 1)
+			}
+			if delta <= 0 {
+				reordered++
+			}
+			if delta > 0 {
+				previousSequence = packet.SequenceNumber
+			}
+		} else {
+			previousSequence = packet.SequenceNumber
+		}
 		if track.Codec().MimeType == webrtc.MimeTypePCMU {
 			arrivedAt := time.Now()
 			samples := audio.DecodePCMU(packet.Payload)
 			rms := audio.RMS(samples)
+			windowRMS += rms * rms
+			if rms > peak {
+				peak = rms
+			}
 			if s.asrConfig.Enabled() && s.asrContext.Err() == nil {
 				s.inputClock.record(len(samples), arrivedAt)
 				s.enqueueASR(audio.PCM16LE(samples))
 			}
 			if event, ok := s.vad.Update(rms); ok {
+				if event == interrupt.SpeechStarted {
+					speechStart, speechEnd, warned = arrivedAt.Add(-vadStartAfter), time.Time{}, false
+				}
+				if event == interrupt.SpeechEnded {
+					speechEnd = arrivedAt
+				}
 				s.response.ObserveVAD(event, arrivedAt.Add(-vadStartAfter))
 				log.Printf("vad event=%s packets=%d pcmu_rms=%.1f", event, packets, rms)
 				s.sendControl(string(event), rms)
 			}
 			if packets%50 == 0 {
-				log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d pcmu_rms=%.1f", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), rms)
+				log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d pcmu_rms=%.1f window_power=%.1f peak_rms=%.1f queue_frames=%d missing=%d reordered=%d", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), rms, windowRMS/50, peak, len(s.asrInput), missing, reordered)
+				windowRMS, peak = 0, 0
+				if !warned && !speechEnd.IsZero() && arrivedAt.Sub(speechEnd) >= 3*time.Second && s.lastASRFinal.Load() < speechStart.UnixNano() && s.asrConfig.Enabled() && s.asrContext.Err() == nil {
+					warned = true
+					log.Printf("asr_diagnostic reason=no_final_after_speech queue_frames=%d missing=%d reordered=%d", len(s.asrInput), missing, reordered)
+					s.sendEvent(asr.Event{Event: "asr_warning", Status: "no_final", Detail: "检测到声音，完整识别结果暂未返回。"})
+				}
 			}
 		} else if packets%50 == 0 {
 			log.Printf("inbound audio: packets=%d sequence=%d timestamp=%d bytes=%d codec=%s (decoder unavailable)", packets, packet.SequenceNumber, packet.Timestamp, len(packet.Payload), track.Codec().MimeType)
@@ -202,14 +239,19 @@ func (s *Session) runASR() {
 	}
 	s.sendEvent(asr.Event{Event: "asr_status", Status: "connecting"})
 	err := asr.Run(s.asrContext, s.asrConfig, s.asrInput, func(event asr.Event) {
+		started := time.Now()
 		if event.Event == "asr_status" {
 			s.response.SetASRListening(event.Status == "listening")
 		}
 		if event.Event == "asr_final" {
+			s.lastASRFinal.Store(time.Now().UnixNano())
 			event.SpeechEndAt = s.inputClock.at(event.EndTime)
 		}
 		s.sendEvent(event)
 		s.response.AcceptASR(event)
+		if elapsed := time.Since(started); elapsed >= 100*time.Millisecond {
+			log.Printf("asr_diagnostic reason=slow_dispatch event=%s input=%q elapsed_ms=%d", event.Event, event.UtteranceID, elapsed.Milliseconds())
+		}
 	})
 	if cause := context.Cause(s.asrContext); cause != nil {
 		err = cause

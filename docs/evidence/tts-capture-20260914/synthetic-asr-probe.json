@@ -1,0 +1,115 @@
+{
+  "Mode": "baseline",
+  "Passed": false,
+  "Probes": [
+    {
+      "Name": "normal",
+      "BeginMS": 3000,
+      "EndMS": 4148,
+      "Gain": 1
+    },
+    {
+      "Name": "quiet",
+      "BeginMS": 7148,
+      "EndMS": 8296,
+      "Gain": 0.1
+    },
+    {
+      "Name": "after_silence",
+      "BeginMS": 20296,
+      "EndMS": 21444,
+      "Gain": 1
+    }
+  ],
+  "Records": [
+    {
+      "At": "2026-09-14T01:11:12.482934+08:00",
+      "Event": {
+        "event": "asr_status",
+        "status": "listening",
+        "model": "16k_zh_en_2.0"
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:16.2059122+08:00",
+      "Event": {
+        "event": "asr_partial",
+        "text": "去",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:1",
+        "begin_time": 3020,
+        "end_time": 3660
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:16.3470106+08:00",
+      "Event": {
+        "event": "asr_partial",
+        "text": "去",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:1",
+        "begin_time": 3020,
+        "end_time": 3860
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:16.5732742+08:00",
+      "Event": {
+        "event": "asr_partial",
+        "text": "去种地",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:1",
+        "begin_time": 3020,
+        "end_time": 4060
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:17.1633308+08:00",
+      "Event": {
+        "event": "asr_final",
+        "text": "去种地。",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:1",
+        "begin_time": 3020,
+        "end_time": 3795
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:33.4050805+08:00",
+      "Event": {
+        "event": "asr_partial",
+        "text": "去",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:2",
+        "begin_time": 20320,
+        "end_time": 20920
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:33.5470093+08:00",
+      "Event": {
+        "event": "asr_partial",
+        "text": "去",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:2",
+        "begin_time": 20320,
+        "end_time": 21080
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:33.9789362+08:00",
+      "Event": {
+        "event": "asr_partial",
+        "text": "去种地",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:2",
+        "begin_time": 20320,
+        "end_time": 21480
+      }
+    },
+    {
+      "At": "2026-09-14T01:11:34.3892108+08:00",
+      "Event": {
+        "event": "asr_final",
+        "text": "去种地。",
+        "utterance_id": "b7783c54-9a07-49ea-8ec7-7e939ab7dc87:2",
+        "begin_time": 20320,
+        "end_time": 21070
+      }
+    }
+  ],
+  "Error": ""
+}

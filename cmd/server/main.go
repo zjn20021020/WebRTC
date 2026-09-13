@@ -5,9 +5,11 @@ import (
 	"errors"
 	"flag"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"runtime/pprof"
 	"syscall"
 	"time"
 
@@ -22,6 +24,7 @@ import (
 
 func main() {
 	addr := flag.String("addr", ":8080", "HTTP listen address")
+	diagnostics := flag.Bool("diagnostics", false, "Enable loopback-only goroutine diagnostics")
 	flag.Parse()
 	if err := godotenv.Load(); err != nil && !errors.Is(err, os.ErrNotExist) {
 		log.Fatal("invalid .env file")
@@ -63,6 +66,19 @@ func main() {
 	api := webrtc.NewAPI(webrtc.WithMediaEngine(mediaEngine))
 
 	mux := http.NewServeMux()
+	if *diagnostics {
+		mux.HandleFunc("/api/diagnostics", signaling.BrowserDiagnostics)
+		mux.HandleFunc("/debug/goroutines", func(w http.ResponseWriter, r *http.Request) {
+			host, _, err := net.SplitHostPort(r.RemoteAddr)
+			if err != nil || !net.ParseIP(host).IsLoopback() {
+				http.Error(w, "loopback only", http.StatusForbidden)
+				return
+			}
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.Header().Set("Cache-Control", "no-store")
+			_ = pprof.Lookup("goroutine").WriteTo(w, 2)
+		})
+	}
 	signalingHandler := signaling.NewHandler(api, asrConfig, model, speech)
 	mux.Handle("/api/offer", signalingHandler)
 	mux.Handle("/", http.FileServer(http.Dir("web")))

@@ -1,0 +1,11 @@
+{
+  "minimum_rms": 0.1055045818856138,
+  "samples": 30,
+  "frame_gap_ms": 72.39999997615814,
+  "control_events": 1800,
+  "resumed": true,
+  "meter": "麦克风 RMS: 10.55%",
+  "native_headphone_and_speaker_constraints": true,
+  "passed": true,
+  "physical_microphone": false
+}

@@ -24,6 +24,12 @@
           </div>
           <p id="meter" class="meter">麦克风未启用</p>
         </div>
+        <fieldset class="audio-mode" id="audioMode">
+          <legend>收听方式</legend>
+          <label><input type="radio" name="audioMode" value="headphones" checked />耳机</label>
+          <label><input type="radio" name="audioMode" value="speakers" />外放</label>
+          <span id="audioModeStatus" role="status"></span>
+        </fieldset>
         <div class="audio-strip">
           <canvas id="waveform" width="720" height="96" aria-label="麦克风实时波形"></canvas>
           <audio id="remoteAudio" aria-label="语音播放" autoplay controls></audio>

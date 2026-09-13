@@ -1,0 +1,49 @@
+2026/09/14 01:28:11 response epoch=1 status=speaking
+2026/09/14 01:28:11 inbound audio: packets=400 sequence=29265 timestamp=207536423 bytes=160 pcmu_rms=15.0 window_power=380.7 peak_rms=26.1 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:11 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0007282038765817618,"energy":0.003666485979369528,"packets":408,"bytes":64000,"frame_gap_ms":18.19999998807907,"long_task_ms":0,"control_events":51}
+2026/09/14 01:28:12 inbound audio: packets=450 sequence=29315 timestamp=207544423 bytes=160 pcmu_rms=15.2 window_power=394.4 peak_rms=34.8 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:12 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.00047974652602249994,"energy":0.0036716950168208585,"packets":458,"bytes":72000,"frame_gap_ms":17.899999976158142,"long_task_ms":0,"control_events":51}
+2026/09/14 01:28:13 inbound audio: packets=500 sequence=29365 timestamp=207552423 bytes=160 pcmu_rms=828.8 window_power=146906.0 peak_rms=1113.8 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:13 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.02067005798175682,"energy":0.006286732164204481,"packets":508,"bytes":80000,"frame_gap_ms":17.30000001192093,"long_task_ms":0,"control_events":51}
+2026/09/14 01:28:14 asr_result voice=[session] sentence=2 event=asr_partial begin_ms=9380 end_ms=9980 text="给我讲"
+2026/09/14 01:28:14 response epoch=1 status=ducking
+2026/09/14 01:28:14 asr_audio voice=[session] sent_ms=10400 queue_frames=8 write_ms=0
+2026/09/14 01:28:14 inbound audio: packets=550 sequence=29415 timestamp=207560423 bytes=160 pcmu_rms=17.6 window_power=275666.8 peak_rms=1242.8 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:14 asr_result voice=[session] sentence=2 event=asr_partial begin_ms=9380 end_ms=10460 text="给我讲个故事吧"
+2026/09/14 01:28:14 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0009864681004118456,"energy":0.010638976325572933,"packets":558,"bytes":88000,"frame_gap_ms":19.5,"long_task_ms":0,"control_events":59}
+2026/09/14 01:28:14 response epoch=1 status=speaking reason=unconfirmed
+2026/09/14 01:28:15 asr_result voice=[session] sentence=2 event=asr_final begin_ms=9380 end_ms=10380 text="给我讲个故事吧。"
+2026/09/14 01:28:15 inbound audio: packets=600 sequence=29465 timestamp=207568423 bytes=160 pcmu_rms=18.0 window_power=326.0 peak_rms=30.5 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:15 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0006641573084442196,"energy":0.010642717974747043,"packets":608,"bytes":96000,"frame_gap_ms":17.900000035762787,"long_task_ms":0,"control_events":62}
+2026/09/14 01:28:16 response epoch=1 status=ducking
+2026/09/14 01:28:16 inbound audio: packets=650 sequence=29515 timestamp=207576423 bytes=160 pcmu_rms=18.2 window_power=2041.2 peak_rms=228.8 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:16 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.000600265069765173,"energy":0.010772919322613443,"packets":658,"bytes":104000,"frame_gap_ms":18.599999964237213,"long_task_ms":0,"control_events":66}
+2026/09/14 01:28:16 response epoch=1 status=speaking reason=unconfirmed
+2026/09/14 01:28:16 intent epoch=1 utterance_id="[session]:2" is_final=true interrupt=false fallback=false latency_ms=859
+2026/09/14 01:28:24 response epoch=2 status=speaking
+2026/09/14 01:28:24 inbound audio: packets=1050 sequence=29915 timestamp=207640423 bytes=160 pcmu_rms=18.1 window_power=327.9 peak_rms=24.4 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:24 asr_audio voice=[session] sent_ms=20800 queue_frames=8 write_ms=0
+2026/09/14 01:28:24 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.000721253993092495,"energy":0.010820797170458845,"packets":1058,"bytes":168000,"frame_gap_ms":18.799999952316284,"long_task_ms":0,"control_events":161}
+2026/09/14 01:28:25 inbound audio: packets=1100 sequence=29965 timestamp=207648423 bytes=160 pcmu_rms=18.1 window_power=930.4 peak_rms=134.0 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:25 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0005708113238325338,"energy":0.010866720835259077,"packets":1108,"bytes":176000,"frame_gap_ms":17.30000001192093,"long_task_ms":0,"control_events":161}
+2026/09/14 01:28:26 inbound audio: packets=1150 sequence=30015 timestamp=207656423 bytes=160 pcmu_rms=15.1 window_power=387.0 peak_rms=26.5 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:26 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0005143886231323462,"energy":0.010871095086649475,"packets":1158,"bytes":184000,"frame_gap_ms":17.5,"long_task_ms":0,"control_events":161}
+2026/09/14 01:28:27 inbound audio: packets=1200 sequence=30065 timestamp=207664423 bytes=160 pcmu_rms=29.0 window_power=1033.6 peak_rms=125.6 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:27 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0011601980152463405,"energy":0.010888950356619019,"packets":1209,"bytes":192160,"frame_gap_ms":17.399999976158142,"long_task_ms":0,"control_events":161}
+2026/09/14 01:28:28 inbound audio: packets=1250 sequence=30115 timestamp=207672423 bytes=160 pcmu_rms=36.2 window_power=833761.9 peak_rms=2177.6 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:28 asr_result voice=[session] sentence=3 event=asr_partial begin_ms=23960 end_ms=24560 text="去中"
+2026/09/14 01:28:28 response epoch=2 status=ducking
+2026/09/14 01:28:28 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0006575146979373587,"energy":0.018349651838124887,"packets":1258,"bytes":200000,"frame_gap_ms":18.30000001192093,"long_task_ms":0,"control_events":165}
+2026/09/14 01:28:29 asr_result voice=[session] sentence=3 event=asr_partial begin_ms=23960 end_ms=25080 text="去种地"
+2026/09/14 01:28:29 response epoch=2 status=speaking reason=unconfirmed
+2026/09/14 01:28:29 inbound audio: packets=1300 sequence=30165 timestamp=207680423 bytes=160 pcmu_rms=15.6 window_power=422.4 peak_rms=27.9 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:29 asr_result voice=[session] sentence=3 event=asr_final begin_ms=23960 end_ms=24635 text="去种地。"
+2026/09/14 01:28:29 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0005605869284095018,"energy":0.018355359144938615,"packets":1308,"bytes":208000,"frame_gap_ms":17.19999998807907,"long_task_ms":0,"control_events":172}
+2026/09/14 01:28:30 asr_audio voice=[session] sent_ms=26000 queue_frames=8 write_ms=0
+2026/09/14 01:28:30 response epoch=2 status=ducking
+2026/09/14 01:28:30 inbound audio: packets=1350 sequence=30215 timestamp=207688423 bytes=160 pcmu_rms=21.2 window_power=366.1 peak_rms=26.4 queue_frames=2 missing=0 reordered=0
+2026/09/14 01:28:30 browser_audio {"session":"[session]","context":"running","track":"live","muted":false,"enabled":true,"echo_cancellation":false,"noise_suppression":false,"auto_gain_control":false,"playback":true,"page_visible":true,"rms":0.0005482889208667421,"energy":0.01836015509698925,"packets":1358,"bytes":216000,"frame_gap_ms":18.80000001192093,"long_task_ms":0,"control_events":176}
+2026/09/14 01:28:30 intent epoch=2 utterance_id="[session]:3" is_final=true interrupt=true fallback=false latency_ms=404
+2026/09/14 01:28:30 response epoch=2 status=interrupted
+2026/09/14 01:28:30 response epoch=3 status=listening
+2026/09/14 01:28:30 response epoch=3 status=thinking
